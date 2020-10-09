@@ -7,7 +7,8 @@ import java.util.stream.Collectors;
 
 public class GuestPermission extends AbstractPermission {
 
-    private static final Set<Action> ALLOWED = EnumSet.copyOf(Arrays.stream(Action.values()).filter(Action::isGuestPermissible).collect(Collectors.toSet()));
+    private static final Set<Action> ALLOWED = EnumSet.copyOf(
+            Arrays.stream(Action.values()).filter(Action::isGuestPermissible).collect(Collectors.toSet()));
 
     @Override
     public Set<Action> allowed() {
