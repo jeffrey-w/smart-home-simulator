@@ -1,3 +1,5 @@
+package view;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -32,7 +34,7 @@ class Avatar extends JPanel {
 
     private BufferedImage scale(BufferedImage image) {
         Image temp = image.getScaledInstance(128, 128, Image.SCALE_SMOOTH);
-        BufferedImage bufferedImage = new BufferedImage(128, 128  , BufferedImage.TYPE_INT_ARGB);
+        BufferedImage bufferedImage = new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);
         Graphics2D graphics2D = bufferedImage.createGraphics();
         graphics2D.drawImage(temp, 0, 0, null);
         graphics2D.dispose();
