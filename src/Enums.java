@@ -13,3 +13,15 @@ public class Enums {
         GUEST,
         STRANGER
     }
+    enum SourceType{
+        USER,
+        MODULE
+    }
+
+    public enum State {
+        //open
+        ON,
+        //closed
+        OFF
+    }
+}
