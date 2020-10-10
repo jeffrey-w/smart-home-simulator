@@ -1,6 +1,6 @@
 package permissions;
 
-import users.User;
+//import users.User;
 
 /**
  * The {@code Permission} interface describes an authorization level that allows for {@code User}s to make certain

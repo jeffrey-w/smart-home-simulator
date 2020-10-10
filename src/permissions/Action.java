@@ -1,6 +1,6 @@
 package permissions;
 
-import users.User;
+//import users.User;
 
 /**
  * An {@code Action} describes an attempt on the part of a {@code User} to change the SHS system, which requires {@code
