@@ -1,15 +1,10 @@
-/*
-notes :
-- FIXME :
-    - need to import Room and HouseLayout
-    - default variables not sure
- */
 // imports
+package src.elements;
 
 class House {
     // variables
     private String location = "default";
-    private Room[] rooms = []; // FIXME
+    private Room[] rooms = {}; // FIXME
     private HouseLayout houseLayout = null; // FIXME
 
     // constructor

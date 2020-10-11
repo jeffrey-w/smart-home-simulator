@@ -1,30 +1,27 @@
-/*
-notes :
-- FIXME :
- */
 // imports
+package src.elements;
 
-class Light {
-    // variables
-    private String type = "default";
+class Light extends HouseElement {
+
     private int brightness = 0;
     private String color = "#FFFFFF";
 
     // constructor
-    public Light(String type, int brightness, String color) {
-        this.type = type;
+    public Light(String type, int height, int width, int[] topLeftPos, int brightness, String color) {
+        super(type, height, width, topLeftPos);
+
         this.brightness = brightness;
         this.color = color;
     }
 
     // methods
     // get/set
-    public String getType() {
-        return type;
-    }
-
     public int getBrightness() {
         return brightness;
+    }
+
+    public void setBrightness(int brightness) {
+        this.brightness = brightness;
     }
 
     public String getColor() {

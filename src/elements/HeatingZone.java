@@ -1,14 +1,10 @@
-/*
-notes :
-- FIXME :
-
- */
 // imports
+package src.elements;
 
 class HeatingZone {
     // variables
     private int temperature = 0;
-    private Room[] rooms = []; // FIXME
+    private Room[] rooms = {}; // FIXME
 
     // constructor
     public HeatingZone(int temperature, Room[] rooms) {
@@ -19,7 +15,7 @@ class HeatingZone {
     // methods
     // get/set
     public int getTemperature() {
-        return temperature;
+        return this.temperature;
     }
 
     public void setTemperature(int temperature) {
@@ -27,6 +23,6 @@ class HeatingZone {
     }
 
     public Room[] getRooms() {
-        return rooms;
+        return this.rooms;
     }
 }

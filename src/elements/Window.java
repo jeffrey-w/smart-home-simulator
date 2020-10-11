@@ -1,29 +1,17 @@
-/*
-notes :
-- FIXME :
- */
 // imports
+package src.elements;
 
-class Window {
-    // variables
-    private String type = "default";
-    private int height = 0;
-    private int width = 0;
+class Window extends HouseElement {
+
+    private String wallLocation = "north";
 
     // constructor
-    public Window(String type, int height, int width) {
-        this.type = type;
-        this.height = height;
-        this.width = width;
+    public Window(String type, int height, int width, int[] topLeftPos, String wallLocation) {
+        super(type, height, width, topLeftPos);
+
+        this.wallLocation = wallLocation;
     }
 
     // methods
     // get/set
-    public String getType() {
-        return type;
-    }
-
-    public int getSize() {
-        return [this.height, this.width];
-    }
 }

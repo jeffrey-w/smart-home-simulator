@@ -1,3 +1,6 @@
+// imports
+package src.elements;
+
 class Actuator {
     // variables
     private String type = "default";
@@ -10,16 +13,15 @@ class Actuator {
     }
 
     // methods
-    private boolean actuate(){
+    public void actuate(){
     }
 
-    private boolean deactivate(){
+    public void deactivate(){
     }
 
     // get/set
-
     public String getType() {
-        return type;
+        return this.type;
     }
 
     public void setType(String type) {

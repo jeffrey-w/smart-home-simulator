@@ -1,9 +1,5 @@
-/*
-notes :
-- FIXME :
-
- */
 // imports
+package src.elements;
 
 class Obstruction {
     // variables
@@ -17,6 +13,6 @@ class Obstruction {
     // methods
     // get/set
     public String getType() {
-        return type;
+        return this.type;
     }
 }
