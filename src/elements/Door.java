@@ -1,5 +1,5 @@
 // imports
-package src.elements;
+package elements;
 
 class Door extends HouseElement {
 

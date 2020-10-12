@@ -11,7 +11,7 @@ notes :
 -
  */
 // imports
-package src.elements;
+package elements;
 
 class Room {
     // variables
