@@ -1,13 +1,11 @@
 package permissions;
 
-import users.User;
-
 /**
- * The {@code Permission} interface describes an authorization level that allows for {@code User}s to make certain
- * changes to the SHS system, and prevents them from making others.
+ * The {@code Permission} interface describes an authorization level that allows for actors to make certain changes to a
+ * simulation, and prevents them from making others.
  *
  * @author Jeff Wilgus
- * @see User
+ * @see Action
  */
 public interface Permission {
 
