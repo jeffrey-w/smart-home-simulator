@@ -2,18 +2,10 @@ package permissions;
 
 import java.util.EnumSet;
 import java.util.Set;
-import java.util.regex.Pattern;
+
+import static util.NameValidator.validateName;
 
 public class CustomPermission extends AbstractPermission {
-
-    private static final Pattern NAME_PATTERN = Pattern.compile("^\\w+$");
-
-    private static String validateName(String name) {
-        if (!NAME_PATTERN.matcher(name).matches()) {
-            throw new IllegalArgumentException("That is not a valid permission name.");
-        }
-        return name;
-    }
 
     private final String name;
     private final Set<Action> allowed;
