@@ -13,7 +13,11 @@ notes :
 // imports
 package elements;
 
-class Room {
+import permissions.Person;
+
+import java.util.ArrayList;
+
+class Room extends Place{
     // variables
     private String location = "default";
     private Door[] doors = {};
@@ -27,7 +31,6 @@ class Room {
         this.doors = doors;
         this.lights = lights;
         this.windows = windows;
-
     }
 
     // methods
