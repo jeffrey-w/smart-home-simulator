@@ -1,0 +1,11 @@
+{
+  "name": "simulation1",
+  "rooms": [
+    {
+      "id": "living_room",
+      "coordinates": "",
+      "windows": [],
+      "doors": []
+    }
+  ]
+}

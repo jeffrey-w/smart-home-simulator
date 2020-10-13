@@ -20,13 +20,14 @@ class Dashboard extends JFrame {
         setPreferredSize(new Dimension(1024, 512));
         setResizable(false);
         setLayout(new BorderLayout());
-        add(parameters, BorderLayout.WEST);
-        add(content, BorderLayout.EAST);
-        content.setPreferredSize(new Dimension(768, 512));
+
+        add(parameters, BorderLayout.LINE_START);
+        add(content, BorderLayout.LINE_END);
         parameters.setBorder(new TitledBorder(BORDER, "Simulation"));
         content.setBorder(BORDER);
-        console.setPreferredSize(new Dimension(735, 128));
+        content.setPreferredSize(new Dimension(768, 512));
         content.add(scrollPane);
+        console.setPreferredSize(new Dimension(735, 128));
     }
 
     public static void main(String[] args) {

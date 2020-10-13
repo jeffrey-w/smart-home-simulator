@@ -15,7 +15,6 @@ class ParameterPanel extends JPanel {
         JPanel buttons = new JPanel();
         setPreferredSize(new Dimension(256, 512));
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS)); // TODO need better layout
-        setBorder(new TitledBorder(Dashboard.BORDER, "Simulation"));
         buttons.add(new JToggleButton("On"));
         buttons.add(new JButton("Edit"));
         add(buttons);
