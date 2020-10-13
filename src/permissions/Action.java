@@ -1,14 +1,11 @@
 package permissions;
 
-//import users.User;
-
 /**
- * An {@code Action} describes an attempt on the part of a {@code User} to change the SHS system, which requires {@code
+ * An {@code Action} describes an attempt on the part of an actor to change a simulation, which requires {@code
  * Permission}.
  *
  * @author Jeff Wilgus
  * @see Permission
- * @see User
  */
 public enum Action {
 

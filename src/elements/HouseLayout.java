@@ -1,0 +1,4 @@
+package elements;
+
+class HouseLayout {
+}
