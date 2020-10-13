@@ -1,11 +1,9 @@
 package permissions;
 
-import controler.ISource;
-
 import java.util.Objects;
 import java.util.Set;
 
-public abstract class Person implements Permission, ISource {
+public abstract class Person implements Permission {
 
     private String name;
 
