@@ -5,7 +5,7 @@ import java.util.Set;
 
 import static util.NameValidator.validateName;
 
-public class CustomPermission extends AbstractPermission {
+public class CustomPermission extends Person {
 
     private final String name;
     private final Set<Action> allowed;
