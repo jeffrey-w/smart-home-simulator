@@ -3,7 +3,7 @@ package permissions;
 import java.util.EnumSet;
 import java.util.Set;
 
-public class StrangerPermission extends AbstractPermission {
+public class Stranger extends Person {
 
     private static final Set<Action> ALLOWED = EnumSet.noneOf(Action.class);
 
