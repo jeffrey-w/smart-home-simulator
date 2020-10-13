@@ -1,3 +1,5 @@
+package elements;
+
 public class Thermostat extends Sensor {
     private double temprature;
     public double getTemprature(){
