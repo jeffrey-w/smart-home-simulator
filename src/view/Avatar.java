@@ -21,7 +21,6 @@ class Avatar extends JPanel {
                 System.err.println("failed to load default image."); // TODO this is sloppy
             }
         }
-        setPreferredSize(new Dimension(128, 128));
     }
 
     @Override
