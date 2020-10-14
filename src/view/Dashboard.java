@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Set;
 
 public class Dashboard extends JFrame {
 
@@ -17,7 +18,6 @@ public class Dashboard extends JFrame {
     ParameterPanel parameters = new ParameterPanel();
     ParameterEditor editor = new ParameterEditor();
     JPanel content = new JPanel();
-
 
     public Dashboard() {
         super("Smart Home Simulator");
@@ -45,7 +45,7 @@ public class Dashboard extends JFrame {
     }
 
     public void setTemperature(String temperature) {
-         parameters.setTemperature(temperature);
+        parameters.setTemperature(temperature);
     }
 
     public void setDate(Date date) {
@@ -53,7 +53,7 @@ public class Dashboard extends JFrame {
     }
 
     public Permission getPermissionInput() {
-        return (Permission) editor.permission.getSelectedItem();
+        return (Permission)editor.permission.getSelectedItem();
     }
 
     public String getLocationInput() {
@@ -92,4 +92,10 @@ public class Dashboard extends JFrame {
         editor.date.addChangeListener(listener);
     }
 
+    public void activateLocations(final Set<String> locations) {
+        for (String location : locations) {
+            editor.location.addItem(location);
+        }
+        editor.location.setEnabled(true);
+    }
 }
