@@ -29,12 +29,16 @@ public class Parameters {
         actors.putIfAbsent(role, permission);
     }
 
+    public void removeActor(String role) {
+        actors.remove(role);
+    }
+
     public Permission getPermission() {
         return permission;
     }
 
-    public Map<String, Permission> getActors() {
-        return Collections.unmodifiableMap(actors);
+    public String[] getActors() {
+        return actors.keySet().toArray(new String[0]);
     }
 
     public String getLocation() {
