@@ -35,9 +35,9 @@ public class Dashboard extends JFrame {
         add(contentPane, BorderLayout.EAST);
         parameterPane.addTab("Parameters", parameters);
         parameterPane.addTab("Edit", editor);
-        parameterPane.setPreferredSize((new Dimension(255, 511)));
+        parameterPane.setPreferredSize((new Dimension(263, 511)));
         contentPane.addTab("Simulation", content);
-        contentPane.setPreferredSize(new Dimension(767, 511));
+        contentPane.setPreferredSize(new Dimension(759, 511));
     }
 
     public void setPermission(String permission) {
