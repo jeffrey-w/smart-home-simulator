@@ -1,6 +1,8 @@
 package view;
 
+import elements.House;
 import parameters.Parameters;
+import permissions.Permission;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,16 +11,18 @@ import java.awt.event.ActionListener;
 
 public class ProfileViewer extends JFrame implements ActionListener {
 
-    JList<String> profiles;
+    DefaultListModel<String> profiles = new DefaultListModel<>();
+    JList<String> list = new JList<>(profiles);
     JButton add = new JButton("Add");
     JButton edit = new JButton("Edit");
     JButton remove = new JButton("Remove");
     Parameters parameters;
+    House house;
 
-    public ProfileViewer(String[] profiles, Parameters parameters) {
+    public ProfileViewer(Parameters parameters, House house) {
         super("Edit Profiles");
-        this.profiles = new JList<>(profiles);
-        JScrollPane scrollPane = new JScrollPane(this.profiles);
+        this.profiles.addAll(parameters.getActors());
+        JScrollPane scrollPane = new JScrollPane(list);
         JPanel buttons = new JPanel();
         add.addActionListener(this);
         edit.addActionListener(this);
@@ -32,37 +36,42 @@ public class ProfileViewer extends JFrame implements ActionListener {
         setResizable(false);
         add(scrollPane);
         add(buttons, BorderLayout.SOUTH);
-        if (profiles.length == 0) {
+        if (profiles.size() == 0) {
             edit.setEnabled(false);
         }
+        this.parameters = parameters;
+        this.house = house;
     }
 
     @Override
     public void actionPerformed(final ActionEvent e) {
         String actionCommand = e.getActionCommand();
-        ProfileEditor editor = new ProfileEditor();
-        switch (actionCommand) {
+        switch (actionCommand) { // TODO abstract Add and Edit logic
             case "Add": {
-                int result = JOptionPane.showConfirmDialog(null, editor, "Enter profile information.",
-                        JOptionPane.OK_CANCEL_OPTION);
-                if (result == JOptionPane.OK_OPTION) {
-                    parameters.addActor(editor.getRole(), editor.getPermission());
-                    edit.setEnabled(true);
-                }
+                SwingUtilities.invokeLater(() -> {
+                    ProfileEditor editor = new ProfileEditor(null, house != null);
+                    editor.pack();
+                    editor.setLocationRelativeTo(this);
+                    editor.setVisible(true);
+                    editor.addOkListener(new OkListener(editor));
+                });
                 break;
             }
             case "Edit": {
-                editor.setRole(profiles.getSelectedValue());
-                int result = JOptionPane.showConfirmDialog(null, editor, "Edit profile permissions.",
-                        JOptionPane.OK_CANCEL_OPTION);
-                if (result == JOptionPane.OK_OPTION) {
-                    parameters.addActor(editor.getRole(), editor.getPermission());
-                }
+                SwingUtilities.invokeLater(() -> {
+                    ProfileEditor editor = new ProfileEditor(list.getSelectedValue(), house != null);
+                    editor.pack();
+                    editor.setLocationRelativeTo(this);
+                    editor.setVisible(true);
+                    editor.addOkListener(new OkListener(editor));
+                });
                 break;
             }
             case "Remove": {
-                parameters.removeActor(profiles.getSelectedValue());
-                if (profiles.getModel().getSize() == 0) {
+                parameters.removeActor(list.getSelectedValue());
+                // TODO house remove actor
+                profiles.removeElement(list.getSelectedValue());
+                if (profiles.size() == 0) {
                     edit.setEnabled(false);
                 }
                 break;
@@ -71,4 +80,28 @@ public class ProfileViewer extends JFrame implements ActionListener {
                 throw new AssertionError();
         }
     }
+
+    class OkListener implements ActionListener { // TODO rename this
+
+        ProfileEditor editor;
+
+        OkListener(ProfileEditor editor) {
+            this.editor = editor;
+        }
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            String role = editor.getRole();
+            Permission permission = editor.getPermission();
+            // TODO if Location activated and selected do house placement logic
+            parameters.addActor(role, permission); // TODO exception handling
+            if (!profiles.contains(role)) {
+                profiles.addElement(role);
+            }
+            edit.setEnabled(true);
+            editor.dispose();
+        }
+
+    }
+
 }
