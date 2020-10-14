@@ -1,13 +1,12 @@
 package view;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import java.awt.*;
 
 class ParameterPanel extends JPanel {
 
     Avatar avatar;
-    JLabel role = new JLabel();
+    JLabel permission = new JLabel();
     JLabel location = new JLabel();
     JLabel temperature = new JLabel();
     JLabel date = new JLabel();
@@ -15,43 +14,36 @@ class ParameterPanel extends JPanel {
 
     ParameterPanel() {
         JPanel buttons = new JPanel();
-        setPreferredSize(new Dimension(256, 512));
+        setPreferredSize(new Dimension(256, 440));
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS)); // TODO need better layout
-        setBorder(new TitledBorder(Dashboard.BORDER, "Simulation"));
         buttons.add(new JToggleButton("On"));
-        buttons.add(new JButton("Edit"));
         add(buttons);
         add(avatar = new Avatar(null));
-        add(role);
+        add(permission);
         add(location);
         add(temperature);
         add(date);
         add(time);
-        setRole("Parent"); // TODO remove these
-        setLocation("Kitchen");
-        setTemperature("Outside Temp 15C");
-        setDate("Fri Sep 18 2020");
-        setTime("10:38:20");
+        setPermission(""); // TODO remove these
+        setLocation("");
     }
 
-    void setRole(String role) {
-        this.role.setText(role);
+    // TODO null check strings
+
+    void setPermission(String permission) {
+        this.permission.setText("Permission: " + permission);
     }
 
-    void setLocation(String location) {
-        this.location.setText(location);
+    void setLocation(String location) { // TODO rename this
+        this.location.setText("Location: " + location);
     }
 
     void setTemperature(String temperature) {
-        this.temperature.setText(temperature);
+        this.temperature.setText("Temperature: " + temperature + " C");
     }
 
     void setDate(String date) {
-        this.date.setText(date);
-    }
-
-    void setTime(String time) {
-        this.time.setText(time);
+        this.date.setText("Date: " + date);
     }
 
 }
