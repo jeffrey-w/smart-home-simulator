@@ -38,19 +38,27 @@ public class House implements Iterable<Room> {
         roomTwo.adjacents.add(locationOne);
     }
 
-    private Node validateLocation(String location) {
-        if (rooms.containsKey(location)) {
-            return rooms.get(location);
-        }
-        throw new NoSuchElementException("That location does not exist");
-    }
-
     public Room removeRoom(String location) {
         try {
             return rooms.remove(location).room;
         } catch (NullPointerException e) {
             throw new NoSuchElementException("That location does not exist.");
         }
+    }
+
+    public Set<String> getLocations() {
+        return rooms.keySet();
+    }
+
+    public Set<String> getAdjacentsOf(String location) {
+        return validateLocation(location).adjacents;
+    }
+
+    private Node validateLocation(String location) {
+        if (rooms.containsKey(location)) {
+            return rooms.get(location);
+        }
+        throw new NoSuchElementException("That location does not exist");
     }
 
     @Override
