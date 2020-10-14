@@ -47,6 +47,7 @@ public class Controller {
             JFileChooser chooser = new JFileChooser();
             if (chooser.showOpenDialog(dashboard) == JFileChooser.APPROVE_OPTION) {
                 // TODO house reader logic
+                dashboard.activateLocations(house.getLocations());
             }
         }
 
@@ -57,40 +58,11 @@ public class Controller {
         @Override
         public void actionPerformed(final ActionEvent e) {
             SwingUtilities.invokeLater(() -> {
-                ProfileViewer viewer = new ProfileViewer(parameters.getActors(), parameters);
+                ProfileViewer viewer = new ProfileViewer(parameters, house);
                 viewer.pack();
                 viewer.setLocationRelativeTo(dashboard);
                 viewer.setVisible(true);
             });
-        }
-
-    }
-
-    class ProfileViewListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-            String actionCommand = e.getActionCommand();
-            switch (actionCommand) {
-                case "Add": {
-                    ProfileEditor editor = new ProfileEditor();
-                    int result = JOptionPane.showConfirmDialog(dashboard, editor, "Enter profile information.",
-                            JOptionPane.OK_CANCEL_OPTION);
-                    if (result == JOptionPane.OK_OPTION) {
-                        parameters.addActor(editor.getRole(), editor.getPermission());
-                    }
-                    break;
-                }
-                case "Edit": {
-                    ProfileEditor editor = new ProfileEditor();
-                    int result = JOptionPane.showConfirmDialog(dashboard, editor, "Edit profile permissions.",
-                            JOptionPane.OK_CANCEL_OPTION);
-                    if (result == JOptionPane.OK_OPTION) {
-                        parameters.addActor(editor.getRole(), editor.getPermission());
-                    }
-                    break;
-                }
-            }
         }
 
     }
