@@ -13,17 +13,16 @@ class ParameterPanel extends JPanel {
     JLabel time = new JLabel();
 
     ParameterPanel() {
-        JPanel buttons = new JPanel();
         setPreferredSize(new Dimension(256, 440));
-        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS)); // TODO need better layout
-        buttons.add(new JToggleButton("On"));
-        add(buttons);
+        setLayout(new SpringLayout());
+        add(new JToggleButton("On"));
         add(avatar = new Avatar(null));
         add(permission);
         add(location);
         add(temperature);
         add(date);
         add(time);
+        SpringUtilities.makeCompactGrid(this, 7, 1, 1, 1, 1, 1);
         setPermission(""); // TODO remove these
         setLocation("");
     }
