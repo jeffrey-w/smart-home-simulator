@@ -25,18 +25,19 @@ public class Dashboard extends JFrame {
 
     public Dashboard() {
         super("Smart Home Simulator");
-        JTabbedPane tabbedPane = new JTabbedPane();
+        JTabbedPane parameterPane = new JTabbedPane();
+        JTabbedPane contentPane = new JTabbedPane();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setPreferredSize(new Dimension(1024, 512));
         setResizable(false);
         setLayout(new BorderLayout());
-        add(tabbedPane, BorderLayout.WEST);
-        add(content, BorderLayout.EAST);
-        tabbedPane.addTab("Simulation", parameters);
-        tabbedPane.addTab("Edit", editor);
-        tabbedPane.setPreferredSize((new Dimension(265, 512)));
-        content.setPreferredSize(new Dimension(768, 512));
-        content.setBorder(BORDER);
+        add(parameterPane, BorderLayout.WEST);
+        add(contentPane, BorderLayout.EAST);
+        parameterPane.addTab("Parameters", parameters);
+        parameterPane.addTab("Edit", editor);
+        parameterPane.setPreferredSize((new Dimension(255, 511)));
+        contentPane.addTab("Simulation", content);
+        contentPane.setPreferredSize(new Dimension(767, 511));
     }
 
     public void setPermission(String permission) {
