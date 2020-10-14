@@ -15,6 +15,9 @@ public class ProfileEditor extends JPanel {
         add(role);
         add(new JLabel("Permission"));
         add(permission);
+        for (Permission permission : ParameterEditor.PERMISSIONS) {
+            this.permission.addItem(permission);
+        }
         SpringUtilities.makeCompactGrid(this, 2, 2, 1, 1, 1, 1);
     }
 
@@ -26,4 +29,8 @@ public class ProfileEditor extends JPanel {
         return (Permission)permission.getSelectedItem();
     }
 
+    public void setRole(final String role) {
+        this.role.setText(role);
+        this.role.setEnabled(false);
+    }
 }
