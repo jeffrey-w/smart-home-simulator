@@ -1,41 +1,98 @@
 package view;
 
+import permissions.Permission;
+
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-class Dashboard extends JFrame {
+public class Dashboard extends JFrame {
 
     private final static Border OUTER = BorderFactory.createEmptyBorder(10, 10, 10, 10);
     private final static Border INNER = BorderFactory.createLineBorder(Color.BLACK, 1, true);
     final static Border BORDER = BorderFactory.createCompoundBorder(OUTER, INNER);
+    final static DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm a");
 
     ParameterPanel parameters = new ParameterPanel();
+    ParameterEditor editor = new ParameterEditor();
     JPanel content = new JPanel();
-    JTextArea console = new JTextArea("Welcome to Smart Home Simulator!");
 
-    Dashboard() {
+
+    public Dashboard() {
         super("Smart Home Simulator");
-        JScrollPane scrollPane = new JScrollPane(console);
+        JTabbedPane tabbedPane = new JTabbedPane();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setPreferredSize(new Dimension(1024, 512));
         setResizable(false);
         setLayout(new BorderLayout());
-        add(parameters, BorderLayout.WEST);
+        add(tabbedPane, BorderLayout.WEST);
         add(content, BorderLayout.EAST);
+        tabbedPane.addTab("Simulation", parameters);
+        tabbedPane.addTab("Edit", editor);
+        tabbedPane.setPreferredSize((new Dimension(265, 512)));
         content.setPreferredSize(new Dimension(768, 512));
-        parameters.setBorder(new TitledBorder(BORDER, "Simulation"));
         content.setBorder(BORDER);
-        console.setPreferredSize(new Dimension(735, 128));
-        content.add(scrollPane);
     }
 
-    public static void main(String[] args) {
-        Dashboard dashboard = new Dashboard();
-        dashboard.pack();
-        dashboard.setVisible(true);
-        dashboard.setLocationRelativeTo(null);
+    public void setPermission(String permission) {
+        parameters.setPermission(permission);
+    }
+
+    public void setLocation(String location) { // TODO rename this
+        parameters.setLocation(location);
+    }
+
+    public void setTemperature(String temperature) {
+         parameters.setTemperature(temperature);
+    }
+
+    public void setDate(Date date) {
+        parameters.setDate(dateFormat.format(date));
+    }
+
+    public Permission getPermissionInput() {
+        return (Permission) editor.permission.getSelectedItem();
+    }
+
+    public String getLocationInput() {
+        return (String)editor.location.getSelectedItem();
+    }
+
+    public Integer getTemperatureInput() {
+        return (Integer)editor.temperature.getValue();
+    }
+
+    public Date getDateInput() {
+        return (Date)editor.date.getValue();
+    }
+
+    public void addLoadHouseListener(ActionListener listener) {
+        editor.loadHouse.addActionListener(listener);
+    }
+
+    public void addProfileEditListener(ActionListener listener) {
+        editor.editProfiles.addActionListener(listener);
+    }
+
+    public void addPermissionListener(ActionListener listener) {
+        editor.permission.addActionListener(listener);
+    }
+
+    public void addLocationListener(ActionListener listener) {
+        editor.location.addActionListener(listener);
+    }
+
+    public void addTemperatureListener(ChangeListener listener) {
+        editor.temperature.addChangeListener(listener);
+    }
+
+    public void addDateListener(ChangeListener listener) {
+        editor.date.addChangeListener(listener);
     }
 
 }
