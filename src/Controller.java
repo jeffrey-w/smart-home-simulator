@@ -3,6 +3,7 @@ import parameters.Parameters;
 import permissions.Permission;
 import view.Dashboard;
 import view.ProfileEditor;
+import view.ProfileViewer;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -55,11 +56,40 @@ public class Controller {
 
         @Override
         public void actionPerformed(final ActionEvent e) {
-            ProfileEditor editor = new ProfileEditor();
-            int result = JOptionPane
-                    .showConfirmDialog(dashboard, editor, "Enter profile information", JOptionPane.OK_CANCEL_OPTION);
-            if (result == JOptionPane.OK_OPTION) {
-                parameters.addActor(editor.getRole(), editor.getPermission());
+            SwingUtilities.invokeLater(() -> {
+                ProfileViewer viewer = new ProfileViewer(parameters.getActors(), parameters);
+                viewer.pack();
+                viewer.setLocationRelativeTo(dashboard);
+                viewer.setVisible(true);
+            });
+        }
+
+    }
+
+    class ProfileViewListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            String actionCommand = e.getActionCommand();
+            switch (actionCommand) {
+                case "Add": {
+                    ProfileEditor editor = new ProfileEditor();
+                    int result = JOptionPane.showConfirmDialog(dashboard, editor, "Enter profile information.",
+                            JOptionPane.OK_CANCEL_OPTION);
+                    if (result == JOptionPane.OK_OPTION) {
+                        parameters.addActor(editor.getRole(), editor.getPermission());
+                    }
+                    break;
+                }
+                case "Edit": {
+                    ProfileEditor editor = new ProfileEditor();
+                    int result = JOptionPane.showConfirmDialog(dashboard, editor, "Edit profile permissions.",
+                            JOptionPane.OK_CANCEL_OPTION);
+                    if (result == JOptionPane.OK_OPTION) {
+                        parameters.addActor(editor.getRole(), editor.getPermission());
+                    }
+                    break;
+                }
             }
         }
 
