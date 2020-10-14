@@ -3,7 +3,6 @@ package view;
 import permissions.Permission;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -13,9 +12,6 @@ import java.util.Date;
 
 public class Dashboard extends JFrame {
 
-    private final static Border OUTER = BorderFactory.createEmptyBorder(10, 10, 10, 10);
-    private final static Border INNER = BorderFactory.createLineBorder(Color.BLACK, 1, true);
-    final static Border BORDER = BorderFactory.createCompoundBorder(OUTER, INNER);
     final static DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm a");
 
     ParameterPanel parameters = new ParameterPanel();
@@ -35,9 +31,9 @@ public class Dashboard extends JFrame {
         add(contentPane, BorderLayout.EAST);
         parameterPane.addTab("Parameters", parameters);
         parameterPane.addTab("Edit", editor);
-        parameterPane.setPreferredSize((new Dimension(263, 511)));
+        parameterPane.setPreferredSize((new Dimension(271, 511)));
         contentPane.addTab("Simulation", content);
-        contentPane.setPreferredSize(new Dimension(759, 511));
+        contentPane.setPreferredSize(new Dimension(751, 511));
     }
 
     public void setPermission(String permission) {
