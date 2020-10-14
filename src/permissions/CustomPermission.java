@@ -11,6 +11,7 @@ public class CustomPermission extends Person {
     private final Set<Action> allowed;
 
     public CustomPermission(String name, String... actions) {
+        super(name);
         this.name = validateName(name);
         allowed = EnumSet.noneOf(Action.class);
         for (String action : actions) {

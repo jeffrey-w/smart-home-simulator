@@ -15,6 +15,10 @@ public abstract class Person implements Permission {
         this.name = name;
     }
 
+    public Person(String name) {
+        this.name = name;
+    }
+
     @Override
     public void authorize(Action action) {
         if (!allowed().contains(Objects.requireNonNull(action))) {
