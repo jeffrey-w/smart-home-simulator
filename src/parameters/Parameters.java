@@ -1,5 +1,6 @@
 package parameters;
 
+import elements.Place;
 import permissions.Permission;
 
 import java.time.LocalDate;
@@ -11,7 +12,7 @@ public class Parameters {
     private static final int DEFAULT_TEMPERATURE = 15;
 
     private Permission permission;
-    private String location;
+    private Place location;
     private LocalDate date;
     private LocalTime time;
     private int temperature;
@@ -30,7 +31,7 @@ public class Parameters {
         return permission;
     }
 
-    public String getLocation() {
+    public Place getLocation() {
         return location;
     }
 
@@ -54,7 +55,7 @@ public class Parameters {
         this.permission = permission;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(Place location) {
         this.location = location;
     }
 
