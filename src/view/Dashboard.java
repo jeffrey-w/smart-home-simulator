@@ -5,7 +5,7 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
-class Dashboard extends JFrame {
+public class Dashboard extends JFrame {
 
     private final static Border OUTER = BorderFactory.createEmptyBorder(10, 10, 10, 10);
     private final static Border INNER = BorderFactory.createLineBorder(Color.BLACK, 1, true);
