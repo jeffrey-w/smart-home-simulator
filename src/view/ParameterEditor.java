@@ -3,6 +3,7 @@ package view;
 import parameters.Parameters;
 import permissions.AbstractPermission;
 import permissions.Permission;
+import view.viewtils.SpringUtilities;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,6 +13,13 @@ import java.util.Date;
 
 public class ParameterEditor extends JPanel {
 
+    private static final int BUTTON_COLUMNS = 2;
+    private static final int BUTTON_OFFSET = 0x20;
+    private static final int BUTTON_X_PADDING = 0x4A;
+    private static final int BUTTON_Y_PADDING = 0x20;
+    private static final int FIELD_ROWS = 4;
+    private static final int FIELD_COLUMNS = 2;
+    private static final int FIELD_Y_PADDING = 0x80;
     private static JComboBox<Permission> PERMISSION_J_COMBO_BOX;
     private static final SpinnerNumberModel TEMP_MODEL =
             new SpinnerNumberModel(Parameters.DEFAULT_TEMPERATURE, Parameters.MIN_TEMPERATURE,
@@ -29,10 +37,8 @@ public class ParameterEditor extends JPanel {
         return PERMISSION_J_COMBO_BOX;
     }
 
-    static JLabel labelFactory(String text) { // TODO rename this
-        JLabel label = new JLabel(text + ":", SwingConstants.RIGHT);
-        label.setFont(label.getFont().deriveFont(11f));
-        return label;
+    static JLabel labelFactory(String text) {
+        return new JLabel(text + ":", SwingConstants.RIGHT);
     }
 
     JButton loadHouse = new JButton("Load House");
@@ -43,13 +49,21 @@ public class ParameterEditor extends JPanel {
     JSpinner date = new JSpinner(DATE_MODEL);
 
     ParameterEditor() {
-        JPanel buttonPanel = new JPanel(new SpringLayout());
+        // Containers for buttons and fields respectively.
+        JPanel buttons = new JPanel(new SpringLayout());
         JPanel fields = new JPanel(new SpringLayout());
+        // Set panel display behavior.
         setLayout(new BorderLayout());
-        buttonPanel.add(loadHouse);
-        buttonPanel.add(editProfiles);
-        SpringUtilities.makeGrid(buttonPanel, 1, 2, 8, 8, 8, 8);
-        add(buttonPanel, BorderLayout.NORTH);
+        // Add containers to panel.
+        add(buttons, BorderLayout.NORTH);
+        add(fields, BorderLayout.SOUTH);
+        // Add buttons to button panel.
+        buttons.add(loadHouse);
+        buttons.add(editProfiles);
+        // Set button panel display behavior
+        SpringUtilities
+                .makeGrid(buttons, 1, BUTTON_COLUMNS, BUTTON_OFFSET, BUTTON_OFFSET, BUTTON_X_PADDING, BUTTON_Y_PADDING);
+        // Add fields to field panel.
         fields.add(labelFactory("Permission"));
         fields.add(permission);
         fields.add(labelFactory("Location"));
@@ -58,8 +72,9 @@ public class ParameterEditor extends JPanel {
         fields.add(temperature);
         fields.add(labelFactory("Date"));
         fields.add(date);
-        SpringUtilities.makeCompactGrid(fields, 4, 2, 1, 1, 1, 86);
-        add(fields);
+        // Set field panel display behavior
+        SpringUtilities.makeCompactGrid(fields, FIELD_ROWS, FIELD_COLUMNS, 1, 1, 1, FIELD_Y_PADDING);
+        // Selecting a location is disabled by default.
         location.setEnabled(false);
     }
 
