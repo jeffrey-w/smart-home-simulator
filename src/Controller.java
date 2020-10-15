@@ -2,14 +2,15 @@ import elements.House;
 import parameters.Parameters;
 import permissions.Permission;
 import view.Dashboard;
-import view.ProfileEditor;
 import view.ProfileViewer;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileFilter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.Date;
 
 public class Controller {
@@ -45,6 +46,23 @@ public class Controller {
         @Override
         public void actionPerformed(final ActionEvent e) {
             JFileChooser chooser = new JFileChooser();
+            chooser.setFileFilter(new FileFilter() { // TODO make this static?
+
+                @Override
+                public boolean accept(final File f) {
+                    if (f.isDirectory()) {
+                        return true;
+                    }
+                    String filename = f.getName().toLowerCase();
+                    return filename.endsWith(".json");
+                }
+
+                @Override
+                public String getDescription() {
+                    return "JSON files (*.json)";
+                }
+
+            });
             if (chooser.showOpenDialog(dashboard) == JFileChooser.APPROVE_OPTION) {
                 // TODO house reader logic
                 dashboard.activateLocations(house.getLocations());
@@ -83,8 +101,8 @@ public class Controller {
         @Override
         public void actionPerformed(final ActionEvent e) {
             String location = dashboard.getLocationInput();
-            // TODO house.placePersonIn(parameters.getUser(), location);
             parameters.setLocation(location);
+            house.addPerson("user", location, dashboard.getPermissionInput());
             dashboard.setLocation(location);
         }
 
