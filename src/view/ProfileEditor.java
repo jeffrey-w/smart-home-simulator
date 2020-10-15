@@ -1,12 +1,16 @@
 package view;
 
 import permissions.Permission;
+import view.viewtils.SpringUtilities;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 
 public class ProfileEditor extends JFrame {
+
+    private static final int ROWS = 3;
+    private static final int COLUMNS = 2;
+    private static final int Y_PADDING = 0x10;
 
     JTextField role = new JTextField();
     JComboBox<Permission> permission = ParameterEditor.permissionJComboBox();
@@ -14,42 +18,34 @@ public class ProfileEditor extends JFrame {
     JButton ok = new JButton("Ok");
 
     public ProfileEditor(String role, boolean enableLocation) {
+        // Set window title.
         super("Edit Profile");
+        // A container for fields.
         JPanel fields = new JPanel(new SpringLayout());
-        setLayout(new BorderLayout());
+        // Set window display behavior.
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLayout(new BorderLayout());
         setPreferredSize(new Dimension(256, 128));
         setResizable(false);
+        // Add fields and ok button to window.
+        add(fields);
+        add(ok, BorderLayout.SOUTH);
+        // Add fields to field container.
         fields.add(ParameterEditor.labelFactory("Role"));
         fields.add(this.role);
         fields.add(ParameterEditor.labelFactory("Permission"));
         fields.add(permission);
         fields.add(ParameterEditor.labelFactory("Location"));
         fields.add(location);
-        SpringUtilities.makeCompactGrid(fields, 3, 2, 1, 1, 1, 16);
-        add(fields);
-        add(ok, BorderLayout.SOUTH);
+        // Set field display behavior.
+        SpringUtilities.makeCompactGrid(fields, ROWS, COLUMNS, 1, 1, 1, Y_PADDING);
+        // A role is being edited, set the role name and disable changing it.
         if (role != null) {
             this.role.setText(role);
             this.role.setEnabled(false);
         }
+        // Set whether or not locations may be edited.
         location.setEnabled(enableLocation);
-    }
-
-    public String getRole() {
-        return role.getText();
-    }
-
-    public Permission getPermission() {
-        return (Permission)permission.getSelectedItem();
-    }
-
-    public String getLocationInput() { // TODO rename this
-        return (String)location.getSelectedItem();
-    }
-
-    public void addOkListener(ActionListener listener) {
-        ok.addActionListener(listener);
     }
 
 }
