@@ -13,27 +13,54 @@ import java.util.Set;
 
 public class Dashboard extends JFrame {
 
-    final static DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm a");
+    private static final int WINDOW_WIDTH = 0x600;
+    private static final int WINDOW_HEIGHT = 0x300;
+    private static final int PARAMETER_PANE_WIDTH = WINDOW_WIDTH >>> 2;
+    private static final int CONTENT_PANE_WIDTH = WINDOW_WIDTH - (WINDOW_WIDTH >>> 2);
+    private static final int CONTENT_WIDTH = CONTENT_PANE_WIDTH >>> 1;
+    private static final int CONSOLE_HEIGHT = WINDOW_HEIGHT / 3;
+    private static final int CONTENT_HEIGHT = WINDOW_HEIGHT - CONSOLE_HEIGHT;
+    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm a");
 
     ParameterPanel parameters = new ParameterPanel();
     ParameterEditor editor = new ParameterEditor();
-    JPanel content = new JPanel();
+    JPanel content = new JPanel(); // TODO encapsulate actions and layout into one JPanel
+    JPanel actions = new JPanel();
+    HouseLayoutPanel layout = new HouseLayoutPanel(null);
+    JTextArea console = new JTextArea("Welcome to Smart Home Simulator!");
 
     public Dashboard() {
+        // Set window title.
         super("Smart Home Simulator");
+        // Top-level containers for window content.
         JTabbedPane parameterPane = new JTabbedPane();
         JTabbedPane contentPane = new JTabbedPane();
+        // Set window display behavior.
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setPreferredSize(new Dimension(1024, 512));
-        setResizable(false);
         setLayout(new BorderLayout());
+        setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
+        setResizable(false);
+        // Add top-level content containers to the window.
         add(parameterPane, BorderLayout.WEST);
         add(contentPane, BorderLayout.EAST);
+        // Add tabs to parameter panel.
         parameterPane.addTab("Parameters", parameters);
         parameterPane.addTab("Edit", editor);
-        parameterPane.setPreferredSize((new Dimension(271, 511)));
+        parameterPane.setPreferredSize((new Dimension(PARAMETER_PANE_WIDTH, WINDOW_HEIGHT)));
+        // Add tab to content panel.
         contentPane.addTab("Simulation", content);
-        contentPane.setPreferredSize(new Dimension(751, 511));
+        contentPane.setPreferredSize(new Dimension(CONTENT_PANE_WIDTH, WINDOW_HEIGHT));
+        // Add elements to content panel.
+        content.setLayout(new BorderLayout());
+        content.add(actions, BorderLayout.WEST);
+        content.add(layout, BorderLayout.EAST);
+        content.add(new JScrollPane(console), BorderLayout.SOUTH);
+        // Set other content display behavior.
+        actions.setPreferredSize(new Dimension(CONTENT_WIDTH, CONTENT_HEIGHT));
+        layout.setPreferredSize(new Dimension(CONTENT_WIDTH, CONTENT_HEIGHT));
+        // Set console display behavior.
+        console.setPreferredSize(new Dimension(CONTENT_PANE_WIDTH, CONSOLE_HEIGHT));
+        console.setEnabled(false);
     }
 
     public void setPermission(String permission) {
@@ -49,7 +76,7 @@ public class Dashboard extends JFrame {
     }
 
     public void setDate(Date date) {
-        parameters.setDate(dateFormat.format(date));
+        parameters.setDate(DATE_FORMAT.format(date));
     }
 
     public Permission getPermissionInput() {
@@ -98,4 +125,5 @@ public class Dashboard extends JFrame {
         }
         editor.location.setEnabled(true);
     }
+
 }
