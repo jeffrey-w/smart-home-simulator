@@ -1,9 +1,13 @@
 package view;
 
+import view.viewtils.SpringUtilities;
+
 import javax.swing.*;
-import java.awt.*;
+import java.util.Objects;
 
 class ParameterPanel extends JPanel {
+
+    private static final int COLUMNS = 7;
 
     Avatar avatar;
     JLabel permission = new JLabel();
@@ -13,8 +17,9 @@ class ParameterPanel extends JPanel {
     JLabel time = new JLabel();
 
     ParameterPanel() {
-        setPreferredSize(new Dimension(256, 440));
+        // Set panel display behavior.
         setLayout(new SpringLayout());
+        // Add elements to panel.
         add(new JToggleButton("On"));
         add(avatar = new Avatar(null));
         add(permission);
@@ -22,27 +27,27 @@ class ParameterPanel extends JPanel {
         add(temperature);
         add(date);
         add(time);
-        SpringUtilities.makeCompactGrid(this, 7, 1, 1, 1, 1, 1);
-        setPermission(""); // TODO remove these
+        // Set element display behavior.
+        SpringUtilities.makeCompactGrid(this, COLUMNS, 1, 1, 1, 1, 1);
+        // Set default values for empty parameters.
+        setPermission("");
         setLocation("");
     }
 
-    // TODO null check strings
-
     void setPermission(String permission) {
-        this.permission.setText("Permission: " + permission);
+        this.permission.setText("Permission: " + Objects.requireNonNull(permission));
     }
 
     void setLocation(String location) { // TODO rename this
-        this.location.setText("Location: " + location);
+        this.location.setText("Location: " + Objects.requireNonNull(location));
     }
 
     void setTemperature(String temperature) {
-        this.temperature.setText("Temperature: " + temperature + " C");
+        this.temperature.setText("Temperature: " + Objects.requireNonNull(temperature) + " C");
     }
 
     void setDate(String date) {
-        this.date.setText("Date: " + date);
+        this.date.setText("Date: " + Objects.requireNonNull(date));
     }
 
 }
