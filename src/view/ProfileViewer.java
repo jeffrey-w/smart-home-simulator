@@ -11,6 +11,8 @@ import java.awt.event.ActionListener;
 
 public class ProfileViewer extends JFrame implements ActionListener {
 
+    private static final int DIMENSION = 0x100;
+
     DefaultListModel<String> profiles = new DefaultListModel<>();
     JList<String> list = new JList<>(profiles);
     JButton add = new JButton("Add");
@@ -20,25 +22,34 @@ public class ProfileViewer extends JFrame implements ActionListener {
     House house;
 
     public ProfileViewer(Parameters parameters, House house) {
+        // Set window title.
         super("Edit Profiles");
-        this.profiles.addAll(parameters.getActors());
+        // Containers for profile list and buttons.
         JScrollPane scrollPane = new JScrollPane(list);
         JPanel buttons = new JPanel();
-        add.addActionListener(this);
-        edit.addActionListener(this);
-        remove.addActionListener(this);
+        // Set window display behavior.
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLayout(new BorderLayout());
+        setPreferredSize(new Dimension(DIMENSION, DIMENSION));
+        setResizable(false);
+        // Add top-level containers to window.
+        add(scrollPane);
+        add(buttons, BorderLayout.SOUTH);
+        // Populate profile list.
+        profiles.addAll(parameters.getActors());
+        // Add buttons to panel
         buttons.add(add);
         buttons.add(edit);
         buttons.add(remove);
-        setLayout(new BorderLayout());
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setPreferredSize(new Dimension(256, 256));
-        setResizable(false);
-        add(scrollPane);
-        add(buttons, BorderLayout.SOUTH);
+        // Register handlers for buttons.
+        add.addActionListener(this);
+        edit.addActionListener(this);
+        remove.addActionListener(this);
+        // Switch edit button behavior based on whether or not any profiles exist.
         if (profiles.size() == 0) {
             edit.setEnabled(false);
         }
+        // Keep track of model data.
         this.parameters = parameters;
         this.house = house;
     }
@@ -46,30 +57,21 @@ public class ProfileViewer extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(final ActionEvent e) {
         String actionCommand = e.getActionCommand();
-        switch (actionCommand) { // TODO abstract Add and Edit logic
-            case "Add": {
-                SwingUtilities.invokeLater(() -> {
-                    ProfileEditor editor = new ProfileEditor(null, house != null);
-                    editor.pack();
-                    editor.setLocationRelativeTo(this);
-                    editor.setVisible(true);
-                    editor.addOkListener(new OkListener(editor));
-                });
-                break;
-            }
+        switch (actionCommand) {
+            case "Add":
             case "Edit": {
                 SwingUtilities.invokeLater(() -> {
                     ProfileEditor editor = new ProfileEditor(list.getSelectedValue(), house != null);
                     editor.pack();
                     editor.setLocationRelativeTo(this);
                     editor.setVisible(true);
-                    editor.addOkListener(new OkListener(editor));
+                    editor.ok.addActionListener(new ConfirmListener(editor));
                 });
                 break;
             }
             case "Remove": {
                 parameters.removeActor(list.getSelectedValue());
-                // TODO house remove actor
+                house.removePerson(list.getSelectedValue());
                 profiles.removeElement(list.getSelectedValue());
                 if (profiles.size() == 0) {
                     edit.setEnabled(false);
@@ -81,20 +83,23 @@ public class ProfileViewer extends JFrame implements ActionListener {
         }
     }
 
-    class OkListener implements ActionListener { // TODO rename this
+    class ConfirmListener implements ActionListener {
 
         ProfileEditor editor;
 
-        OkListener(ProfileEditor editor) {
+        ConfirmListener(ProfileEditor editor) {
             this.editor = editor;
         }
 
         @Override
         public void actionPerformed(final ActionEvent e) {
-            String role = editor.getRole();
-            Permission permission = editor.getPermission();
-            // TODO if Location activated and selected do house placement logic
+            String role = editor.role.getText();
+            Permission permission = (Permission)editor.permission.getSelectedItem();
+            String location = editor.location.isEnabled() ? (String)editor.location.getSelectedItem() : null;
             parameters.addActor(role, permission); // TODO exception handling
+            if (location != null) {
+                house.addPerson(role, location, permission);
+            }
             if (!profiles.contains(role)) {
                 profiles.addElement(role);
             }
