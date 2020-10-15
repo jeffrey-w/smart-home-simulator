@@ -1,0 +1,38 @@
+{
+  "name": "simulation1",
+  "rooms": [
+    {
+      "id": "living_room",
+      "windows": {
+        "location": [false, false, false, false],
+        "obstructed": [false, false, false, false]
+      },
+      "doors": {
+        "location": [false, true, false, true],
+        "locked": [false, false, false, false]
+      }
+    },
+    {
+      "id": "kitchen",
+      "windows": {
+        "location": [true, true, false, false],
+        "obstructed": [false, false, false, false]
+      },
+      "doors": {
+        "location": [false, false, false, true],
+        "locked": [false, false, false, false]
+      }
+    },
+    {
+      "id": "bedroom",
+      "windows": {
+        "location": [false, true, true, false],
+        "obstructed": [false, false, false, false]
+      },
+      "doors": {
+        "location": [false, false, false, true],
+        "locked": [false, false, false, false]
+      }
+    }
+  ]
+}

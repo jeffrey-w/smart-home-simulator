@@ -20,7 +20,6 @@ class Dashboard extends JFrame {
         setPreferredSize(new Dimension(1024, 512));
         setResizable(false);
         setLayout(new BorderLayout());
-
         add(parameters, BorderLayout.LINE_START);
         add(content, BorderLayout.LINE_END);
         parameters.setBorder(new TitledBorder(BORDER, "Simulation"));

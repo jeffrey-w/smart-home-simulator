@@ -7,7 +7,7 @@ class ParameterPanel extends JPanel {
     Avatar avatar;
     JLabel role = new JLabel();
     JLabel location = new JLabel();
-    JLabel temperature = new JLabel();
+    JLabel temperature_outdoors = new JLabel();
     JLabel date = new JLabel();
     JLabel time = new JLabel();
 
@@ -21,12 +21,12 @@ class ParameterPanel extends JPanel {
         add(avatar = new Avatar(null));
         add(role);
         add(location);
-        add(temperature);
+        add(temperature_outdoors);
         add(date);
         add(time);
         setRole("Parent"); // TODO remove these
         setLocation("Kitchen");
-        setTemperature("Outside Temp 15C");
+        setOutdoorTemperature("Outside Temp 15°C");
         setDate("Fri Sep 18 2020");
         setTime("10:38:20");
     }
@@ -39,8 +39,8 @@ class ParameterPanel extends JPanel {
         this.location.setText(location);
     }
 
-    void setTemperature(String temperature) {
-        this.temperature.setText(temperature);
+    void setOutdoorTemperature(String temperature) {
+        this.temperature_outdoors.setText(temperature);
     }
 
     void setDate(String date) {
