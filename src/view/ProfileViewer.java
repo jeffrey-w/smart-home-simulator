@@ -98,7 +98,7 @@ public class ProfileViewer extends JFrame implements ActionListener {
             String location = editor.location.isEnabled() ? (String)editor.location.getSelectedItem() : null;
             parameters.addActor(role, permission); // TODO exception handling
             if (location != null) {
-                house.addPerson(role, location, permission);
+                house.addPerson(role, permission, location);
             }
             if (!profiles.contains(role)) {
                 profiles.addElement(role);

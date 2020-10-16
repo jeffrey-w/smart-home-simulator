@@ -102,7 +102,7 @@ public class Controller {
         public void actionPerformed(final ActionEvent e) {
             String location = dashboard.getLocationInput();
             parameters.setLocation(location);
-            house.addPerson("user", location, dashboard.getPermissionInput());
+            house.addPerson("user", dashboard.getPermissionInput(), location);
             dashboard.setLocation(location);
         }
 
