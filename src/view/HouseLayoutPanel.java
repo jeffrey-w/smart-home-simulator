@@ -5,9 +5,10 @@ import elements.House;
 import javax.swing.*;
 import java.awt.*;
 
+import static elements.House.MAX_CONNECTIONS;
+
 public class HouseLayoutPanel extends JPanel {
 
-    private static final int MAX_ADJACENTS = 4;
     private static final int ROOM_DIM = 100;
     private static final String NULL_HOUSE_MESSAGE = "No house loaded.";
 
@@ -43,7 +44,7 @@ public class HouseLayoutPanel extends JPanel {
     }
 
     private void nextCoordinate() {
-        switch (drawn++ & MAX_ADJACENTS - 1) {
+        switch (drawn++ & MAX_CONNECTIONS - 1) { // TODO this is rather arcane, and may break if MAX_CONNECTIONS changes
             case 0:
                 x += ROOM_DIM;
                 break;
