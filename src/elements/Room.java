@@ -17,6 +17,9 @@ import permissions.Permission;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+
+import static util.NameValidator.validateName;
 
 public class Room {
     // variables
@@ -76,7 +79,7 @@ public class Room {
     }
 
     public void addPerson(final String name, final Permission permission) {
-        people.put(name, permission);
+        people.put(validateName(name), Objects.requireNonNull(permission));
     }
 
     public void removePerson(final String name) {
