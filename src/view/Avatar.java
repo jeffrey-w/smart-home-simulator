@@ -1,3 +1,5 @@
+package view;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -6,6 +8,8 @@ import java.io.File;
 import java.io.IOException;
 
 class Avatar extends JPanel {
+
+    private static final int DIMENSION = 0x100;
 
     private BufferedImage avatar;
 
@@ -19,20 +23,19 @@ class Avatar extends JPanel {
                 System.err.println("failed to load default image."); // TODO this is sloppy
             }
         }
-        setPreferredSize(new Dimension(128, 128));
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        int x = (getWidth() - 128) / 2;
-        int y = (getHeight() - 128) / 2;
+        int x = (getWidth() - DIMENSION) >>> 1;
+        int y = (getHeight() - DIMENSION) >>> 1;
         g.drawImage(avatar, x, y, null);
     }
 
     private BufferedImage scale(BufferedImage image) {
-        Image temp = image.getScaledInstance(128, 128, Image.SCALE_SMOOTH);
-        BufferedImage bufferedImage = new BufferedImage(128, 128  , BufferedImage.TYPE_INT_ARGB);
+        Image temp = image.getScaledInstance(DIMENSION, DIMENSION, Image.SCALE_SMOOTH);
+        BufferedImage bufferedImage = new BufferedImage(DIMENSION, DIMENSION, BufferedImage.TYPE_INT_ARGB);
         Graphics2D graphics2D = bufferedImage.createGraphics();
         graphics2D.drawImage(temp, 0, 0, null);
         graphics2D.dispose();
