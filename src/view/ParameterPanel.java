@@ -1,57 +1,53 @@
 package view;
 
+import view.viewtils.SpringUtilities;
+
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
-import java.awt.*;
+import java.util.Objects;
 
 class ParameterPanel extends JPanel {
 
+    private static final int COLUMNS = 7;
+
     Avatar avatar;
-    JLabel role = new JLabel();
+    JLabel permission = new JLabel();
     JLabel location = new JLabel();
     JLabel temperature = new JLabel();
     JLabel date = new JLabel();
     JLabel time = new JLabel();
 
     ParameterPanel() {
-        JPanel buttons = new JPanel();
-        setPreferredSize(new Dimension(256, 512));
-        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS)); // TODO need better layout
-        setBorder(new TitledBorder(Dashboard.BORDER, "Simulation"));
-        buttons.add(new JToggleButton("On"));
-        buttons.add(new JButton("Edit"));
-        add(buttons);
+        // Set panel display behavior.
+        setLayout(new SpringLayout());
+        // Add elements to panel.
+        add(new JToggleButton("On"));
         add(avatar = new Avatar(null));
-        add(role);
+        add(permission);
         add(location);
         add(temperature);
         add(date);
         add(time);
-        setRole("Parent"); // TODO remove these
-        setLocation("Kitchen");
-        setTemperature("Outside Temp 15C");
-        setDate("Fri Sep 18 2020");
-        setTime("10:38:20");
+        // Set element display behavior.
+        SpringUtilities.makeCompactGrid(this, COLUMNS, 1, 1, 1, 1, 1);
+        // Set default values for empty parameters.
+        setPermission("");
+        setLocation("");
     }
 
-    void setRole(String role) {
-        this.role.setText(role);
+    void setPermission(String permission) {
+        this.permission.setText("Permission: " + Objects.requireNonNull(permission));
     }
 
-    void setLocation(String location) {
-        this.location.setText(location);
+    void setLocation(String location) { // TODO rename this
+        this.location.setText("Location: " + Objects.requireNonNull(location));
     }
 
     void setTemperature(String temperature) {
-        this.temperature.setText(temperature);
+        this.temperature.setText("Temperature: " + Objects.requireNonNull(temperature) + " C");
     }
 
     void setDate(String date) {
-        this.date.setText(date);
-    }
-
-    void setTime(String time) {
-        this.time.setText(time);
+        this.date.setText("Date: " + Objects.requireNonNull(date));
     }
 
 }

@@ -13,24 +13,32 @@ notes :
 // imports
 package elements;
 
-import permissions.Person;
+import permissions.Permission;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-class Room extends Place{
+public class Room {
     // variables
     private String location = "default";
     private Door[] doors = {};
     private Light[] lights = {};
     private Window[] windows = {};
+    private Map<String, Permission> people;
 
     // constructor
+
+    public Room() {
+        // TODO remove this
+    }
 
     public Room(String location, Door[] doors, Light[] lights, Window[] windows) {
         this.location = location;
         this.doors = doors;
         this.lights = lights;
         this.windows = windows;
+        people = new HashMap<>();
+
     }
 
     // methods
@@ -65,5 +73,13 @@ class Room extends Place{
 
     public void setWindows(Window[] windows) {
         this.windows = windows;
+    }
+
+    public void addPerson(final String name, final Permission permission) {
+        people.put(name, permission);
+    }
+
+    public void removePerson(final String name) {
+        people.remove(name);
     }
 }

@@ -3,13 +3,16 @@ package permissions;
 import java.util.EnumSet;
 import java.util.Set;
 
-public class Parent extends Person {
+/**
+ * The {@code ParentPermission} class specifies the {@code Action}s that a parent actor is allowed to take in a
+ * simulation.
+ *
+ * @author Jeff Wilgus
+ */
+public class ParentPermission extends AbstractPermission {
 
+    // A parent can perform all actions.
     private static final Set<Action> ALLOWED = EnumSet.allOf(Action.class);
-
-    public Parent(String name) {
-        super(name);
-    }
 
     @Override
     public Set<Action> allowed() {

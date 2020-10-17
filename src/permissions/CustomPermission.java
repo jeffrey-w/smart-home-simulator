@@ -19,12 +19,13 @@ public class CustomPermission extends Person {
         }
     }
 
-    public String getName() {
-        return name;
-    }
-
     @Override
     public Set<Action> allowed() {
         return allowed;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }
