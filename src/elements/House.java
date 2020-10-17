@@ -164,7 +164,7 @@ public class House implements Iterable<Room> {
 
     @Override
     public Iterator<Room> iterator() {
-        return new Iterator<>() {
+        return new Iterator<Room>() {
 
             final Iterator<Node> iterator = rooms.values().iterator();
 

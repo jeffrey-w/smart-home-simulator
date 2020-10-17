@@ -1,34 +1,40 @@
-// imports
 package elements;
 
-class Light extends HouseElement {
+/**
+ * The {@code Light} class represents the Light object, which the user can interact with.
+ * A user can choose to turn on/off lights as they please.
+ *
+ * @author Émilie Martin
+ */
+public class Light {
 
-    private int brightness = 0;
-    private String color = "#FFFFFF";
+    /**
+     * If not provided by the user, the system uses these default values.
+     */
+    private final boolean DEFAULT_PRESENT = true;
+    private final boolean DEFAULT_STATE = true;
 
-    // constructor
-    public Light(String type, int height, int width, int[] topLeftPos, int brightness, String color) {
-        super(type, height, width, topLeftPos);
+    private boolean isPresent;
+    private boolean isOn;
 
-        this.brightness = brightness;
-        this.color = color;
+    /**
+     * Constructs a Light object with a given location and state.
+     *
+     * @param pres This boolean serves to determine if there is a {@code Light} object in this Room or not.
+     *             If true, there is a light in this room. If false, there isn't.
+     * @param on This boolean serves to determine if the light is on or not.
+     */
+    public Light(boolean pres, boolean on) {
+        this.isPresent = pres;
+        this.isOn = on;
     }
 
-    // methods
-    // get/set
-    public int getBrightness() {
-        return brightness;
-    }
-
-    public void setBrightness(int brightness) {
-        this.brightness = brightness;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
+    /**
+     * By setting the state, the user can turn lights on or off.
+     *
+     * @param state The new light state. If the boolean is true, it is on. If it is false, it is off.
+     */
+    void setOnState(boolean state) {
+        this.isOn = state;
     }
 }
