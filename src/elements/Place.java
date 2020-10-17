@@ -1,25 +1,25 @@
 package elements;
 
-import permissions.Person;
+import permissions.Permission;
 
 import java.util.ArrayList;
 
 public abstract class Place {
-    private ArrayList<Person> occupants = new ArrayList<>();
+    private ArrayList<Permission> occupants = new ArrayList<>();
 
-    public ArrayList<Person> getOccupants() {
+    public ArrayList<Permission> getOccupants() {
         return occupants;
     }
 
-    public void setOccupants(ArrayList<Person> occupants) {
+    public void setOccupants(ArrayList<Permission> occupants) {
         this.occupants = occupants;
     }
 
-    public void addOccupant(Person occupant){
+    public void addOccupant(Permission occupant){
         occupants.add(occupant);
     }
 
-    public void removeOccupant(Person occupant){
+    public void removeOccupant(Permission occupant){
         occupants.remove(occupant);
     }
 }

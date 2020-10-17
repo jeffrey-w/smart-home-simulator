@@ -5,13 +5,12 @@ import java.util.Set;
 
 import static util.NameValidator.validateName;
 
-public class CustomPermission extends Person {
+public class CustomPermission extends AbstractPermission {
 
     private final String name;
     private final Set<Action> allowed;
 
     public CustomPermission(String name, String... actions) {
-        super(name);
         this.name = validateName(name);
         allowed = EnumSet.noneOf(Action.class);
         for (String action : actions) {

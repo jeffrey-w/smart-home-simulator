@@ -4,7 +4,7 @@ import elements.House;
 import elements.Place;
 import parameters.Parameters;
 import permissions.Action;
-import permissions.Person;
+import permissions.Permission;
 import view.Dashboard;
 
 import javax.swing.text.View;
@@ -14,7 +14,7 @@ import java.util.Set;
 public class SimulationController {
 
     private static Parameters parameters;
-    private static ArrayList<Person> profiles;
+    private static ArrayList<Permission> profiles;
     private House house;
     private Dashboard view;
 
@@ -23,7 +23,7 @@ public class SimulationController {
         return parameters;
     }
 
-    public ArrayList<Person> getProfiles() {
+    public ArrayList<Permission> getProfiles() {
         return profiles;
     }
 
@@ -39,7 +39,7 @@ public class SimulationController {
         this.parameters = parameters;
     }
 
-    public void setProfiles(ArrayList<Person> profiles) {
+    public void setProfiles(ArrayList<Permission> profiles) {
         this.profiles = profiles;
     }
 
@@ -52,16 +52,16 @@ public class SimulationController {
     }
 
     //Methods
-    public static void placePerson(Person person, Place place){
+    public static void placePerson(Permission person, Place place){
         //TODO remove person from previous room
         place.addOccupant(person);
     }
 
-    public static void logIn(Person person){
-        parameters.setLoggedUser(person);
+    public static void logIn(Permission person){
+        parameters.setPermission(person);
     }
 
-    public static void addUser(Person person){
+    public static void addUser(Permission person){
         profiles.add(person);
     }
 }

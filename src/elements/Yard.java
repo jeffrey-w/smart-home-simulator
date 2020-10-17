@@ -1,6 +1,6 @@
 package elements;
 
-import permissions.Person;
+import permissions.Permission;
 
 import java.util.ArrayList;
 

@@ -14,10 +14,6 @@ public class StrangerPermission extends AbstractPermission {
     // A stranger can perform no actions.
     private static final Set<Action> ALLOWED = EnumSet.noneOf(Action.class);
 
-    public Stranger(String name) {
-        super(name);
-    }
-
     @Override
     public Set<Action> allowed() {
         return ALLOWED;
