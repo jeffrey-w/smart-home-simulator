@@ -16,7 +16,7 @@ public class Room extends Place{
     private final int DEFAULT_ROOM_TEMPERATURE = 25;
 
     /**
-     * Contructs a Room with the given name, doors, lights, and windows
+     * Constructs a Room with the given name, doors, lights, and windows
      *
      * @param roomName The name of the room
      * @param doors An array of all doors contained within the room (location + lock state)

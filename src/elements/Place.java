@@ -8,9 +8,16 @@ import java.util.Objects;
 
 import static util.NameValidator.validateName;
 
+/**
+ * A place that a person can occupy in the simulation
+ * @author Ayman Shehri
+ */
 public abstract class Place {
     private Map<String, Permission> people;
 
+    /**
+     * A Constructor that sets a new HashMap of the people who occupy this place.
+     */
     public Place() {
         people = new HashMap<>();
     }
