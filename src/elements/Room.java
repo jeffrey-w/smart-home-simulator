@@ -16,10 +16,13 @@ import static util.NameValidator.validateName;
  */
 public class Room {
     private String name;
+    private int temperature;
     private Door[] doors;
     private Light[] lights;
     private Window[] windows;
     private Map<String, Permission> people;
+
+    private final int DEFAULT_ROOM_TEMPERATURE = 25;
 
     /**
      * Contructs a Room with the given name, doors, lights, and windows
@@ -31,10 +34,19 @@ public class Room {
      */
     public Room(String roomName, Door[] doors, Light[] lights, Window[] windows) {
         this.name = roomName;
+        this.temperature = DEFAULT_ROOM_TEMPERATURE;
         this.doors = doors;
         this.lights = lights;
         this.windows = windows;
         people = new HashMap<>();
+    }
+
+    /**
+     * Setter to change the temperature of the room
+     * @param temp The new temperature
+     */
+    public void setTemperature(int temp) {
+        this.temperature = temp;
     }
 
     /**
