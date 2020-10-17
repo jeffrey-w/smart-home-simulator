@@ -1,4 +1,3 @@
-// imports
 package elements;
 
 import permissions.Permission;
@@ -8,6 +7,14 @@ import java.util.function.BiConsumer;
 
 import static util.NameValidator.validateName;
 
+/**
+ * The {@code House} class represents a collection of rooms that provide the context for a simulation and are subject to
+ * the evolving conditions that emerge during simulation.
+ *
+ * @author Philippe Vo
+ * @author Jeff Wilgus
+ * @see Room
+ */
 public class House implements Iterable<Room> {
 
     private static class Node {
@@ -22,62 +29,98 @@ public class House implements Iterable<Room> {
 
     }
 
-    // variables
+    /**
+     * The maximum number of {@code Room}s that another {@code Room} may be adjacent to.
+     */
+    public static final int MAX_CONNECTIONS = 4;
+
     private final Map<String, Node> rooms;
     private final Map<String, String> people;
 
-    // constructor
+    /**
+     * Constructs a new {@code House} object with no {@code Room}s.
+     */
     public House() {
         rooms = new HashMap<>();
         people = new HashMap<>();
     }
 
+    /**
+     * Adds the specified {@code room} to this {@code House} at the specified {@code location}. Note: if another {@code
+     * Room} already exists at the specified {@code location}, the new {@code Room} is not added.
+     *
+     * @param room the specified {@code Room}
+     * @param location the specified location
+     */
     public void addRoom(Room room, String location) {
-        rooms.putIfAbsent(validateName(location), new Node(room)); // TODO throw exception if already present?
+        rooms.putIfAbsent(validateName(location), new Node(room));
     }
 
+    /**
+     * Signifies adjacency between the specified locations in this {@code House}.
+     *
+     * @param locationOne the first location
+     * @param locationTwo the other location
+     * @throws IllegalArgumentException if the {@code Room} at either of the specified locations is already connected to
+     * {@value #MAX_CONNECTIONS} other {@code Room}s, or if they both share a connection to another {@code Room}
+     * already.
+     * @throws NoSuchElementException if either of the specified locations does not exist in this {@code House}
+     */
     public void addConnection(String locationOne, String locationTwo) {
-        Node roomOne = validateLocation(locationOne);
-        Node roomTwo = validateLocation(locationTwo);
-        if (roomOne.adjacents.size() > 4 || roomTwo.adjacents.size() > 4) { // TODO avoid magic constants
-            throw new IllegalArgumentException(
-                    "Cannot connect a room with more than 4 others."); // TODO avoid magic constants
-        }
-        roomOne.adjacents.add(locationTwo);
-        roomTwo.adjacents.add(locationOne);
+        Node nodeOne = validateLocation(locationOne);
+        Node nodeTwo = validateLocation(locationTwo);
+        validateConnection(nodeOne, nodeTwo);
+        nodeOne.adjacents.add(locationTwo);
+        nodeTwo.adjacents.add(locationOne);
     }
 
-    public Room removeRoom(String location) {
-        try {
-            return rooms.remove(location).room;
-        } catch (NullPointerException e) {
-            throw new NoSuchElementException("That location does not exist.");
+    private void validateConnection(Node one, Node two) {
+        if (one.adjacents.size() > MAX_CONNECTIONS || two.adjacents.size() > MAX_CONNECTIONS) {
+            throw new IllegalArgumentException("Cannot connect a room with more than " + MAX_CONNECTIONS + " others");
+        }
+        for (String adjacentOne : one.adjacents) {
+            for (String adjacentTwo : two.adjacents) {
+                if (adjacentOne.equals(adjacentTwo)) {
+                    throw new IllegalArgumentException(
+                            "Rooms that are already connected through another room, cannot be connected to each other.");
+                }
+            }
         }
     }
 
-    public void addPerson(String name, String location, Permission permission) {
-        if (rooms.containsKey(location)) {
-            people.put(validateName(name), location);
-            validateLocation(location).room.addPerson(name, Objects.requireNonNull(permission));
-        }
-        throw new IllegalArgumentException("That room does not exist.");
+    /**
+     * Adds a person with the specified {@code name} and {@code permission} level to this {@code House} at the specified
+     * {@code location}.
+     *
+     * @param name the specified name
+     * @param permission the specified {@code Permission}
+     * @param location the specified location
+     * @throws IllegalArgumentException if the specified {@code name} is not a non-empty string of word characters (i.e.
+     * [a-z, A-z, 0-9, _])
+     * @throws NoSuchElementException if the specified {@code location} does not exist in this {@code House}
+     * @throws NullPointerException if the specified {@code permission} is {@code null}
+     */
+    public void addPerson(String name, Permission permission, String location) {
+        validateLocation(location).room.addPerson(name, permission);
+        people.put(name, location);
     }
 
+    /**
+     * Removes the person with the specified {@code name} from this {@code House}.
+     * @param name the specified name
+     * @throws NoSuchElementException if there is no person by the specified {@code name} in this {@code House}
+     */
     public void removePerson(String name) {
-        String location = people.remove(name);
         validateLocation(people.remove(name)).room.removePerson(name);
     }
 
+    /**
+     * Returns a collection of the names of {@code Room}s in this {@code House}.
+     *
+     * @return the names of the {@code Room}s in this {@code House}
+     */
     public Set<String> getLocations() {
-        return rooms.keySet();
-    }
-
-    public Set<String> getAdjacentsOf(String location) {
-        return validateLocation(location).adjacents;
-    }
-
-    public int size() {
-        return rooms.size();
+        return Collections.unmodifiableSet(rooms.keySet());
     }
 
     /**
@@ -87,6 +130,11 @@ public class House implements Iterable<Room> {
      * @throws NullPointerException if the specified {@code action} is {@code null}
      */
     public void tour(String location, BiConsumer<String, Room> action) {
+        /*
+         * This is a depth-first search. It will only find nodes connected to the source. Maintainers should consider
+         * implementing a search routine that finds unconnected nodes if having detached rooms becomes desirable in the
+         * future.
+         */
         Deque<String> stack = new ArrayDeque<>();
         for (Node node : rooms.values()) {
             node.visited = false;
@@ -116,33 +164,26 @@ public class House implements Iterable<Room> {
 
     @Override
     public Iterator<Room> iterator() {
-        return new RoomIter();
-    }
+        return new Iterator<>() {
 
-    private class RoomIter implements Iterator<Room> {
+            final Iterator<Node> iterator = rooms.values().iterator();
 
-        Iterator<Node> iterator;
+            @Override
+            public boolean hasNext() {
+                return iterator.hasNext();
+            }
 
-        RoomIter() {
-            iterator = rooms.values().iterator();
-        }
+            @Override
+            public Room next() {
+                return iterator.next().room;
+            }
 
-        @Override
-        public boolean hasNext() {
-            return iterator.hasNext();
-        }
+            @Override
+            public void remove() {
+                iterator.remove();
+            }
 
-        @Override
-        public Room next() {
-            return iterator.next().room;
-        }
-
-        @Override
-        public void remove() {
-            iterator.remove();
-            ;
-        }
-
+        };
     }
 
 }
