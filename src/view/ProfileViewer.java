@@ -36,7 +36,7 @@ public class ProfileViewer extends JFrame implements ActionListener {
         add(scrollPane);
         add(buttons, BorderLayout.SOUTH);
         // Populate profile list.
-        for(String actor: parameters.getActors()) {
+        for (String actor : parameters.getActors()) {
             profiles.addElement(actor);
         }
         // Add buttons to panel
@@ -73,7 +73,9 @@ public class ProfileViewer extends JFrame implements ActionListener {
             }
             case "Remove": {
                 parameters.removeActor(list.getSelectedValue());
-                house.removePerson(list.getSelectedValue());
+                if (house != null) {
+                    house.removePerson(list.getSelectedValue());
+                }
                 profiles.removeElement(list.getSelectedValue());
                 if (profiles.size() == 0) {
                     edit.setEnabled(false);
@@ -95,13 +97,18 @@ public class ProfileViewer extends JFrame implements ActionListener {
 
         @Override
         public void actionPerformed(final ActionEvent e) {
+            //extract input from user
             String role = editor.role.getText();
-            Permission permission = (Permission)editor.permission.getSelectedItem();
-            String location = editor.location.isEnabled() ? (String)editor.location.getSelectedItem() : null;
+            Permission permission = (Permission) editor.permission.getSelectedItem();
+            String location = editor.location.isEnabled() ? (String) editor.location.getSelectedItem() : null;
+            //TODO validate input
+            //add as a profile
             parameters.addActor(role, permission); // TODO exception handling
+            //add in the simulation
             if (location != null) {
                 house.addPerson(role, permission, location);
             }
+            //add in the ui
             if (!profiles.contains(role)) {
                 profiles.addElement(role);
             }
