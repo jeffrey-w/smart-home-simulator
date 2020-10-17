@@ -11,8 +11,17 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
 
+/**
+ * The dashboard represents the user interface. It is through the dashboard that the user can interact with the simulation.
+ *
+ * @author Jeff Wilgus
+ * @author Émilie Martin
+ */
 public class Dashboard extends JFrame {
 
+    /**
+     * Pre-determined size parameters
+     */
     private static final int WINDOW_WIDTH = 0x600;
     private static final int WINDOW_HEIGHT = 0x300;
     private static final int PARAMETER_PANE_WIDTH = WINDOW_WIDTH >>> 2;
@@ -29,35 +38,47 @@ public class Dashboard extends JFrame {
     HouseLayoutPanel layout = new HouseLayoutPanel(null);
     JTextArea console = new JTextArea("Welcome to Smart Home Simulator!");
 
+    /**
+     * Creates the dashboard, which is to contain the {@code ParameterPanel}, a console, the {@code HouseLayeout}.
+     * This is also the interface on which the simulation will be displayed and interacted with.
+     */
     public Dashboard() {
         // Set window title.
         super("Smart Home Simulator");
+
         // Top-level containers for window content.
         JTabbedPane parameterPane = new JTabbedPane();
         JTabbedPane contentPane = new JTabbedPane();
+
         // Set window display behavior.
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         setResizable(false);
+
         // Add top-level content containers to the window.
         add(parameterPane, BorderLayout.WEST);
         add(contentPane, BorderLayout.EAST);
+
         // Add tabs to parameter panel.
         parameterPane.addTab("Parameters", parameters);
         parameterPane.addTab("Edit", editor);
         parameterPane.setPreferredSize((new Dimension(PARAMETER_PANE_WIDTH, WINDOW_HEIGHT)));
+
         // Add tab to content panel.
         contentPane.addTab("Simulation", content);
         contentPane.setPreferredSize(new Dimension(CONTENT_PANE_WIDTH, WINDOW_HEIGHT));
+
         // Add elements to content panel.
         content.setLayout(new BorderLayout());
         content.add(actions, BorderLayout.WEST);
         content.add(layout, BorderLayout.EAST);
         content.add(new JScrollPane(console), BorderLayout.SOUTH);
+
         // Set other content display behavior.
         actions.setPreferredSize(new Dimension(CONTENT_WIDTH, CONTENT_HEIGHT));
         layout.setPreferredSize(new Dimension(CONTENT_WIDTH, CONTENT_HEIGHT));
+
         // Set console display behavior.
         console.setPreferredSize(new Dimension(CONTENT_PANE_WIDTH, CONSOLE_HEIGHT));
         console.setEnabled(false);

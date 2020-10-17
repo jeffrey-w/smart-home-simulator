@@ -36,7 +36,9 @@ public class ProfileViewer extends JFrame implements ActionListener {
         add(scrollPane);
         add(buttons, BorderLayout.SOUTH);
         // Populate profile list.
-        profiles.addAll(parameters.getActors());
+        for(String actor: parameters.getActors()) {
+            profiles.addElement(actor);
+        }
         // Add buttons to panel
         buttons.add(add);
         buttons.add(edit);
