@@ -48,7 +48,7 @@ public class Parameters {
      * @param role an unique identifier
      * @param permission the {@code Permission} level of the newly added actor
      * @throws IllegalArgumentException if the specified {@code role} is not a non-empty string of word characters (i.e.
-     * [a-z, A-z, 0-9, _])
+     * [a-z, A-Z, 0-9, _])
      * @throws NullPointerException if the specified {@code permission} is {@code null}
      */
     public void addActor(String role, Permission permission) {
@@ -121,7 +121,7 @@ public class Parameters {
      *
      * @param location the specified location
      * @throws IllegalArgumentException if the specified {@code location} is not a non-empty string of word characters
-     * (i.e. [a-z, A-z, 0-9, _])
+     * (i.e. [a-z, A-Z, 0-9, _])
      */
     public void setLocation(String location) {
         this.location = location == null ? null : validateName(location);
