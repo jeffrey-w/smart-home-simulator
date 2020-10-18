@@ -3,6 +3,7 @@ package view;
 import permissions.Permission;
 
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -35,6 +36,8 @@ public class Dashboard extends JFrame {
     ParameterEditor editor = new ParameterEditor();
     JPanel content = new JPanel(); // TODO encapsulate actions and layout into one JPanel
     JPanel actions = new JPanel();
+    JPanel items = new JPanel();
+    JPanel options = new JPanel();
     HouseLayoutPanel layout = new HouseLayoutPanel(null);
     JTextArea console = new JTextArea("Welcome to Smart Home Simulator!");
 
@@ -75,9 +78,16 @@ public class Dashboard extends JFrame {
         content.add(layout, BorderLayout.EAST);
         content.add(new JScrollPane(console), BorderLayout.SOUTH);
 
-        // Set other content display behavior.
+        // Set content display behavior.
+        actions.setLayout(new BorderLayout());
         actions.setPreferredSize(new Dimension(CONTENT_WIDTH, CONTENT_HEIGHT));
+        actions.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+        actions.add(new JScrollPane(items), BorderLayout.NORTH);
+        actions.add(new JScrollPane(options), BorderLayout.SOUTH);
+        items.setPreferredSize(new Dimension(CONTENT_WIDTH, CONTENT_HEIGHT >>> 1));
+        options.setPreferredSize(new Dimension(CONTENT_WIDTH, CONTENT_HEIGHT >>> 1));
         layout.setPreferredSize(new Dimension(CONTENT_WIDTH, CONTENT_HEIGHT));
+        layout.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 
         // Set console display behavior.
         console.setPreferredSize(new Dimension(CONTENT_PANE_WIDTH, CONSOLE_HEIGHT));
