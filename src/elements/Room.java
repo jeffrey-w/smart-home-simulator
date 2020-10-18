@@ -50,6 +50,14 @@ public class Room {
     }
 
     /**
+     * Getter to access the room temperature
+     * @return The current room temperature
+     */
+    public int getTemperature() {
+        return this.temperature;
+    }
+
+    /**
      * Getter that returns the name of the room
      * @return The room name
      */
