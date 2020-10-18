@@ -23,9 +23,8 @@ import elements.Window;
  */
 class HouseReader extends JPanel {
 
-    String layoutName;
-    Object layoutFile;
-    JSONParser parser = new JSONParser();
+    private Object layoutFile;
+    private JSONParser parser = new JSONParser();
 
     /**
      * Constructs a {@code view.HouseReader} object, which accepts a fileName as a String.
@@ -48,13 +47,11 @@ class HouseReader extends JPanel {
      *
      * @return A {@code House} object
      */
-    House ReadHouse() {
+    House readHouse() {
         House house = new House();
 
         JSONObject houseLayout = (JSONObject) layoutFile;
         JSONArray roomsList = (JSONArray) houseLayout.get("rooms");
-
-        layoutName = (String) houseLayout.get("name");
 
         for(int i=0; i < roomsList.size(); i++) {
             JSONObject roomObj = (JSONObject) roomsList.get(i);

@@ -12,8 +12,8 @@ public class Door {
     /**
      * If not provided by the user, the system uses these default values.
      */
-    private static final boolean DEFAULT_LOCATION = true;
-    private static final boolean DEFAULT_LOCKED = false;
+    public static final boolean DEFAULT_DOOR_LOCATION = true;
+    public static final boolean DEFAULT_DOOR_LOCK = false;
 
     private boolean located;
     private boolean isLocked;
@@ -22,8 +22,8 @@ public class Door {
      * Constructs a door with the default location and locked state.
      */
     public Door() {
-        this.located = DEFAULT_LOCATION;
-        this.isLocked = DEFAULT_LOCKED;
+        this.located = DEFAULT_DOOR_LOCATION;
+        this.isLocked = DEFAULT_DOOR_LOCK;
     }
 
     /**

@@ -11,14 +11,22 @@ public class Light {
     /**
      * If not provided by the user, the system uses these default values.
      */
-    private final boolean DEFAULT_PRESENT = true;
-    private final boolean DEFAULT_STATE = true;
+    public final boolean DEFAULT_LIGHT_PRESENCE = true;
+    public final boolean DEFAULT_LIGHT_ON = true;
 
     private boolean isPresent;
     private boolean isOn;
 
     /**
-     * Constructs a Light object with a given location and state.
+     * Contructs a Light object with the default presence and state.
+     */
+    public Light() {
+        this.isPresent = DEFAULT_LIGHT_PRESENCE;
+        this.isOn = DEFAULT_LIGHT_ON;
+    }
+
+    /**
+     * Constructs a Light object with a given presence and state.
      *
      * @param pres This boolean serves to determine if there is a {@code Light} object in this Room or not.
      *             If true, there is a light in this room. If false, there isn't.
