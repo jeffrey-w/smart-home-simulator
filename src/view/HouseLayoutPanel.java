@@ -28,40 +28,22 @@ public class HouseLayoutPanel extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (house == null) {
-            x = getWidth() + g.getFontMetrics().stringWidth(NULL_HOUSE_MESSAGE) >>> 1;
+            x = getWidth() - g.getFontMetrics().stringWidth(NULL_HOUSE_MESSAGE) >>> 1;
             y = getHeight() >>> 1;
             g.drawString("No house loaded.", x, y);
         } else {
-            x = (getWidth() + ROOM_DIM) >>> 1;
-            y = getHeight() >>> 1;
+            x = getWidth() >>> house.size() - MAX_CONNECTIONS + 1;
+            y = getHeight() >>> house.size() - MAX_CONNECTIONS + 1;
             house.tour("Front", (location, room) -> { // TODO parameterize starting room
                 g.drawRect(x, y, ROOM_DIM, ROOM_DIM);
-                g.drawString(location, x + (g.getFontMetrics().stringWidth(location) + (ROOM_DIM >>> 2) >>> 1),
+                g.drawString(location, x + (ROOM_DIM - g.getFontMetrics().stringWidth(location) >>> 1),
                         y + (ROOM_DIM >>> 1));
-                nextCoordinate();
+                if ((++drawn & 1) == 0) { // drawn + 1 is even
+                    x += ROOM_DIM;
+                } else {
+                    y += ROOM_DIM;
+                }
             });
-        }
-    }
-
-    private void nextCoordinate() {
-        switch (drawn++ & MAX_CONNECTIONS - 1) { // TODO this is rather arcane, and may break if MAX_CONNECTIONS changes
-            case 0:
-                x += ROOM_DIM;
-                break;
-            case 1:
-                x -= ROOM_DIM;
-                y += ROOM_DIM;
-                break;
-            case 2:
-                x -= ROOM_DIM;
-                y -= ROOM_DIM;
-                break;
-            case 3:
-                x += ROOM_DIM;
-                y -= ROOM_DIM;
-                break;
-            default:
-                throw new AssertionError();
         }
     }
 
