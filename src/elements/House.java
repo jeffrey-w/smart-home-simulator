@@ -96,7 +96,7 @@ public class House implements Iterable<Room> {
      * @param permission the specified {@code Permission}
      * @param location the specified location
      * @throws IllegalArgumentException if the specified {@code name} is not a non-empty string of word characters (i.e.
-     * [a-z, A-z, 0-9, _])
+     * [a-z, A-Z, 0-9, _])
      * @throws NoSuchElementException if the specified {@code location} does not exist in this {@code House}
      * @throws NullPointerException if the specified {@code permission} is {@code null}
      */
@@ -121,6 +121,14 @@ public class House implements Iterable<Room> {
      */
     public Set<String> getLocations() {
         return Collections.unmodifiableSet(rooms.keySet());
+    }
+
+    /**
+     *
+     * @return the number of {@code Room}s in this house
+     */
+    public int size() {
+        return rooms.size();
     }
 
     /**
