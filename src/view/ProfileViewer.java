@@ -5,6 +5,8 @@ import parameters.Parameters;
 import permissions.Permission;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -36,7 +38,7 @@ public class ProfileViewer extends JFrame implements ActionListener {
         add(scrollPane);
         add(buttons, BorderLayout.SOUTH);
         // Populate profile list.
-        for(String actor: parameters.getActors()) {
+        for (String actor : parameters.getActors()) {
             profiles.addElement(actor);
         }
         // Add buttons to panel
@@ -47,10 +49,25 @@ public class ProfileViewer extends JFrame implements ActionListener {
         add.addActionListener(this);
         edit.addActionListener(this);
         remove.addActionListener(this);
-        // Switch edit button behavior based on whether or not any profiles exist.
-        if (profiles.size() == 0) {
-            edit.setEnabled(false);
-        }
+        edit.setEnabled(false);
+        remove.setEnabled(false);
+        // Switch edit and remove button behavior based on whether or not any profile is selected.
+        list.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    if (list.getSelectedIndex() == -1) {
+                        //No selection.
+                        edit.setEnabled(false);
+                        remove.setEnabled(false);
+                    } else {
+                        //Selection.
+                        edit.setEnabled(true);
+                        remove.setEnabled(true);
+                    }
+                }
+            }
+        });
         // Keep track of model data.
         this.parameters = parameters;
         this.house = house;
@@ -73,11 +90,10 @@ public class ProfileViewer extends JFrame implements ActionListener {
             }
             case "Remove": {
                 parameters.removeActor(list.getSelectedValue());
-                house.removePerson(list.getSelectedValue());
-                profiles.removeElement(list.getSelectedValue());
-                if (profiles.size() == 0) {
-                    edit.setEnabled(false);
+                if (house != null) {
+                    house.removePerson(list.getSelectedValue());
                 }
+                profiles.removeElement(list.getSelectedValue());
                 break;
             }
             default:
@@ -95,17 +111,21 @@ public class ProfileViewer extends JFrame implements ActionListener {
 
         @Override
         public void actionPerformed(final ActionEvent e) {
+            //extract input from user
             String role = editor.role.getText();
-            Permission permission = (Permission)editor.permission.getSelectedItem();
-            String location = editor.location.isEnabled() ? (String)editor.location.getSelectedItem() : null;
+            Permission permission = (Permission) editor.permission.getSelectedItem();
+            String location = editor.location.isEnabled() ? (String) editor.location.getSelectedItem() : null;
+            //TODO validate input
+            //add as a profile
             parameters.addActor(role, permission); // TODO exception handling
+            //add in the simulation
             if (location != null) {
                 house.addPerson(role, permission, location);
             }
+            //add in the ui
             if (!profiles.contains(role)) {
                 profiles.addElement(role);
             }
-            edit.setEnabled(true);
             editor.dispose();
         }
 

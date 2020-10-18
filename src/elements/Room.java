@@ -1,31 +1,22 @@
 package elements;
 
-import permissions.Permission;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-
-import static util.NameValidator.validateName;
-
 /**
  * A Room is comprised of many house elements, such as {@code Door}, {@code Light}, {@code Window}.
  *
  * @author Philippe Vo
  * @author Émilie Martin
  */
-public class Room {
+public class Room extends Place{
     private String name;
     private int temperature;
     private Door[] doors;
     private Light[] lights;
     private Window[] windows;
-    private Map<String, Permission> people;
 
     private final int DEFAULT_ROOM_TEMPERATURE = 25;
 
     /**
-     * Contructs a Room with the given name, doors, lights, and windows
+     * Constructs a Room with the given name, doors, lights, and windows
      *
      * @param roomName The name of the room
      * @param doors An array of all doors contained within the room (location + lock state)
@@ -38,7 +29,6 @@ public class Room {
         this.doors = doors;
         this.lights = lights;
         this.windows = windows;
-        people = new HashMap<>();
     }
 
     /**
@@ -79,25 +69,5 @@ public class Room {
      */
     public Window[] getWindows() {
         return this.windows;
-    }
-
-    /**
-     * Add a person in a room
-     *
-     * @param name The name of the person/user to be added to the room
-     * @param permission The permission to add this person to the room
-     */
-    public void addPerson(final String name, final Permission permission) {
-        people.put(validateName(name), Objects.requireNonNull(permission));
-    }
-
-    /**
-     * Remove a person from a room
-     *
-     * @param name The name of the person/user to remove from the list
-     */
-    public void removePerson(final String name) {
-        // TODO: Do we need to consider people with the same name located in the same room?
-        people.remove(name);
     }
 }
