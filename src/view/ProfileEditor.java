@@ -8,9 +8,10 @@ import java.awt.*;
 
 public class ProfileEditor extends JFrame {
 
+    private static final int DIM = 0x100;
     private static final int ROWS = 3;
     private static final int COLUMNS = 2;
-    private static final int Y_PADDING = 0x10;
+    private static final int Y_PADDING = 0x30;
 
     JTextField role = new JTextField();
     JComboBox<Permission> permission = ParameterEditor.permissionJComboBox();
@@ -25,7 +26,7 @@ public class ProfileEditor extends JFrame {
         // Set window display behavior.
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
-        setPreferredSize(new Dimension(256, 128));
+        setPreferredSize(new Dimension(DIM, DIM));
         setResizable(false);
         // Add fields and ok button to window.
         add(fields);
