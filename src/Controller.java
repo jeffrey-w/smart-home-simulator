@@ -1,4 +1,5 @@
 import elements.House;
+import elements.Window;
 import parameters.Parameters;
 import permissions.Permission;
 import util.HouseReader;
@@ -9,6 +10,9 @@ import view.ProfileViewer;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
@@ -45,6 +49,7 @@ public class Controller {
         dashboard.addPermissionListener(new PermissionListener());
         dashboard.addTemperatureListener(new TemperatureListener());
         dashboard.addDateListener(new DateListener());
+        dashboard.addWindowListener(new WindowListener());
     }
 
     class LoadHouseListener implements ActionListener {
@@ -56,7 +61,9 @@ public class Controller {
             if (chooser.showOpenDialog(dashboard) == JFileChooser.APPROVE_OPTION) {
                 HouseReader reader = new HouseReader(chooser.getSelectedFile());
                 house = reader.readHouse();
+                dashboard.addLocationListener(null);
                 dashboard.activateLocations(house.getLocations());
+                dashboard.addLocationListener(new LocationListener());
                 dashboard.drawHouse(house);
             }
         }
@@ -120,6 +127,44 @@ public class Controller {
             Date date = dashboard.getDateInput();
             parameters.setDate(date);
             dashboard.setDate(date);
+        }
+
+    }
+
+    public class WindowListener implements ListSelectionListener {
+
+        @Override
+        public void valueChanged(final ListSelectionEvent e) {
+            SwingUtilities.invokeLater(() -> {
+                WindowBlocker blocker = new WindowBlocker(house.getWindowsOf(parameters.getLocation()));
+                blocker.pack();
+                blocker.setLocationRelativeTo(dashboard);
+                blocker.setVisible(true);
+                house.getRoom(parameters.getLocation()).setObstructed(blocker.selection, true); // TODO parameterize obstructed
+            });
+        }
+
+    }
+
+    static class WindowBlocker extends JFrame {
+
+        int selection;
+        JList<Window> list;
+
+        WindowBlocker(Window[] windows) {
+            super("Obstruct Windows");
+            list = new JList<>(windows);
+            JButton ok = new JButton("Ok");
+            setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+            setLayout(new BorderLayout());
+            setPreferredSize(new Dimension(0x100, 0x100)); // TODO avoid magic constants
+            setResizable(false);
+            add(list);
+            add(ok, BorderLayout.SOUTH);
+            ok.addActionListener(e -> {
+                selection = list.getSelectedIndex();
+                dispose();
+            });
         }
 
     }
