@@ -10,8 +10,7 @@ import javax.swing.*;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * The util.HouseReader class parses through a house layout JSON file.
@@ -62,31 +61,46 @@ public class HouseReader extends JPanel {
     public House readHouse() {
         House house = new House();
 
+        Map<String, List<String>> connections = new HashMap<>();
+
         JSONObject houseLayout = (JSONObject) layoutFile;
         JSONArray roomsList = (JSONArray) houseLayout.get("rooms");
 
         layoutName = (String) houseLayout.get("name");
 
-        for(int i=0; i < roomsList.size(); i++) {
-            JSONObject roomObj = (JSONObject) roomsList.get(i);
+        for (Object o : roomsList) {
+            JSONObject roomObj = (JSONObject)o;
 
-            String roomName = (String) roomObj.get("id");
+            String roomName = (String)roomObj.get("id");
 
             // Parse through doors
-            JSONObject doors = (JSONObject) roomObj.get("doors");
+            JSONObject doors = (JSONObject)roomObj.get("doors");
             Door[] roomDoors = parseDoors(doors);
 
-            // Pase through lights
-            JSONObject lights = (JSONObject) roomObj.get("lights");
+            // Parse through lights
+            JSONObject lights = (JSONObject)roomObj.get("lights");
             Light[] roomLights = parseLights(lights);
 
             // Parse through windows
-            JSONObject windows = (JSONObject) roomObj.get("windows");
+            JSONObject windows = (JSONObject)roomObj.get("windows");
             Window[] roomWindows = parseWindows(windows);
 
             Room room = new Room(roomName, roomDoors, roomLights, roomWindows);
 
             house.addRoom(room, roomName);
+
+            // Get connected rooms
+            connections.put(roomName, (List<String>)roomObj.get("connections"));
+
+        }
+
+        // Add connections
+        for (String room : connections.keySet()) {
+            if (connections.get(room) != null) {
+                for (String connection : connections.get(room)) {
+                    house.addConnection(room, connection);
+                }
+            }
         }
 
         return(house);
