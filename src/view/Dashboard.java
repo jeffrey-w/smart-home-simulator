@@ -6,6 +6,7 @@ import permissions.Permission;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.text.DateFormat;
@@ -31,14 +32,13 @@ public class Dashboard extends JFrame {
     private static final int CONTENT_WIDTH = CONTENT_PANE_WIDTH >>> 1;
     private static final int CONSOLE_HEIGHT = WINDOW_HEIGHT / 3;
     private static final int CONTENT_HEIGHT = WINDOW_HEIGHT - CONSOLE_HEIGHT;
+    private static final int CONTENT_PADDING = 0x20;
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm a");
 
     ParameterPanel parameters = new ParameterPanel();
     ParameterEditor editor = new ParameterEditor();
     JPanel content = new JPanel(); // TODO encapsulate actions and layout into one JPanel
-    JPanel actions = new JPanel();
-    JPanel items = new JPanel();
-    JPanel options = new JPanel();
+    ActionPanel actions = new ActionPanel();
     HouseLayoutPanel layout = new HouseLayoutPanel(null);
     JTextArea console = new JTextArea("Welcome to Smart Home Simulator!");
 
@@ -80,13 +80,8 @@ public class Dashboard extends JFrame {
         content.add(new JScrollPane(console), BorderLayout.SOUTH);
 
         // Set content display behavior.
-        actions.setLayout(new BorderLayout());
-        actions.setPreferredSize(new Dimension(CONTENT_WIDTH, CONTENT_HEIGHT));
+        actions.setPreferredSize(new Dimension(CONTENT_WIDTH - CONTENT_PADDING, CONTENT_HEIGHT));
         actions.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-        actions.add(new JScrollPane(items), BorderLayout.NORTH);
-        actions.add(new JScrollPane(options), BorderLayout.SOUTH);
-        items.setPreferredSize(new Dimension(CONTENT_WIDTH, CONTENT_HEIGHT >>> 1));
-        options.setPreferredSize(new Dimension(CONTENT_WIDTH, CONTENT_HEIGHT >>> 1));
         layout.setPreferredSize(new Dimension(CONTENT_WIDTH, CONTENT_HEIGHT));
         layout.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 
@@ -149,6 +144,10 @@ public class Dashboard extends JFrame {
 
     public void addDateListener(ChangeListener listener) {
         editor.date.addChangeListener(listener);
+    }
+
+    public void addWindowListener(ListSelectionListener listener) {
+        actions.actions.addListSelectionListener(listener);
     }
 
     public void activateLocations(final Set<String> locations) {
