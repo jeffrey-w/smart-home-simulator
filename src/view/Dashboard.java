@@ -1,5 +1,6 @@
 package view;
 
+import elements.House;
 import permissions.Permission;
 
 import javax.swing.*;
@@ -155,6 +156,10 @@ public class Dashboard extends JFrame {
             editor.location.addItem(location);
         }
         editor.location.setEnabled(true);
+    }
+
+    public void drawHouse(House house) {
+        layout.setHouse(house);
     }
 
 }
