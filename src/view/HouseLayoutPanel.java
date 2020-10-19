@@ -22,6 +22,7 @@ public class HouseLayoutPanel extends JPanel {
 
     public void setHouse(House house) {
         this.house = house;
+        repaint();
     }
 
     @Override
