@@ -114,7 +114,7 @@ public class Dashboard extends JFrame {
     /**
      * Sets the {@code temperature} level displayed to the user to that specified.
      *
-     * @param temperature the specified permission level
+     * @param temperature the specified temperature
      * @throws NullPointerException if the specified {@code temperature} is {@code null}
      */
     public void setTemperature(String temperature) {
@@ -124,7 +124,7 @@ public class Dashboard extends JFrame {
     /**
      * Sets the {@code date} level displayed to the user to that specified.
      *
-     * @param date the specified permission level
+     * @param date the specified date
      * @throws NullPointerException if the specified {@code date} is {@code null}
      */
     public void setDate(Date date) {
