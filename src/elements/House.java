@@ -29,6 +29,15 @@ public class House implements Iterable<Room> {
 
     }
 
+    // TODO comment and organize these
+    public Window[] getWindowsOf(final String location) {
+        return validateLocation(location).room.getWindows();
+    }
+
+    public Room getRoom(final String location) {
+        return validateLocation(location).room;
+    }
+
     /**
      * The maximum number of {@code Room}s that another {@code Room} may be adjacent to.
      */
