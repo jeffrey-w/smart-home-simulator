@@ -1,7 +1,7 @@
 package elements;
 /**
- * The {@code ProximitySensor} class represents an ProximitySensor object. This sensor is able to inform
- * the user if their is anything that is within the sensors proximity with a range of x meters.
+ * The {@code ProximitySensor} class represents a ProximitySensor object. This sensor is able to inform
+ * the user if there is anything that is within the sensor's proximity with a range of x meters.
  *
  * @author Philippe Vo
  */
@@ -9,9 +9,6 @@ public class ProximitySensor extends Sensor {
 
     private boolean objectDetected = false;
     private boolean obstacleFlag = false;
-
-    public ProximitySensor() {
-    }
 
     /**
      * Detects if there are any obstacles
@@ -27,8 +24,9 @@ public class ProximitySensor extends Sensor {
     }
 
     /**
-     * Allows to set if there is an obstacle in front of sensor
-     * @param obstacle
+     * Sets the reading this {@code ProximitySensor} shall return when queried.
+     *
+     * @param obstacle if {@code true} this {@code ProximitySensor}
      */
     public boolean setObstacle(boolean obstacle) {
         if(obstacle){
