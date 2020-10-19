@@ -29,20 +29,12 @@ public class House implements Iterable<Room> {
 
     }
 
-    // TODO comment and organize these
-    public Window[] getWindowsOf(final String location) {
-        return validateLocation(location).room.getWindows();
-    }
-
-    public Room getRoom(final String location) {
-        return validateLocation(location).room;
-    }
-
     /**
      * The maximum number of {@code Room}s that another {@code Room} may be adjacent to.
      */
     public static final int MAX_CONNECTIONS = 4;
 
+    private String root;
     private final Map<String, Node> rooms;
     private final Map<String, String> people;
 
@@ -116,6 +108,7 @@ public class House implements Iterable<Room> {
 
     /**
      * Removes the person with the specified {@code name} from this {@code House}.
+     *
      * @param name the specified name
      * @throws NoSuchElementException if there is no person by the specified {@code name} in this {@code House}
      */
@@ -133,7 +126,28 @@ public class House implements Iterable<Room> {
     }
 
     /**
+     * Provides the {@code Room} in this {@code House} at the specified {@code location}.
      *
+     * @param location the specified location
+     * @return the {@code Room} at the specified {@code location}
+     * @throws NoSuchElementException if the specified {@code location} does not exist in this {@code House}
+     */
+    public Room getRoom(String location) {
+        return validateLocation(location).room;
+    }
+
+    /**
+     * Provides the collection of {@code Windows} in the {@code Room} at the specified {@code location}.
+     *
+     * @param location the specified location
+     * @return the {@code Windows} at the specified {@code location}
+     * @throws NoSuchElementException if the specified {@code location} does not exist in this {@code House}
+     */
+    public Window[] getWindowsOf(String location) {
+        return validateLocation(location).room.getWindows();
+    }
+
+    /**
      * @return the number of {@code Room}s in this house
      */
     public int size() {
@@ -141,22 +155,41 @@ public class House implements Iterable<Room> {
     }
 
     /**
-     * Applies the specified {@code action} to each {@code Room} in this {@code House}.
+     * Sets the {@code root} location of this {@code House} to that specified. All subsequent {@link #tour(BiConsumer)
+     * tour}s of this {@code House} will begin from the specified {@code root}
+     *
+     * @param root the specified root
+     * @throws NoSuchElementException if the specified {@code location} does not exist in this {@code House}
+     */
+    public void setRoot(String root) {
+        if (!rooms.containsKey(root)) {
+            throw new NoSuchElementException("That location does not exist.");
+        }
+        this.root = root;
+    }
+
+    /**
+     * Applies the specified {@code action} to each {@code Room} in this {@code House}, starting form the root location
+     * of this {@code House}.
      *
      * @param action the specified action to perform
+     * @throws IllegalStateException if the root of this {@code House} has not been set
      * @throws NullPointerException if the specified {@code action} is {@code null}
      */
-    public void tour(String location, BiConsumer<String, Room> action) {
+    public void tour(BiConsumer<String, Room> action) {
         /*
          * This is a depth-first search. It will only find nodes connected to the source. Maintainers should consider
          * implementing a search routine that finds unconnected nodes if having detached rooms becomes desirable in the
          * future.
          */
+        if (root == null) {
+            throw new IllegalStateException("You must specify a root location.");
+        }
         Deque<String> stack = new ArrayDeque<>();
         for (Node node : rooms.values()) {
             node.visited = false;
         }
-        stack.push(location);
+        stack.push(root);
         while (!stack.isEmpty()) {
             String current = stack.pop();
             Node node = validateLocation(current);
