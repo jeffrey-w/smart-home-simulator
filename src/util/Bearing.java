@@ -2,6 +2,8 @@ package util;
 
 /**
  * The {@code Bearing} enum represents the direction an object can be facing.
+ *
+ * @author Jeff Wilgus
  */
 public enum Bearing {
 
