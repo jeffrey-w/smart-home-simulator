@@ -5,8 +5,6 @@ import parameters.Parameters;
 import permissions.Permission;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -52,19 +50,16 @@ public class ProfileViewer extends JFrame implements ActionListener {
         edit.setEnabled(false);
         remove.setEnabled(false);
         // Switch edit and remove button behavior based on whether or not any profile is selected.
-        list.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    if (list.getSelectedIndex() == -1) {
-                        //No selection.
-                        edit.setEnabled(false);
-                        remove.setEnabled(false);
-                    } else {
-                        //Selection.
-                        edit.setEnabled(true);
-                        remove.setEnabled(true);
-                    }
+        list.addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                if (list.getSelectedIndex() == -1) {
+                    // No selection.
+                    edit.setEnabled(false);
+                    remove.setEnabled(false);
+                } else {
+                    // Selection.
+                    edit.setEnabled(true);
+                    remove.setEnabled(true);
                 }
             }
         });
@@ -81,6 +76,11 @@ public class ProfileViewer extends JFrame implements ActionListener {
             case "Edit": {
                 SwingUtilities.invokeLater(() -> {
                     ProfileEditor editor = new ProfileEditor(list.getSelectedValue(), house != null);
+                    if (house != null) {
+                        for (String location : house.getLocations()) {
+                            editor.location.addItem(location);
+                        }
+                    }
                     editor.pack();
                     editor.setLocationRelativeTo(this);
                     editor.setVisible(true);
@@ -113,8 +113,8 @@ public class ProfileViewer extends JFrame implements ActionListener {
         public void actionPerformed(final ActionEvent e) {
             //extract input from user
             String role = editor.role.getText();
-            Permission permission = (Permission) editor.permission.getSelectedItem();
-            String location = editor.location.isEnabled() ? (String) editor.location.getSelectedItem() : null;
+            Permission permission = (Permission)editor.permission.getSelectedItem();
+            String location = editor.location.isEnabled() ? (String)editor.location.getSelectedItem() : null;
             //TODO validate input
             //add as a profile
             parameters.addActor(role, permission); // TODO exception handling
