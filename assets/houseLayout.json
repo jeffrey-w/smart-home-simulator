@@ -1,5 +1,5 @@
 {
-  "name": "simulation1",
+  "root": "living_room",
   "rooms": [
     {
       "id": "living_room",
