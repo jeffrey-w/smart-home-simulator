@@ -5,8 +5,6 @@ import elements.House;
 import javax.swing.*;
 import java.awt.*;
 
-import static elements.House.MAX_CONNECTIONS;
-
 public class HouseLayoutPanel extends JPanel {
 
     private static final int ROOM_DIM = 100;
@@ -33,9 +31,9 @@ public class HouseLayoutPanel extends JPanel {
             y = getHeight() >>> 1;
             g.drawString("No house loaded.", x, y);
         } else {
-            x = getWidth() >>> house.size() - MAX_CONNECTIONS + 1;
-            y = getHeight() >>> house.size() - MAX_CONNECTIONS + 1;
-            house.tour("Front", (location, room) -> { // TODO parameterize starting room
+            x = getWidth() >>> house.size() - 1;
+            y = getHeight() >>> house.size() - 1;
+            house.tour("living_room", (location, room) -> { // TODO parameterize starting room
                 g.drawRect(x, y, ROOM_DIM, ROOM_DIM);
                 g.drawString(location, x + (ROOM_DIM - g.getFontMetrics().stringWidth(location) >>> 1),
                         y + (ROOM_DIM >>> 1));
