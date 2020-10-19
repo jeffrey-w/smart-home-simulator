@@ -1,4 +1,4 @@
-package src.elements;
+package elements;
 
 /**
  * The {@code Window} class represents the Window object, which the user can interact with.

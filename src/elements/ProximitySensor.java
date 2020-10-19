@@ -1,4 +1,4 @@
-package src.elements;
+package elements;
 /**
  * The {@code ProximitySensor} class represents an ProximitySensor object. This sensor is able to inform
  * the user if their is anything that is within the sensors proximity with a range of x meters.

@@ -1,4 +1,4 @@
-package src.elements;
+package elements;
 
 public class Sensor {
 }
