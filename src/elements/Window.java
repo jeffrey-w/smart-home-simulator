@@ -1,4 +1,4 @@
-package elements;
+package src.elements;
 
 /**
  * The {@code Window} class represents the Window object, which the user can interact with.
@@ -16,6 +16,7 @@ public class Window {
 
     private boolean located;
     private boolean isObstructed;
+    private ProximitySensor proximitySensor = null;
 
     /**
      * Constructs a Window with the given location and obstructed state.
@@ -28,7 +29,10 @@ public class Window {
     public Window(boolean loc, boolean obstr) {
         this.located = loc;
         this.isObstructed = obstr;
+        this.proximitySensor = new ProximitySensor(); // FIXME : Not sure if we should just create a sensor here out of "thin air"
     }
+    // FIXME : Not sure if we should pass "obstr" into the contructor of the Window Class.
+    // FIXME : [linked with] -> Not sure if we should have "obstructed" data in the "house JSON" file, it is only used to draw the house.
 
     /**
      * This setter allows the user to obstruct a window.
@@ -38,16 +42,21 @@ public class Window {
     public void setObstructed(boolean obstr){
         this.isObstructed = obstr;
     }
+    // FIXME : Not sure if we want to set obstructed here, should come from a sensor that detects if there are any obstacles.
 
     /**
      * Outputs the state of the window to the user.
      */
-    void isObstructedString() {
-        if(this.isObstructed) {
+    public boolean isBlocked() {
+        boolean blockState = this.proximitySensor.detect();
+
+        if(blockState) {
             System.out.println("This window is obstructed.");
         }
         else {
             System.out.println("This window is not obstructed.");
         }
+        return blockState;
     }
+    // FIXME : Modified how we detect the window block status by using a sensor since  this would make more sense with the theme of a "Smart Home"
 }
