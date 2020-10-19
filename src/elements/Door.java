@@ -59,4 +59,22 @@ public class Door {
             System.out.println("This door is not locked.");
         }
     }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof Door)) {
+            return false;
+        }
+        Door door = (Door)obj;
+        return located == door.located && isLocked == door.isLocked;
+    }
+
+    @Override
+    public int hashCode() {
+        int prime = 31;
+        int result = 1;
+        result = prime * result + Boolean.hashCode(located);
+        result = prime * result + Boolean.hashCode(isLocked);
+        return result;
+    }
 }

@@ -2,6 +2,7 @@ package elements;
 
 import permissions.Permission;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -43,6 +44,7 @@ public class Room {
 
     /**
      * Setter to change the temperature of the room
+     *
      * @param temp The new temperature
      */
     public void setTemperature(int temp) {
@@ -51,6 +53,7 @@ public class Room {
 
     /**
      * Getter to access the room temperature
+     *
      * @return The current room temperature
      */
     public int getTemperature() {
@@ -59,6 +62,7 @@ public class Room {
 
     /**
      * Getter that returns the name of the room
+     *
      * @return The room name
      */
     public String getLocation() {
@@ -67,6 +71,7 @@ public class Room {
 
     /**
      * Getter that returns the doors of a room
+     *
      * @return All doors contained within a room
      */
     public Door[] getDoors() {
@@ -75,6 +80,7 @@ public class Room {
 
     /**
      * Getter that returns the lights in a room
+     *
      * @return All lights contained within a room
      */
     public Light[] getLights() {
@@ -83,6 +89,7 @@ public class Room {
 
     /**
      * Getting that returns the windows of a room
+     *
      * @return All windows contained within a room
      */
     public Window[] getWindows() {
@@ -107,5 +114,28 @@ public class Room {
     public void removePerson(final String name) {
         // TODO: Do we need to consider people with the same name located in the same room?
         people.remove(name);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof Room)) {
+            return false;
+        }
+        Room room = (Room)obj;
+        return name.equals(room.name) && temperature == room.temperature && Arrays.equals(doors, room.doors) && Arrays
+                .equals(lights, room.lights) && Arrays.equals(windows, room.windows) && people.equals(room.people);
+    }
+
+    @Override
+    public int hashCode() {
+        int prime = 31;
+        int result = 1;
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + temperature;
+        result = prime * result + Arrays.hashCode(doors);
+        result = prime * result + Arrays.hashCode(lights);
+        result = prime * result + Arrays.hashCode(windows);
+        result = prime * result + people.hashCode();
+        return result;
     }
 }

@@ -34,6 +34,19 @@ public abstract class AbstractPermission implements Permission {
     public abstract Set<Action> allowed();
 
     @Override
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof  AbstractPermission)) {
+            return false;
+        }
+        return allowed().equals(((AbstractPermission)obj).allowed());
+    }
+
+    @Override
+    public int hashCode() {
+        return allowed().hashCode();
+    }
+
+    @Override
     public String toString() {
         String name = getClass().getSimpleName();
         return name.substring(0, name.indexOf("Permission"));

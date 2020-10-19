@@ -107,6 +107,7 @@ public class House implements Iterable<Room> {
 
     /**
      * Removes the person with the specified {@code name} from this {@code House}.
+     *
      * @param name the specified name
      * @throws NoSuchElementException if there is no person by the specified {@code name} in this {@code House}
      */
@@ -184,6 +185,24 @@ public class House implements Iterable<Room> {
             }
 
         };
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof House)) {
+            return false;
+        }
+        House h = (House)obj;
+        return rooms.equals(h.rooms) && people.equals(h.people);
+    }
+
+    @Override
+    public int hashCode() {
+        int prime = 31;
+        int result = 1;
+        result = prime * result + rooms.hashCode();
+        result = prime * result + people.hashCode();
+        return result;
     }
 
 }
