@@ -59,4 +59,11 @@ public class Window {
         return blockState;
     }
     // FIXME : Modified how we detect the window block status by using a sensor since  this would make more sense with the theme of a "Smart Home"
+
+    /**
+     * Allows to access the sensor of the window
+     */
+    public ProximitySensor getProximitySensor() {
+        return this.proximitySensor;
+    }
 }
