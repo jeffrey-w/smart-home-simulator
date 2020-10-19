@@ -122,7 +122,7 @@ public class Room {
             return false;
         }
         Room room = (Room)obj;
-        return name.equals(room.name) && temperature == room.temperature && Arrays.equals(doors, room.doors) && Arrays
+        return name.equals(room.name) && (temperature == room.temperature) && Arrays.equals(doors, room.doors) && Arrays
                 .equals(lights, room.lights) && Arrays.equals(windows, room.windows) && people.equals(room.people);
     }
 

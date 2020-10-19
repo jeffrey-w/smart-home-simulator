@@ -45,4 +45,22 @@ public class Light {
     void setOnState(boolean state) {
         this.isOn = state;
     }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof Light)) {
+            return false;
+        }
+        Light light = (Light) obj;
+        return isPresent == light.isPresent && isOn == light.isOn;
+    }
+
+    @Override
+    public int hashCode() {
+        int prime = 31;
+        int result = 1;
+        result = prime * result + Boolean.hashCode(isPresent);
+        result = prime * result + Boolean.hashCode(isOn);
+        return result;
+    }
 }

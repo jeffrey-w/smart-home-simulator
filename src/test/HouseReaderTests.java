@@ -55,7 +55,11 @@ public class HouseReaderTests {
         expectedHouse.addRoom(livingRoom, "living_room");
         expectedHouse.addRoom(kitchen, "kitchen");
 
+        System.out.println("expected: " + expectedHouse.getLocations());
+        System.out.println("actual: " + houseReader.readHouse().getLocations());
+        System.out.println((houseReader.readHouse()).equals(expectedHouse));
+
         assertNotNull(houseReader.readHouse());
-        assertEquals(expectedHouse, houseReader.readHouse());
+        assertTrue(houseReader.readHouse().equals(expectedHouse));
     }
 }

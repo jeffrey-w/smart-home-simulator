@@ -58,4 +58,22 @@ public class Window {
             System.out.println("This window is not obstructed.");
         }
     }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof Window)) {
+            return false;
+        }
+        Window window = (Window) obj;
+        return located == window.located && isObstructed == window.isObstructed;
+    }
+
+    @Override
+    public int hashCode() {
+        int prime = 31;
+        int result = 1;
+        result = prime * result + Boolean.hashCode(located);
+        result = prime * result + Boolean.hashCode(isObstructed);
+        return result;
+    }
 }
