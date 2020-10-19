@@ -55,7 +55,7 @@ public class Controller {
             chooser.setFileFilter(JSON_FILTER);
             if (chooser.showOpenDialog(dashboard) == JFileChooser.APPROVE_OPTION) {
                 HouseReader reader = new HouseReader(chooser.getSelectedFile());
-                house = reader.ReadHouse();
+                house = reader.readHouse();
                 dashboard.activateLocations(house.getLocations());
                 dashboard.drawHouse(house);
             }
