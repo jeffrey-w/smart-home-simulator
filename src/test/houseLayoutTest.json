@@ -1,0 +1,35 @@
+{
+  "name": "test",
+  "rooms": [
+    {
+      "id": "living_room",
+      "doors": {
+        "location": [false, true, false, true],
+        "locked": [false, false, false, false]
+      },
+      "lights": {
+        "present": [true, true],
+        "on": [true, true]
+      },
+      "windows": {
+        "location": [true, false, false, true],
+        "obstructed": [false, false, false, false]
+      }
+    },
+    {
+      "id": "kitchen",
+      "doors": {
+        "location": [false, false, false, true],
+        "locked": [false, false, false, false]
+      },
+      "lights": {
+        "present": [true, true, true],
+        "on": [true, false, true]
+      },
+      "windows": {
+        "location": [true, true, false, false],
+        "obstructed": [false, true, false, false]
+      }
+    }
+  ]
+}
