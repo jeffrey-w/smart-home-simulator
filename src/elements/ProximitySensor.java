@@ -26,7 +26,7 @@ public class ProximitySensor extends Sensor {
     /**
      * Sets the reading this {@code ProximitySensor} shall return when queried.
      *
-     * @param obstacle if {@code true} this {@code ProximitySensor}
+     * @param obstacle if {@code true} this {@code ProximitySensor} will indicated an obstruction
      */
     public boolean setObstacle(boolean obstacle) {
         if(obstacle){
