@@ -15,6 +15,10 @@ public class Room extends Place{
 
     private final int DEFAULT_ROOM_TEMPERATURE = 25;
 
+    public void setObstructed(final int selection, boolean obstructed) {
+        windows[selection].setObstructed(obstructed);
+    }
+
     /**
      * Constructs a Room with the given name, doors, lights, and windows
      *
