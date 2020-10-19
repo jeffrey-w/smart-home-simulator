@@ -104,7 +104,7 @@ public class Dashboard extends JFrame {
     /**
      * Sets the {@code location} level displayed to the user to that specified.
      *
-     * @param location the specified permission level
+     * @param location the specified location
      * @throws NullPointerException if the specified {@code location} is {@code null}
      */
     public void setLocation(String location) { // TODO rename this
