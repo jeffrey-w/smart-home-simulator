@@ -5,7 +5,7 @@ import elements.House;
 import javax.swing.*;
 import java.awt.*;
 
-public class HouseLayoutPanel extends JPanel {
+public class HouseLayoutPanel extends JPanel { // TODO move this logic to Controller
 
     private static final int ROOM_DIM = 100;
     private static final String NULL_HOUSE_MESSAGE = "No house loaded.";
@@ -33,7 +33,7 @@ public class HouseLayoutPanel extends JPanel {
         } else {
             x = getWidth() >>> house.size() - 1;
             y = getHeight() >>> house.size() - 1;
-            house.tour("living_room", (location, room) -> { // TODO parameterize starting room
+            house.tour((location, room) -> {
                 g.drawRect(x, y, ROOM_DIM, ROOM_DIM);
                 g.drawString(location, x + (ROOM_DIM - g.getFontMetrics().stringWidth(location) >>> 1),
                         y + (ROOM_DIM >>> 1));

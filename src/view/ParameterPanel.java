@@ -23,7 +23,7 @@ public class ParameterPanel extends JPanel {
     JLabel time = new JLabel();
 
     /**
-     * Contructs a parameter panel with an avatar and editable parameters
+     * Constructs a parameter panel with an avatar and editable parameters
      */
     public ParameterPanel() {
         // Set panel display behavior.
@@ -48,7 +48,9 @@ public class ParameterPanel extends JPanel {
 
     /**
      * Setter to modify the permission of a user
+     *
      * @param permission The new assigned user permission
+     * @throws NullPointerException if the specified {@code permission} is {@code null}
      */
     void setPermission(String permission) {
         this.permission.setText("Permission: " + Objects.requireNonNull(permission));
@@ -56,7 +58,9 @@ public class ParameterPanel extends JPanel {
 
     /**
      * Setter to modify the location of a user
+     *
      * @param location The user's new position
+     * @throws NullPointerException if the specified {@code location} is {@code null}
      */
     void setLocation(String location) { // TODO rename this
         this.location.setText("Location: " + Objects.requireNonNull(location));
@@ -64,7 +68,9 @@ public class ParameterPanel extends JPanel {
 
     /**
      * Setter that allows the user to change the temperature
+     *
      * @param temperature The new temperature
+     * @throws NullPointerException if the specified {@code temperature} is {@code null}
      */
     void setTemperature(String temperature) {
         this.temperature.setText("Temperature: " + Objects.requireNonNull(temperature) + " C");
@@ -72,7 +78,9 @@ public class ParameterPanel extends JPanel {
 
     /**
      * Setter that allows the user to change the simulation date
+     *
      * @param date The new date
+     * @throws NullPointerException if the specified {@code date} is {@code null}
      */
     void setDate(String date) {
         this.date.setText("Date: " + Objects.requireNonNull(date));

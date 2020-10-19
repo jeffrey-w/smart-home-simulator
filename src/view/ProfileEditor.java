@@ -6,6 +6,12 @@ import view.viewtils.SpringUtilities;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * The {@code ProfileEditor} class provides the UI elements to edit a specific profile ({@code Permission} level, and
+ * location) that has been added to a simulation.
+ *
+ * @author Jeff Wilgus
+ */
 public class ProfileEditor extends JFrame {
 
     private static final int DIM = 0x100;
@@ -18,6 +24,12 @@ public class ProfileEditor extends JFrame {
     JComboBox<String> location = new JComboBox<>();
     JButton ok = new JButton("Ok");
 
+    /**
+     * Constructs a new {@code ProfileEditor} object for the specified {@code role}. The location of this profile is
+     * editable only if specified.
+     * @param role the name of the profile being edited; if {@code null}, a new profile will be added
+     * @param enableLocation if {@code true}, this profile's location may be edited
+     */
     public ProfileEditor(String role, boolean enableLocation) {
         // Set window title.
         super("Edit Profile");

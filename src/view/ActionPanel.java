@@ -2,17 +2,28 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseListener;
 import java.util.Map;
 
+/**
+ * The {@code ActionPanel} class provides the UI elements to choose a type of item and the action to perform on it
+ * during a simulation.
+ *
+ * @author Jeff Wilgus
+ */
 public class ActionPanel extends JPanel {
 
-    Map<String, String[]> ACTIONS =
+    static MouseListener WINDOW_ACTION_LISTENER; // TODO make this a member?
+    private static final Map<String, String[]> ACTIONS =
             Map.of("Windows", new String[] {"Open/Close", "Obstruct"}, "Thermostat", new String[] {"Set Temperature"});
 
     DefaultListModel<String> actionsModel = new DefaultListModel<>();
     JList<String> items = new JList<>(ACTIONS.keySet().toArray(new String[0]));
     JList<String> actions = new JList<>(actionsModel);
 
+    /**
+     * Constructs a new {@code ActionPanel} object.
+     */
     public ActionPanel() {
         JPanel top = new JPanel(new BorderLayout());
         JPanel bottom = new JPanel(new BorderLayout());
@@ -33,6 +44,12 @@ public class ActionPanel extends JPanel {
                     actionsModel.removeAllElements();
                     for (String action : ACTIONS.get(items.getSelectedValue())) {
                         actionsModel.addElement(action);
+                    }
+                    switch (items.getSelectedValue()) {
+                        case "Windows":
+                            actions.addMouseListener(WINDOW_ACTION_LISTENER);
+                            break;
+                        // TODO other event handlers
                     }
                 }
             }

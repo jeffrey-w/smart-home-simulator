@@ -11,6 +11,12 @@ import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * The {@code ParameterEditor} class provides the UI elements for a user to set the global settings of a simulation
+ * (such as the external temperature and the date) and their own {@code Permission} level and location.
+ *
+ * @author Jeff Wilgus
+ */
 public class ParameterEditor extends JPanel {
 
     private static final int BUTTON_COLUMNS = 2;
@@ -49,6 +55,9 @@ public class ParameterEditor extends JPanel {
     JSpinner temperature = new JSpinner(TEMP_MODEL);
     JSpinner date = new JSpinner(DATE_MODEL);
 
+    /**
+     * Constructs a new {@code ParameterEditor} object.
+     */
     ParameterEditor() {
         // Containers for buttons and fields respectively.
         JPanel buttons = new JPanel(new SpringLayout());

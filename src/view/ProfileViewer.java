@@ -9,7 +9,14 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class ProfileViewer extends JFrame implements ActionListener {
+/**
+ * The {@code ProfileViewer} class provides the UI elements for a user to browse the profiles (names, {@code Permission}
+ * levels, and locations} they have added to a simulation.
+ *
+ * @author Jeff Wilgus
+ * @author Ayman Alshehri
+ */
+public class ProfileViewer extends JFrame implements ActionListener { // TODO move this logic to controller
 
     private static final int DIMENSION = 0x100;
 
@@ -21,6 +28,13 @@ public class ProfileViewer extends JFrame implements ActionListener {
     Parameters parameters;
     House house;
 
+    /**
+     * Constructs a new {@code ProfileViewer} object with the profiles from the specified {@code parameters} and the
+     * locations from the specified {@code house}.
+     *
+     * @param parameters the specified {@code Parameters}
+     * @param house the specified {@code House}
+     */
     public ProfileViewer(Parameters parameters, House house) {
         // Set window title.
         super("Edit Profiles");
