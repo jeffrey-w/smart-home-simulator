@@ -10,17 +10,24 @@ import view.ProfileViewer;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Date;
 
+/**
+ * The {@code Controller} class provides the interface between runtime simulation objects and the UI elements to
+ * manipulate those objects. It serves as the entry point into the program.
+ *
+ * @author Jeff Wilgus
+ */
 public class Controller {
 
     private static final JSONFilter JSON_FILTER = new JSONFilter();
 
+    // This is the entry point into the program
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             try {
@@ -39,6 +46,9 @@ public class Controller {
     private final Parameters parameters;
     private final Dashboard dashboard;
 
+    /**
+     * Constructs a new {@code Controller} object
+     */
     public Controller() {
         parameters = new Parameters();
         dashboard = new Dashboard();
@@ -49,8 +59,13 @@ public class Controller {
         dashboard.addPermissionListener(new PermissionListener());
         dashboard.addTemperatureListener(new TemperatureListener());
         dashboard.addDateListener(new DateListener());
-        dashboard.addWindowListener(new WindowListener());
+        dashboard.addWindowActionListener(new WindowActionListener());
     }
+
+    /*
+     * Below are various event handlers that transform input from the user into data that can be manipulated by the data
+     * model of a simulation
+     */
 
     class LoadHouseListener implements ActionListener {
 
@@ -131,27 +146,30 @@ public class Controller {
 
     }
 
-    public class WindowListener implements ListSelectionListener {
+    public class WindowActionListener extends MouseAdapter {
 
         @Override
-        public void valueChanged(final ListSelectionEvent e) {
-            SwingUtilities.invokeLater(() -> {
-                WindowBlocker blocker = new WindowBlocker(house.getWindowsOf(parameters.getLocation()));
-                blocker.pack();
-                blocker.setLocationRelativeTo(dashboard);
-                blocker.setVisible(true);
-                house.getRoom(parameters.getLocation()).setObstructed(blocker.selection, true); // TODO parameterize obstructed
-            });
+        public void mouseClicked(final MouseEvent e) {
+            if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 2) {
+                SwingUtilities.invokeLater(() -> {
+                    WindowViewer viewer = new WindowViewer(house.getWindowsOf(parameters.getLocation()));
+                    viewer.pack();
+                    viewer.setLocationRelativeTo(dashboard);
+                    viewer.setVisible(true);
+                    house.getRoom(parameters.getLocation())
+                            .setObstructed(viewer.selection, true); // TODO parameterize obstructed
+                });
+            }
         }
 
     }
 
-    static class WindowBlocker extends JFrame {
+    static class WindowViewer extends JFrame {
 
         int selection;
         JList<Window> list;
 
-        WindowBlocker(Window[] windows) {
+        WindowViewer(Window[] windows) {
             super("Obstruct Windows");
             list = new JList<>(windows);
             JButton ok = new JButton("Ok");
@@ -162,7 +180,7 @@ public class Controller {
             add(list);
             add(ok, BorderLayout.SOUTH);
             ok.addActionListener(e -> {
-                selection = list.getSelectedIndex();
+                selection = list.getSelectedValue().getWall().toInt();
                 dispose();
             });
         }
