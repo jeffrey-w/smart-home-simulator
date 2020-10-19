@@ -1,6 +1,7 @@
 import elements.House;
 import parameters.Parameters;
 import permissions.Permission;
+import util.HouseReader;
 import util.JSONFilter;
 import view.Dashboard;
 import view.ProfileViewer;
@@ -8,10 +9,8 @@ import view.ProfileViewer;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.filechooser.FileFilter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.Date;
 
 public class Controller {
@@ -55,8 +54,10 @@ public class Controller {
             JFileChooser chooser = new JFileChooser();
             chooser.setFileFilter(JSON_FILTER);
             if (chooser.showOpenDialog(dashboard) == JFileChooser.APPROVE_OPTION) {
-                // TODO house reader logic
+                HouseReader reader = new HouseReader(chooser.getSelectedFile());
+                house = reader.ReadHouse();
                 dashboard.activateLocations(house.getLocations());
+                dashboard.drawHouse(house);
             }
         }
 
