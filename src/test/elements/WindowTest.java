@@ -13,12 +13,11 @@ class WindowTest {
     void testIsBlocked() {
         Window window = new Window(true, true, Bearing.EAST);
 
-        // window should return that it is blocked
-        window.setObstructed(true);
-        assertEquals(window.isObstructedString(), true);
+        // window should return that it is blocked since it was initialized as obstructed
+        assertEquals(window.isObstructed(), true);
 
-        // window should return that it is blocked
+        // window should return that it is not blocked
         window.setObstructed(false);
-        assertEquals(window.isObstructedString(), false);
+        assertEquals(window.isObstructed(), false);
     }
 }

@@ -38,7 +38,7 @@ public class Window {
     /**
      * Outputs the state of the window to the user.
      */
-    public boolean isObstructedString() {
+    public boolean isObstructed() {
         return isObstructed;
     }
 

@@ -70,7 +70,7 @@ class ParameterTests {
     }
 
     @Test
-    void testSetTemperature() throws Exception {
+    void testSetTemperature() {
         Parameters parameters = new Parameters();
 
         // temperatures
