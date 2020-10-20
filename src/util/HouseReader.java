@@ -8,15 +8,17 @@ import org.json.simple.parser.ParseException;
 
 import javax.swing.*;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
 /**
- * The util.HouseReader class parses through a house layout JSON file. Its function ReadHouse() returns a {@code House}
- * object to be passed to the HouseLayout to be displayed to the user
+ * The util.HouseReader class parses through a house layout JSON file.
+ * Its function ReadHouse() returns a {@code House} object to be passed to the HouseLayout to be displayed to the user.
  *
  * @author Émilie Martin
+ * @author Jeff Wilgus
  */
 public class HouseReader extends JPanel {
 
@@ -25,36 +27,24 @@ public class HouseReader extends JPanel {
     JSONObject layoutFile;
 
     /**
-     * Constructs a {@code util.HouseReader} object, which accepts a fileName as a String. The file refers to the house
-     * layout and assumes it has the right format.
+     * Constructs a {@code util.HouseReader} object, which accepts a {@code File} to read.
+     * The file refers to the house layout and assumes it has the right format.
      *
-     * @param fileName The name of the file to be read.
-     */
-    public HouseReader(String fileName) {
-        try (FileReader reader = new FileReader(fileName)) {
-            layoutFile = (JSONObject)PARSER.parse(reader);
-        } catch (IOException | ParseException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Constructs a {@code util.HouseReader} object, which accepts a {@code File} to read. The file refers to the house
-     * layout and assumes it has the right format.
-     *
-     * @param file The file to be read.
+     * @param file The file to be read
      */
     public HouseReader(File file) {
         try (FileReader reader = new FileReader(file)) {
             layoutFile = (JSONObject)PARSER.parse(reader);
+        } catch (FileNotFoundException fnfe) {
+            System.out.println("The file you are looking for cannot be found.");
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
     }
 
     /**
-     * The ReadHouse() function parses through the given file and creates a {@code House} object. It builds {@code
-     * Window} objects, {@code Light} objects, and {@code Door} objects, that all belong to the {@code Room} object.
+     * The ReadHouse() function parses through the given file and creates a {@code House} object.
+     * It builds {@codeWindow} objects, {@code Light} objects, and {@code Door} objects, that all belong to the {@code Room} object.
      *
      * @return A {@code House} object
      */
@@ -65,8 +55,8 @@ public class HouseReader extends JPanel {
 
         for (Object o : roomsList) {
 
-            JSONObject roomObj = (JSONObject)o;
-            String roomName = (String)roomObj.get("id");
+            JSONObject roomObj = (JSONObject) o;
+            String roomName = (String) roomObj.get("id");
 
             // Parse through doors
             JSONObject doors = (JSONObject)roomObj.get("doors");
@@ -75,6 +65,7 @@ public class HouseReader extends JPanel {
             // Parse through lights
             JSONObject lights = (JSONObject)roomObj.get("lights");
             Light[] roomLights = parseLights(lights);
+
             // Parse through windows
             JSONObject windows = (JSONObject)roomObj.get("windows");
             Window[] roomWindows = parseWindows(windows);
@@ -82,20 +73,19 @@ public class HouseReader extends JPanel {
             house.addRoom(new Room(roomDoors, roomLights, roomWindows), roomName);
 
             // Get connected rooms
-            connections.put(roomName, (JSONArray)roomObj.get("connections"));
-
+            connections.put(roomName, (JSONArray) roomObj.get("connections"));
         }
 
         // Add connections
         for (String room : connections.keySet()) {
             if (connections.get(room) != null) {
                 for (Object connection : connections.get(room)) {
-                    house.addConnection(room, (String)connection);
+                    house.addConnection(room, (String) connection);
                 }
             }
         }
 
-        house.setRoot((String)layoutFile.get("root"));
+        house.setRoot((String) layoutFile.get("root"));
 
         return house;
     }
@@ -103,14 +93,20 @@ public class HouseReader extends JPanel {
     /**
      * This function parses through the house layout, builds and returns a Door[]
      *
-     * @param doorObj The Door object contained within the house layout. Of the following form: { "location":
-     * Boolean[](4), >> each element of the array represents a wall (N-E-S-W) "locked": Boolean[](4) >> each elements
-     * corresponds to the state of a door } The position of the Boolean in either array represents the same door. As in:
-     * { "location": [true, false, false], "locked": [false, false, true] } Wherein the North wall has one unlocked door
-     * and the East wall has one locked door.
+     * @param doorObj The Door object contained within the house layout. Of the following form:
+     *                {
+     *                  "location": Boolean[](4), >> each element of the array represents a wall (N-E-S-W)
+     *                  "locked": Boolean[](4) >> each elements corresponds to the state of a door
+     *                }
+     *                The position of the Boolean in either array represents the same door. As in:
+     *                {
+     *                  "location": [true, false, false],
+     *                  "locked": [false, false, true]
+     *                }
+     *                Wherein the North wall has one unlocked door and the East wall has one locked door.
      * @return A Door[] encompassing all doors found in a room
      */
-    Door[] parseDoors(JSONObject doorObj) {
+    private Door[] parseDoors(JSONObject doorObj) {
         JSONArray doorLocArr = (JSONArray)doorObj.get("location");
         JSONArray doorLockArr = (JSONArray)doorObj.get("locked");
 
@@ -135,13 +131,20 @@ public class HouseReader extends JPanel {
     /**
      * This function parses through the house layout, builds and returns a Light[]
      *
-     * @param lightObj The Light object contained within the house layout. Of the following form: { "location":
-     * Boolean[](), "on": Boolean[]() } The position of the Boolean in either array represents the same light. As in: {
-     * "location": [true, true, true, true, true], "on": [false, false, true, false, true] } Wherein the room contains 5
-     * lights, of which two are turned on.
+     * @param lightObj The Light object contained within the house layout. Of the following form:
+     *                 {
+     *                   "location": Boolean[](),
+     *                   "on": Boolean[]()
+     *                 }
+     *                 The position of the Boolean in either array represents the same light. As in:
+     *                 {
+     *                   "location": [true, true, true, true, true],
+     *                   "on": [false, false, true, false, true]
+     *                 }
+     *                 Wherein the room contains 5 lights, of which two are turned on.
      * @return A Light[] encompassing all lights in a room
      */
-    Light[] parseLights(JSONObject lightObj) {
+    private Light[] parseLights(JSONObject lightObj) {
         JSONArray lightLocArr = (JSONArray)lightObj.get("present");
         JSONArray lightStateArr = (JSONArray)lightObj.get("on");
 
@@ -166,14 +169,20 @@ public class HouseReader extends JPanel {
     /**
      * This function parses through the house layout, builds and returns a Window[]
      *
-     * @param windowObj The Window object contained within the house layout. Of the following form: { "location":
-     * Boolean[](4), >> each element of the array represents a wall (N-E-S-W) "obstructed": Boolean[](4) >> each
-     * elements corresponds to the obstruction of a window } The position of the Boolean in either array represents the
-     * same window. As in: { "location": [true, false, false], "obstructed": [false, false, true] } Wherein the North
-     * wall has one unobstructed window and the East wall has one obstructed window.
+     * @param windowObj The Window object contained within the house layout. Of the following form:
+     *                {
+     *                  "location": Boolean[](4), >> each element of the array represents a wall (N-E-S-W)
+     *                  "obstructed": Boolean[](4) >> each elements corresponds to the obstruction of a window
+     *                }
+     *                The position of the Boolean in either array represents the same window. As in:
+     *                {
+     *                  "location": [true, false, false],
+     *                  "obstructed": [false, false, true]
+     *                }
+     *                Wherein the North wall has one unobstructed window and the East wall has one obstructed window.
      * @return A Window[] encompassing all windows found in a room
      */
-    Window[] parseWindows(JSONObject windowObj) {
+    private Window[] parseWindows(JSONObject windowObj) {
         JSONArray windowLocArr = (JSONArray)windowObj.get("location");
         JSONArray windowObstrArr = (JSONArray)windowObj.get("obstructed");
 

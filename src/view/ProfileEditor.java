@@ -33,16 +33,20 @@ public class ProfileEditor extends JFrame {
     public ProfileEditor(String role, boolean enableLocation) {
         // Set window title.
         super("Edit Profile");
+
         // A container for fields.
         JPanel fields = new JPanel(new SpringLayout());
+
         // Set window display behavior.
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(DIM, DIM));
         setResizable(false);
+
         // Add fields and ok button to window.
         add(fields);
         add(ok, BorderLayout.SOUTH);
+
         // Add fields to field container.
         fields.add(ParameterEditor.labelFactory("Role"));
         fields.add(this.role);
@@ -50,13 +54,16 @@ public class ProfileEditor extends JFrame {
         fields.add(permission);
         fields.add(ParameterEditor.labelFactory("Location"));
         fields.add(location);
+
         // Set field display behavior.
         SpringUtilities.makeCompactGrid(fields, ROWS, COLUMNS, 1, 1, 1, Y_PADDING);
+
         // A role is being edited, set the role name and disable changing it.
         if (role != null) {
             this.role.setText(role);
             this.role.setEnabled(false);
         }
+
         // Set whether or not locations may be edited.
         location.setEnabled(enableLocation);
     }

@@ -15,7 +15,7 @@ import java.awt.event.ActionListener;
  * levels, and locations} they have added to a simulation.
  *
  * @author Jeff Wilgus
- * @author Ayman Alshehri
+ * @author Ayman Shehri
  */
 public class ProfileViewer extends JFrame implements ActionListener { // TODO move this logic to controller
 
@@ -39,31 +39,38 @@ public class ProfileViewer extends JFrame implements ActionListener { // TODO mo
     public ProfileViewer(Parameters parameters, House house) {
         // Set window title.
         super("Edit Profiles");
+
         // Containers for profile list and buttons.
         JScrollPane scrollPane = new JScrollPane(list);
         JPanel buttons = new JPanel();
+
         // Set window display behavior.
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(DIMENSION, DIMENSION));
         setResizable(false);
+
         // Add top-level containers to window.
         add(scrollPane);
         add(buttons, BorderLayout.SOUTH);
+
         // Populate profile list.
         for (String actor : parameters.getActors()) {
             profiles.addElement(actor);
         }
+
         // Add buttons to panel
         buttons.add(add);
         buttons.add(edit);
         buttons.add(remove);
+
         // Register handlers for buttons.
         add.addActionListener(this);
         edit.addActionListener(this);
         remove.addActionListener(this);
         edit.setEnabled(false);
         remove.setEnabled(false);
+
         // Switch edit and remove button behavior based on whether or not any profile is selected.
         list.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
@@ -78,6 +85,7 @@ public class ProfileViewer extends JFrame implements ActionListener { // TODO mo
                 }
             }
         });
+
         // Keep track of model data.
         this.parameters = parameters;
         this.house = house;
