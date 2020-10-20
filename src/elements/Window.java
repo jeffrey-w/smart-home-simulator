@@ -13,12 +13,20 @@ public class Window {
     /**
      * If not provided by the user, the system uses these default values.
      */
-    private final boolean DEFAULT_LOCATION = true;
-    private final boolean DEFAULT_OBSTRUCTION = false;
+    private final boolean DEFAULT_WINDOW_LOCATION = true;
+    private final boolean DEFAULT_WINDOW_OBSTRUCTION = false;
 
     private boolean located;
     private boolean isObstructed;
     private Bearing wall;
+
+    /**
+     * Contructs a window with the default location and obstruction state.
+     */
+    public Window() {
+        this.located = DEFAULT_WINDOW_LOCATION;
+        this.isObstructed = DEFAULT_WINDOW_OBSTRUCTION;
+    }
 
     /**
      * Constructs a Window with the given location, obstructed state, and wall.
@@ -64,4 +72,21 @@ public class Window {
         return wall.toString();
     }
 
+    @Override
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof Window)) {
+            return false;
+        }
+        Window window = (Window) obj;
+        return located == window.located && isObstructed == window.isObstructed;
+    }
+
+    @Override
+    public int hashCode() {
+        int prime = 31;
+        int result = 1;
+        result = prime * result + Boolean.hashCode(located);
+        result = prime * result + Boolean.hashCode(isObstructed);
+        return result;
+    }
 }

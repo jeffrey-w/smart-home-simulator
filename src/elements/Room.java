@@ -1,5 +1,7 @@
 package elements;
 
+import java.util.Arrays;
+
 /**
  * A {@code Room} is comprised of many house elements, such as {@code Door}s, {@code Light}s, {@code Window}s.
  *
@@ -81,6 +83,26 @@ public class Room extends Place {
         } catch (NullPointerException e) {
             throw new IllegalArgumentException("There is no window on that wall");
         }
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof Room)) {
+            return false;
+        }
+        Room room = (Room)obj;
+        return (temperature == room.temperature) && Arrays.equals(doors, room.doors) && Arrays.equals(lights, room.lights) && Arrays.equals(windows, room.windows);
+    }
+
+    @Override
+    public int hashCode() {
+        int prime = 31;
+        int result = 1;
+        result = prime * result + temperature;
+        result = prime * result + Arrays.hashCode(doors);
+        result = prime * result + Arrays.hashCode(lights);
+        result = prime * result + Arrays.hashCode(windows);
+        return result;
     }
 
 }

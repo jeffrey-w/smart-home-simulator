@@ -27,6 +27,14 @@ public class House implements Iterable<Room> {
             this.adjacents = new HashSet<>();
         }
 
+        @Override
+        public boolean equals(final Object obj) {
+            if (! (obj instanceof Node)) {
+                return false;
+            }
+            Node node = (Node) obj;
+            return room.equals(node.room);
+        }
     }
 
     /**
@@ -234,6 +242,24 @@ public class House implements Iterable<Room> {
             }
 
         };
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof House)) {
+            return false;
+        }
+        House h = (House)obj;
+        return rooms.equals(h.rooms) && people.equals(h.people);
+    }
+
+    @Override
+    public int hashCode() {
+        int prime = 31;
+        int result = 1;
+        result = prime * result + rooms.hashCode();
+        result = prime * result + people.hashCode();
+        return result;
     }
 
 }

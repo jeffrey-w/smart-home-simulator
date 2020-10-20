@@ -15,10 +15,7 @@
         "location": [false, false, false, false],
         "obstructed": [false, false, false, false]
       },
-      "connections": [
-        "kitchen",
-        "bedroom"
-      ]
+      "connections": ["kitchen", "bedroom"]
     },
     {
       "id": "kitchen",

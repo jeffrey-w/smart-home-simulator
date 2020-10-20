@@ -3,6 +3,32 @@
 This project relates to building a smart home simulator.
 The simulator allows logged in users to interact with a house layout and interact with the functionalities of the simulator.
 
+| Team member      | Github username                                     |
+|------------------|-----------------------------------------------------|
+| Jeff Wilgus      | [@jeffrey-w](https://github.com/jeffrey-w)          |
+| Émilie Martin    | [@emilie-martin](https://github.com/emilie-martin)  |
+| Philippe Vo      | [@philippeVoNam](https://github.com/philippeVoNam)  |
+| Ayman Shehri     | [@AymanShe](https://github.com/AymanShe)            |
+
+---
+
+## Setting up the project
+#### json-simple
+The project makes use of the external library [json-simple](https://github.com/fangyidong/json-simple).
+All that is required to run the project is to download the json-simple-1.1.jar found [here](http://www.java2s.com/Code/Jar/j/Downloadjsonsimple11jar.htm).
+  
+Then, simply navigate to `Program Files > Java > your JDK folder > bin` and paste the downloaded jar file.
+The project should then run seamlessly.
+
+For more information on the json-simple library, take a look at the official json-simple [documentation](https://code.google.com/archive/p/json-simple/).
+
+#### JUnit
+This project uses [JUnit](https://junit.org/junit5/) as a testing framework for unit tests. 
+
+> More info to be added
+
+---
+
 ## Components
 #### Parameters
 The user running the simulation can change a multitude of parameters.
@@ -49,10 +75,3 @@ The user running the simulation can modify the temperature of a heating zone and
 #### House
 A house is a collection of rooms. Its layout is to be displayed to the user through the dashboard.
 The user running the simulation will be able to see their changes reflected on the dashboard display.
-
-| Team member      | Github username                                     |
-|------------------|-----------------------------------------------------|
-| Jeff Wilgus      | [@jeffrey-w](https://github.com/jeffrey-w)          |
-| Émilie Martin    | [@emilie-martin](https://github.com/emilie-martin)  |
-| Philippe Vo      | [@philippeVoNam](https://github.com/philippeVoNam)  |
-| Ayman Shehri     | [@AymanShe](https://github.com/AymanShe)            |

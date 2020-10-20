@@ -3,6 +3,7 @@ package view;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseListener;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -14,8 +15,12 @@ import java.util.Map;
 public class ActionPanel extends JPanel {
 
     static MouseListener WINDOW_ACTION_LISTENER; // TODO make this a member?
-    private static final Map<String, String[]> ACTIONS =
-            Map.of("Windows", new String[] {"Open/Close", "Obstruct"}, "Thermostat", new String[] {"Set Temperature"});
+    private static final Map<String, String[]> ACTIONS = new HashMap<>();
+
+    static {
+        ACTIONS.put("Windows", new String[] {"Open/Close", "Obstruct"});
+        ACTIONS.put("Thermostat", new String[] {"Set Temperature"});
+    }
 
     DefaultListModel<String> actionsModel = new DefaultListModel<>();
     JList<String> items = new JList<>(ACTIONS.keySet().toArray(new String[0]));

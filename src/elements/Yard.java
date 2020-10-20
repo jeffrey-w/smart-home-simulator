@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * @author Ayman Shehri
  */
 public class Yard extends Place{
-    //singleton object
+    // Singleton object
     private static Yard yard = null;
 
     /**
