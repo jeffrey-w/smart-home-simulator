@@ -32,7 +32,7 @@ public class Window {
      *         Window array of length 4 to signify each wall (N-E-S-W)
      * @param obstr This boolean refers to the state of the window, be it obstructed or not. If the boolean is
      *         true, then it is obstructed. If it is false, it is not obstructed.
-     * @param wall the wall that this window is on
+     * @param wall the {@code Wall} that this window is on
      */
     public Window(boolean loc, boolean obstr, Wall wall) {
         this.located = loc;

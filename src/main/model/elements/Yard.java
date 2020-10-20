@@ -12,7 +12,7 @@ public class Yard extends Place {
     private static Yard yard = null;
 
     /**
-     * Get the yard of a house
+     * Get the {@code Yard} of a {@code House}
      *
      * @return the Yard object
      */
