@@ -15,7 +15,7 @@ import java.util.*;
 
 /**
  * The main.util.HouseReader class parses through a house layout JSON file. Its function {@link #readHouse()} returns a
- * {@code House} object to be passed to the HouseLayout to be displayed to the user.
+ * {@code House} object to be displayed to the user.
  *
  * @author Émilie Martin
  * @author Jeff Wilgus
@@ -43,9 +43,8 @@ public class HouseReader extends JPanel {
     }
 
     /**
-     * The ReadHouse() function parses through the given file and creates a {@code House} object. It builds
-     * {@code Window} objects, {@code Light} objects, and {@code Door} objects, that all belong to the {@code Room}
-     * object.
+     * The redHouse() function parses through the given file and creates a {@code House} object. It builds {@code
+     * Window} objects, {@code Light} objects, and {@code Door} objects, that all belong to the {@code Room} object.
      *
      * @return A {@code House} object
      */
@@ -94,11 +93,17 @@ public class HouseReader extends JPanel {
     /**
      * This function parses through the house layout, builds and returns a Door[]
      *
-     * @param doorObj The Door object contained within the house layout. Of the following form: { "location":
-     *         Boolean[](4), >> each element of the array represents a wall (N-E-S-W) "locked": Boolean[](4) >> each
-     *         main.model.elements corresponds to the state of a door } The position of the Boolean in either array
-     *         represents the same door. As in: { "location": [true, false, false], "locked": [false, false, true] }
-     *         Wherein the North wall has one unlocked door and the East wall has one locked door.
+     * @param doorObj The Door object contained within the house layout. Of the following form:
+     *                {
+     *                  "location": Boolean[](4), >> each element of the array represents a wall (N-E-S-W)
+     *                  "locked": Boolean[](4) >> each elements corresponds to the state of a door
+     *                }
+     *                The position of the Boolean in either array represents the same door. As in:
+     *                {
+     *                  "location": [true, false, false],
+     *                  "locked": [false, false, true]
+     *                }
+     *               Wherein the North wall has one unlocked door and the East wall has one locked door.
      * @return A Door[] encompassing all doors found in a room
      */
     private Door[] parseDoors(JSONObject doorObj) {
@@ -126,10 +131,17 @@ public class HouseReader extends JPanel {
     /**
      * This function parses through the house layout, builds and returns a Light[]
      *
-     * @param lightObj The Light object contained within the house layout. Of the following form: { "location":
-     *         Boolean[](), "on": Boolean[]() } The position of the Boolean in either array represents the same light.
-     *         As in: { "location": [true, true, true, true, true], "on": [false, false, true, false, true] } Wherein
-     *         the room contains 5 lights, of which two are turned on.
+     * @param lightObj The Light object contained within the house layout. Of the following form:
+     *                 {
+     *                   "location": Boolean[](),
+     *                   "on": Boolean[]()
+     *                 }
+     *                 The position of the Boolean in either array represents the same light. As in:
+     *                 {
+     *                   "location": [true, true, true, true, true],
+     *                   "on": [false, false, true, false, true]
+     *                 }
+     *                 Wherein the room contains 5 lights, of which two are turned on.
      * @return A Light[] encompassing all lights in a room
      */
     private Light[] parseLights(JSONObject lightObj) {
@@ -157,12 +169,17 @@ public class HouseReader extends JPanel {
     /**
      * This function parses through the house layout, builds and returns a Window[]
      *
-     * @param windowObj The Window object contained within the house layout. Of the following form: {
-     *         "location": Boolean[](4), >> each element of the array represents a wall (N-E-S-W) "obstructed":
-     *         Boolean[](4) >> each main.model.elements corresponds to the obstruction of a window } The position of the
-     *         Boolean in either array represents the same window. As in: { "location": [true, false, false],
-     *         "obstructed": [false, false, true] } Wherein the North wall has one unobstructed window and the East wall
-     *         has one obstructed window.
+     * @param windowObj The Window object contained within the house layout. Of the following form:
+     *                {
+     *                  "location": Boolean[](4), >> each element of the array represents a wall (N-E-S-W)
+     *                  "obstructed": Boolean[](4) >> each elements corresponds to the obstruction of a window
+     *                }
+     *                The position of the Boolean in either array represents the same window. As in:
+     *                {
+     *                  "location": [true, false, false],
+     *                  "obstructed": [false, false, true]
+     *                }
+     *                Wherein the North wall has one unobstructed window and the East wall has one obstructed window.
      * @return A Window[] encompassing all windows found in a room
      */
     private Window[] parseWindows(JSONObject windowObj) {
