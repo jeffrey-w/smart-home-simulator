@@ -25,13 +25,16 @@ For more information on the json-simple library, take a look at the official jso
 #### JUnit
 This project uses [JUnit](https://junit.org/junit5/) as a testing framework for unit tests. 
 
-> More info to be added
+JUnit can be added as a Maven dependency. To do so from IntelliJIDEA:
+1. Navigate to `File > Project Structure > Libraries`
+2. Click the add icon and enter `org.junit.jupiter:junit-jupiter:5.4.2` into the search box`
+3. Confirm your selection and save your changes.
 
 ---
 
 ## Components
 #### Parameters
-The user running the simulation can change a multitude of parameters.
+The user running the simulation can change a multitude of main.model.parameters.
 
 ##### Permission
 A simulated user can take on many roles (parent, child, guest, stranger).
@@ -65,7 +68,7 @@ Users can interact with windows through the simulation to obstruct them.
 There should only be up to four windows per room, one per wall (N-E-S-W).
 
 #### Rooms
-Rooms contain all the above elements and can be occupied by any number of users.
+Rooms contain all the above main.model.elements and can be occupied by any number of users.
 The user running the simulation will be able to add and remove people from rooms.
 
 #### Heating Zones
