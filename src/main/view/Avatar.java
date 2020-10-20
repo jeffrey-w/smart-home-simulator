@@ -30,7 +30,7 @@ class Avatar extends JPanel {
             try { // TODO this is sloppy
                 avatar = scale(ImageIO.read(new File("assets/default-avatar.png")));
             } catch (IOException ioException) {
-                System.err.println("failed to load default image.");
+                System.err.println("Failed to load default image.");
             }
         }
     }
