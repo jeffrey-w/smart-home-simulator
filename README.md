@@ -34,7 +34,7 @@ JUnit can be added as a Maven dependency. To do so from IntelliJIDEA:
 
 ## Components
 #### Parameters
-The user running the simulation can change a multitude of main.model.parameters.
+The user running the simulation can change a multitude of parameters.
 
 ##### Permission
 A simulated user can take on many roles (parent, child, guest, stranger).
@@ -68,7 +68,7 @@ Users can interact with windows through the simulation to obstruct them.
 There should only be up to four windows per room, one per wall (N-E-S-W).
 
 #### Rooms
-Rooms contain all the above main.model.elements and can be occupied by any number of users.
+Rooms contain all the above elements and can be occupied by any number of users.
 The user running the simulation will be able to add and remove people from rooms.
 
 #### Heating Zones
