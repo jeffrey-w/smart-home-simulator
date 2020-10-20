@@ -1,0 +1,51 @@
+{
+  "root": "living_room",
+  "rooms": [
+    {
+      "id": "living_room",
+      "doors": {
+        "location": [false, true, false, true],
+        "locked": [false, false, false, false]
+      },
+      "lights": {
+        "present": [true, true, true],
+        "on": [false, true, false]
+      },
+      "windows": {
+        "location": [false, false, false, false],
+        "obstructed": [false, false, false, false]
+      },
+      "connections": ["kitchen", "bedroom"]
+    },
+    {
+      "id": "kitchen",
+      "doors": {
+        "location": [false, false, false, true],
+        "locked": [false, false, false, false]
+      },
+      "lights": {
+        "present": [true, true, true, true, true],
+        "on": [false, true, true, true, false]
+      },
+      "windows": {
+        "location": [true, true, false, false],
+        "obstructed": [false, false, false, false]
+      }
+    },
+    {
+      "id": "bedroom",
+      "doors": {
+        "location": [false, false, false, true],
+        "locked": [false, false, false, false]
+      },
+      "lights": {
+        "present": [true, true, true],
+        "on": [false, true, false]
+      },
+      "windows": {
+        "location": [false, true, true, false],
+        "obstructed": [false, false, false, false]
+      }
+    }
+  ]
+}
