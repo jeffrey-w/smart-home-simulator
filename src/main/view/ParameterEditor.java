@@ -11,7 +11,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * The {@code ParameterEditor} class provides the UI main.model.elements for a user to set the global settings of a
+ * The {@code ParameterEditor} class provides the UI elements for a user to set the global settings of a
  * simulation (such as the external temperature and the date) and their own {@code Permission} level and location.
  *
  * @author Jeff Wilgus

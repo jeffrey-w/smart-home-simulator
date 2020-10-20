@@ -7,7 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * The {@code ProfileEditor} class provides the UI main.model.elements to edit a specific profile ({@code Permission}
+ * The {@code ProfileEditor} class provides the UI elements to edit a specific profile ({@code Permission}
  * level, and location) that has been added to a simulation.
  *
  * @author Jeff Wilgus

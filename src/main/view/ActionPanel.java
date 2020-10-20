@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The {@code ActionPanel} class provides the UI main.model.elements to choose a type of item and the action to perform
+ * The {@code ActionPanel} class provides the UI elements to choose a type of item and the action to perform
  * on it during a simulation.
  *
  * @author Jeff Wilgus

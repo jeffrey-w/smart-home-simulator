@@ -11,7 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * The {@code ProfileViewer} class provides the UI main.model.elements for a user to browse the profiles (names, {@code Permission}
+ * The {@code ProfileViewer} class provides the UI elements for a user to browse the profiles (names, {@code Permission}
  * levels, and locations} they have added to a simulation.
  *
  * @author Jeff Wilgus
@@ -30,7 +30,7 @@ public class ProfileViewer extends JFrame implements ActionListener { // TODO mo
     House house;
 
     /**
-     * Constructs a new {@code ProfileViewer} object with the profiles from the specified {@code main.model.parameters} and the
+     * Constructs a new {@code ProfileViewer} object with the profiles from the specified {@code parameters} and the
      * locations from the specified {@code house}.
      *
      * @param parameters the specified {@code Parameters}
@@ -134,22 +134,22 @@ public class ProfileViewer extends JFrame implements ActionListener { // TODO mo
 
         @Override
         public void actionPerformed(final ActionEvent e) {
-            // extract input from user
+            // Extract input from user
             String name = editor.role.getText();
             Permission permission = (Permission)editor.permission.getSelectedItem();
             String location = editor.location.isEnabled() ? (String)editor.location.getSelectedItem() : null;
 
             // TODO validate input
 
-            // add profile
+            // Add profile
             Controller.addProfile(name, permission);
 
-            // place person in location
+            // Place person in location
             if (location != null){
                 Controller.placePerson(name, permission, location);
             }
 
-            // add in the ui
+            // Add in the ui
             if (!profiles.contains(name)) {
                 profiles.addElement(name);
             }

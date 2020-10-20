@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.util.Objects;
 
 /**
- * The ParameterPanel displays all simulation main.model.parameters to the user.
+ * The ParameterPanel displays all simulation parameters to the user.
  *
  * @author Jeff Wilgus
  * @author Émilie Martin
