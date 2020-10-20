@@ -1,7 +1,7 @@
 package main.model.elements;
 
 /**
- * The {@code Bearing} enum represents the direction an object can be facing.
+ * The {@code Wall} enum represents the direction an object can be facing.
  *
  * @author Jeff Wilgus
  */
