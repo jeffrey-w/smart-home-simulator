@@ -45,7 +45,7 @@ public class Parameters {
     /**
      * Adds a new actor to the simulation with the specified {@code name} and {@code permission}.
      *
-     * @param name An unique identifier
+     * @param name A unique identifier
      * @param permission The {@code Permission} level of the newly added actor
      * @throws IllegalArgumentException if the specified {@code name} is not a non-empty string of word
      *         characters (i.e. [a-z, A-Z, 0-9, _])
