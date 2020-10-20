@@ -13,17 +13,16 @@ import java.util.Objects;
  */
 public class ParameterPanel extends JPanel {
 
-    private static final int COLUMNS = 7;
+    private static final int ROWS = 6;
 
     Avatar avatar;
     JLabel permission = new JLabel();
     JLabel location = new JLabel();
     JLabel temperature = new JLabel();
     JLabel date = new JLabel();
-    JLabel time = new JLabel();
 
     /**
-     * Contructs a parameter panel with an avatar and editable parameters
+     * Constructs a parameter panel with an avatar and editable parameters
      */
     public ParameterPanel() {
         // Set panel display behavior.
@@ -36,10 +35,9 @@ public class ParameterPanel extends JPanel {
         add(location);
         add(temperature);
         add(date);
-        add(time);
 
         // Set element display behavior.
-        SpringUtilities.makeCompactGrid(this, COLUMNS, 1, 1, 1, 1, 1);
+        SpringUtilities.makeCompactGrid(this, ROWS, 1, 1, 1, 1, 1);
 
         // Set default values for empty parameters.
         setPermission("");
@@ -48,7 +46,9 @@ public class ParameterPanel extends JPanel {
 
     /**
      * Setter to modify the permission of a user
+     *
      * @param permission The new assigned user permission
+     * @throws NullPointerException if the specified {@code permission} is {@code null}
      */
     void setPermission(String permission) {
         this.permission.setText("Permission: " + Objects.requireNonNull(permission));
@@ -56,7 +56,9 @@ public class ParameterPanel extends JPanel {
 
     /**
      * Setter to modify the location of a user
+     *
      * @param location The user's new position
+     * @throws NullPointerException if the specified {@code location} is {@code null}
      */
     void setLocation(String location) { // TODO rename this
         this.location.setText("Location: " + Objects.requireNonNull(location));
@@ -64,7 +66,9 @@ public class ParameterPanel extends JPanel {
 
     /**
      * Setter that allows the user to change the temperature
+     *
      * @param temperature The new temperature
+     * @throws NullPointerException if the specified {@code temperature} is {@code null}
      */
     void setTemperature(String temperature) {
         this.temperature.setText("Temperature: " + Objects.requireNonNull(temperature) + " C");
@@ -72,7 +76,9 @@ public class ParameterPanel extends JPanel {
 
     /**
      * Setter that allows the user to change the simulation date
+     *
      * @param date The new date
+     * @throws NullPointerException if the specified {@code date} is {@code null}
      */
     void setDate(String date) {
         this.date.setText("Date: " + Objects.requireNonNull(date));

@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 
 /**
  * The {@code NameValidator} class provides a facility for checking that character strings adhere to a certain format.
- * Specifically that they are non-empty and comprised of only word characters (i.e. [a-z, A-z, 0-9, _]. Note: this class
+ * Specifically that they are non-empty and comprised of only word characters (i.e. [a-z, A-Z, 0-9, _]). Note: this class
  * is not instantiable.
  *
  * @author Jeff Wilgus
@@ -15,11 +15,12 @@ public class NameValidator {
 
     /**
      * Determines whether or not the specified {@code name} is valid insofar as it is a non-empty string comprised of
-     * only word characters.
+     * only word characters (i.e. [a-z, A-Z, 0-9, _]).
      *
      * @param name the specified name
      * @return the specified {@code name} provided it is valid
      * @throws IllegalArgumentException if the specified {@code name} is not valid
+     * @throws NullPointerException if the specified {@code name} is {@code null}
      */
     public static String validateName(String name) {
         if (!NAME_PATTERN.matcher(name).matches()) {
