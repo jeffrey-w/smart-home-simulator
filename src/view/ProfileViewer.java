@@ -1,5 +1,6 @@
 package view;
 
+import controller.Controller;
 import elements.House;
 import parameters.Parameters;
 import permissions.Permission;
@@ -126,19 +127,23 @@ public class ProfileViewer extends JFrame implements ActionListener { // TODO mo
         @Override
         public void actionPerformed(final ActionEvent e) {
             //extract input from user
-            String role = editor.role.getText();
+            String name = editor.role.getText();
             Permission permission = (Permission)editor.permission.getSelectedItem();
             String location = editor.location.isEnabled() ? (String)editor.location.getSelectedItem() : null;
+
             //TODO validate input
-            //add as a profile
-            parameters.addActor(role, permission); // TODO exception handling
-            //add in the simulation
-            if (location != null) {
-                house.addPerson(role, permission, location);
+
+            //add profile
+            Controller.addProfile(name, permission);
+
+            //place person in location
+            if (!location.isEmpty()){
+                Controller.placePerson(name, permission, location);
             }
+
             //add in the ui
-            if (!profiles.contains(role)) {
-                profiles.addElement(role);
+            if (!profiles.contains(name)) {
+                profiles.addElement(name);
             }
             editor.dispose();
         }
