@@ -1,14 +1,18 @@
 package test;
 
 import elements.*;
-import view.HouseReader;
+import util.HouseReader;
+import util.Bearing;
 
 import org.junit.jupiter.api.Test;
+
+import java.io.File;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class HouseReaderTests {
 
-    HouseReader houseReader = new HouseReader("src/test/houseLayoutTest.json");
+    HouseReader houseReader = new HouseReader(new File("src/test/houseLayoutTest.json"));
 
     @Test
     void testReadHouse() {
@@ -23,10 +27,10 @@ public class HouseReaderTests {
         Light livingRoomLight2 = new Light(true, true);
         Light[] livingRoomLights = new Light[]{livingRoomLight1, livingRoomLight2};
 
-        Window livingRoomWindow1 = new Window(true, false);
-        Window livingRoomWindow2 = new Window(false, false);
-        Window livingRoomWindow3 = new Window(false, false);
-        Window livingRoomWindow4 = new Window(true, false);
+        Window livingRoomWindow1 = new Window(true, false, Bearing.NORTH);
+        Window livingRoomWindow2 = new Window(false, false, Bearing.EAST);
+        Window livingRoomWindow3 = new Window(false, false, Bearing.SOUTH);
+        Window livingRoomWindow4 = new Window(true, false, Bearing.WEST);
         Window[] livingRoomWindows = new Window[]{livingRoomWindow1, livingRoomWindow2, livingRoomWindow3, livingRoomWindow4};
 
         // Build kitchen
@@ -41,14 +45,14 @@ public class HouseReaderTests {
         Light kitchenLight3 = new Light(true, true);
         Light[] kitchenLights = new Light[]{kitchenLight1, kitchenLight2, kitchenLight3};
 
-        Window kitchenWindow1 = new Window(true, false);
-        Window kitchenWindow2 = new Window(true, true);
-        Window kitchenWindow3 = new Window(false, false);
-        Window kitchenWindow4 = new Window(false, false);
+        Window kitchenWindow1 = new Window(true, false, Bearing.NORTH);
+        Window kitchenWindow2 = new Window(true, true, Bearing.EAST);
+        Window kitchenWindow3 = new Window(false,false, Bearing.SOUTH);
+        Window kitchenWindow4 = new Window(false,false, Bearing.WEST);
         Window[] kitchenWindows = new Window[]{kitchenWindow1, kitchenWindow2, kitchenWindow3, kitchenWindow4};
 
-        Room livingRoom = new Room("living_room", livingRoomDoors, livingRoomLights, livingRoomWindows);
-        Room kitchen = new Room("kitchen", kitchenDoors, kitchenLights, kitchenWindows);
+        Room livingRoom = new Room(livingRoomDoors, livingRoomLights, livingRoomWindows);
+        Room kitchen = new Room(kitchenDoors, kitchenLights, kitchenWindows);
 
         // Build expected house
         House expectedHouse = new House();

@@ -1,83 +1,93 @@
-package view;
+package util;
 
-import org.json.simple.parser.*;
-import org.json.simple.JSONObject;
+import elements.*;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
+import javax.swing.*;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import elements.House;
-import elements.Room;
-import elements.Door;
-import elements.Light;
-import elements.Window;
+import java.io.IOException;
+import java.util.*;
 
 /**
- * The view.HouseReader class parses through a house layout JSON file.
- * Its function ReadHouse() returns a {@code House} object to be passed to the HouseLayout to be displayed to the user
+ * The util.HouseReader class parses through a house layout JSON file.
+ * Its function ReadHouse() returns a {@code House} object to be passed to the HouseLayout to be displayed to the user.
  *
  * @author Émilie Martin
+ * @author Jeff Wilgus
  */
 public class HouseReader extends JPanel {
 
-    private Object layoutFile;
-    private JSONParser parser = new JSONParser();
+    private static final JSONParser PARSER = new JSONParser();
+
+    JSONObject layoutFile;
 
     /**
-     * Constructs a {@code view.HouseReader} object, which accepts a fileName as a String.
+     * Constructs a {@code util.HouseReader} object, which accepts a {@code File} to read.
      * The file refers to the house layout and assumes it has the right format.
      *
+     * @param file The file to be read
      */
-    public HouseReader(String fileName) {
-        try {
-            FileReader reader = new FileReader(fileName);
-            layoutFile = parser.parse(reader);
-        } catch(FileNotFoundException fnfe) {
-          System.out.println("The file you are looking for cannot be found.");
-        } catch (Exception e) {
+    public HouseReader(File file) {
+        try (FileReader reader = new FileReader(file)) {
+            layoutFile = (JSONObject)PARSER.parse(reader);
+        } catch (FileNotFoundException fnfe) {
+            System.out.println("The file you are looking for cannot be found.");
+        } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
     }
 
     /**
      * The ReadHouse() function parses through the given file and creates a {@code House} object.
-     * It builds {@code Window} objects, {@code Light} objects, and {@code Door} objects, that all belong to the {@code Room} object.
+     * It builds {@codeWindow} objects, {@code Light} objects, and {@code Door} objects, that all belong to the {@code Room} object.
      *
      * @return A {@code House} object
      */
     public House readHouse() {
         House house = new House();
+        Map<String, JSONArray> connections = new HashMap<>();
+        JSONArray roomsList = (JSONArray)layoutFile.get("rooms");
 
-        JSONObject houseLayout = (JSONObject) layoutFile;
-        JSONArray roomsList = (JSONArray) houseLayout.get("rooms");
+        for (Object o : roomsList) {
 
-        for(int i=0; i < roomsList.size(); i++) {
-            JSONObject roomObj = (JSONObject) roomsList.get(i);
-
+            JSONObject roomObj = (JSONObject) o;
             String roomName = (String) roomObj.get("id");
 
             // Parse through doors
-            JSONObject doors = (JSONObject) roomObj.get("doors");
+            JSONObject doors = (JSONObject)roomObj.get("doors");
             Door[] roomDoors = parseDoors(doors);
 
-            // Pase through lights
-            JSONObject lights = (JSONObject) roomObj.get("lights");
+            // Parse through lights
+            JSONObject lights = (JSONObject)roomObj.get("lights");
             Light[] roomLights = parseLights(lights);
 
             // Parse through windows
-            JSONObject windows = (JSONObject) roomObj.get("windows");
+            JSONObject windows = (JSONObject)roomObj.get("windows");
             Window[] roomWindows = parseWindows(windows);
 
-            Room room = new Room(roomName, roomDoors, roomLights, roomWindows);
+            house.addRoom(new Room(roomDoors, roomLights, roomWindows), roomName);
 
-            house.addRoom(room, roomName);
+            // Get connected rooms
+            connections.put(roomName, (JSONArray) roomObj.get("connections"));
         }
 
-        return(house);
+        // Add connections
+        for (String room : connections.keySet()) {
+            if (connections.get(room) != null) {
+                for (Object connection : connections.get(room)) {
+                    house.addConnection(room, (String) connection);
+                }
+            }
+        }
+
+        house.setRoot((String) layoutFile.get("root"));
+
+        return house;
     }
 
     /**
@@ -97,8 +107,8 @@ public class HouseReader extends JPanel {
      * @return A Door[] encompassing all doors found in a room
      */
     private Door[] parseDoors(JSONObject doorObj) {
-        JSONArray doorLocArr = (JSONArray) doorObj.get("location");
-        JSONArray doorLockArr = (JSONArray) doorObj.get("locked");
+        JSONArray doorLocArr = (JSONArray)doorObj.get("location");
+        JSONArray doorLockArr = (JSONArray)doorObj.get("locked");
 
         Iterator<Boolean> doorLocationIterator = doorLocArr.iterator();
         Iterator<Boolean> lockedIterator = doorLockArr.iterator();
@@ -135,8 +145,8 @@ public class HouseReader extends JPanel {
      * @return A Light[] encompassing all lights in a room
      */
     private Light[] parseLights(JSONObject lightObj) {
-        JSONArray lightLocArr = (JSONArray) lightObj.get("present");
-        JSONArray lightStateArr = (JSONArray) lightObj.get("on");
+        JSONArray lightLocArr = (JSONArray)lightObj.get("present");
+        JSONArray lightStateArr = (JSONArray)lightObj.get("on");
 
         Iterator<Boolean> lightLocationIterator = lightLocArr.iterator();
         Iterator<Boolean> stateIterator = lightStateArr.iterator();
@@ -173,18 +183,19 @@ public class HouseReader extends JPanel {
      * @return A Window[] encompassing all windows found in a room
      */
     private Window[] parseWindows(JSONObject windowObj) {
-        JSONArray windowLocArr = (JSONArray) windowObj.get("location");
-        JSONArray windowObstrArr = (JSONArray) windowObj.get("obstructed");
+        JSONArray windowLocArr = (JSONArray)windowObj.get("location");
+        JSONArray windowObstrArr = (JSONArray)windowObj.get("obstructed");
 
         Iterator<Boolean> windowLocationIterator = windowLocArr.iterator();
         Iterator<Boolean> obstructedIterator = windowObstrArr.iterator();
+        Iterator<Bearing> bearings = Arrays.asList(Bearing.values()).iterator();
 
         ArrayList<Window> windowAL = new ArrayList<>();
 
         // TODO: double-check that if a window location is set to FALSE, then its obstructed boolean should automatically be FALSE
         //       (or mention something about its value not mattering)
         while (windowLocationIterator.hasNext() && obstructedIterator.hasNext()) {
-            windowAL.add(new Window(windowLocationIterator.next(), obstructedIterator.next()));
+            windowAL.add(new Window(windowLocationIterator.next(), obstructedIterator.next(), bearings.next()));
         }
 
         // Convert ArrayList<> to Window[]

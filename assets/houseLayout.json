@@ -1,5 +1,5 @@
 {
-  "name": "simulation1",
+  "root": "living_room",
   "rooms": [
     {
       "id": "living_room",
@@ -14,7 +14,8 @@
       "windows": {
         "location": [false, false, false, false],
         "obstructed": [false, false, false, false]
-      }
+      },
+      "connections": ["kitchen", "bedroom"]
     },
     {
       "id": "kitchen",

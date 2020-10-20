@@ -14,7 +14,8 @@
       "windows": {
         "location": [true, false, false, true],
         "obstructed": [false, false, false, false]
-      }
+      },
+      "connections": ["kitchen"]
     },
     {
       "id": "kitchen",
