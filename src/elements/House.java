@@ -27,6 +27,14 @@ public class House implements Iterable<Room> {
             this.adjacents = new HashSet<>();
         }
 
+        @Override
+        public boolean equals(final Object obj) {
+            if (! (obj instanceof Node)) {
+                return false;
+            }
+            Node node = (Node) obj;
+            return room.equals(node.room);
+        }
     }
 
     /**

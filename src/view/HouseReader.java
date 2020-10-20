@@ -4,6 +4,7 @@ import org.json.simple.parser.*;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import javax.swing.*;
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ import elements.Window;
  *
  * @author Émilie Martin
  */
-class HouseReader extends JPanel {
+public class HouseReader extends JPanel {
 
     private Object layoutFile;
     private JSONParser parser = new JSONParser();
@@ -30,12 +31,13 @@ class HouseReader extends JPanel {
      * Constructs a {@code view.HouseReader} object, which accepts a fileName as a String.
      * The file refers to the house layout and assumes it has the right format.
      *
-     * @param fileName The name of the file to be read.
      */
-    HouseReader(String fileName) {
+    public HouseReader(String fileName) {
         try {
             FileReader reader = new FileReader(fileName);
             layoutFile = parser.parse(reader);
+        } catch(FileNotFoundException fnfe) {
+          System.out.println("The file you are looking for cannot be found.");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -47,7 +49,7 @@ class HouseReader extends JPanel {
      *
      * @return A {@code House} object
      */
-    House readHouse() {
+    public House readHouse() {
         House house = new House();
 
         JSONObject houseLayout = (JSONObject) layoutFile;
@@ -94,7 +96,7 @@ class HouseReader extends JPanel {
      *                Wherein the North wall has one unlocked door and the East wall has one locked door.
      * @return A Door[] encompassing all doors found in a room
      */
-    Door[] parseDoors(JSONObject doorObj) {
+    private Door[] parseDoors(JSONObject doorObj) {
         JSONArray doorLocArr = (JSONArray) doorObj.get("location");
         JSONArray doorLockArr = (JSONArray) doorObj.get("locked");
 
@@ -132,7 +134,7 @@ class HouseReader extends JPanel {
      *                 Wherein the room contains 5 lights, of which two are turned on.
      * @return A Light[] encompassing all lights in a room
      */
-    Light[] parseLights(JSONObject lightObj) {
+    private Light[] parseLights(JSONObject lightObj) {
         JSONArray lightLocArr = (JSONArray) lightObj.get("present");
         JSONArray lightStateArr = (JSONArray) lightObj.get("on");
 
@@ -170,7 +172,7 @@ class HouseReader extends JPanel {
      *                Wherein the North wall has one unobstructed window and the East wall has one obstructed window.
      * @return A Window[] encompassing all windows found in a room
      */
-    Window[] parseWindows(JSONObject windowObj) {
+    private Window[] parseWindows(JSONObject windowObj) {
         JSONArray windowLocArr = (JSONArray) windowObj.get("location");
         JSONArray windowObstrArr = (JSONArray) windowObj.get("obstructed");
 
