@@ -1,23 +1,25 @@
-package test;
+package test.elements;
 
-import elements.Window;
+import main.model.elements.Wall;
+import main.model.elements.Window;
 import org.junit.jupiter.api.Test;
-import util.Bearing;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class WindowTest {
 
-    // testing window.setObstructed + window.isObstructedString (blocking window use case)
+    // Testing window.setObstructed + window.isObstructedString (blocking window use case)
     @Test
     void testIsBlocked() {
-        Window window = new Window(true, true, Bearing.EAST);
+        Window window = new Window(true, true, Wall.EAST);
 
-        // window should return that it is blocked since it was initialized as obstructed
-        assertEquals(window.isObstructed(), true);
+        // Window should return that it is blocked since it was initialized as obstructed
+        assertTrue(window.isObstructed());
 
-        // window should return that it is not blocked
+        // Window should return that it is not blocked
         window.setObstructed(false);
-        assertEquals(window.isObstructed(), false);
+        assertFalse(window.isObstructed());
     }
+
 }
