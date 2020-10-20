@@ -12,8 +12,8 @@ public class Door {
     /**
      * If not provided by the user, the system uses these default values.
      */
-    public static final boolean DEFAULT_DOOR_LOCATION = true;
-    public static final boolean DEFAULT_DOOR_LOCK = false;
+    private static final boolean DEFAULT_DOOR_LOCATION = true;
+    private static final boolean DEFAULT_DOOR_LOCK = false;
 
     private boolean located;
     private boolean isLocked;

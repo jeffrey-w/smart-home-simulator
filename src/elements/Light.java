@@ -11,8 +11,8 @@ public class Light {
     /**
      * If not provided by the user, the system uses these default values.
      */
-    public final boolean DEFAULT_LIGHT_PRESENCE = true;
-    public final boolean DEFAULT_LIGHT_ON = true;
+    private final boolean DEFAULT_LIGHT_PRESENCE = true;
+    private final boolean DEFAULT_LIGHT_ON = true;
 
     private boolean isPresent;
     private boolean isOn;
