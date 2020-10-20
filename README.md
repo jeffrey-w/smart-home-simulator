@@ -38,11 +38,11 @@ The user running the simulation can change a multitude of main.model.parameters.
 
 ##### Permission
 A simulated user can take on many roles (parent, child, guest, stranger).
-Each role has assigned permission, restricting or adding their available functionalities.
+Each role has assigned permission, restricting or adding their existing available functionalities.
 These roles can be changed and attributed to other users by the user running the simulation.
 
 ##### Location
-The user running the simulation can change the location of any involved user, moving them to another room.
+The user running the simulation can change the location of any involved user including themselves, moving them to another room.
 It is to be noted that a user cannot be in more than one room, simultaneously.
 
 ##### Temperature
@@ -52,7 +52,7 @@ The indoor temperature refers to the temperature of any room contained within th
 Either temperature can be modified by the user running the simulation.
 
 ##### Date
-A simulated user can change the date of the simulation, moving it forward in time (hours, days, weeks, etc.).
+A simulated user can change the date of the simulation, moving it forward or backward in time (hours, days, weeks, etc.).
 This allows the user to notice the changes in the simulation, based on the time of day and their implemented rules.
 
 #### Doors
@@ -74,6 +74,7 @@ The user running the simulation will be able to add and remove people from rooms
 #### Heating Zones
 A heating zone is an agglomeration of multiple rooms, defined by the user, that share a common temperature.
 The user running the simulation can modify the temperature of a heating zone and see it reflected in all affected rooms.
+Users can also change the rooms that belong to a specific heating zone.
 
 #### House
 A house is a collection of rooms. Its layout is to be displayed to the user through the dashboard.
