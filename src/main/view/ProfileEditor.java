@@ -59,7 +59,7 @@ public class ProfileEditor extends JFrame {
         // Set field display behavior.
         SpringUtilities.makeCompactGrid(fields, ROWS, COLUMNS, 1, 1, 1, Y_PADDING);
 
-        // A name is being edited, set the name name and disable changing it.
+        // A name is being edited, set the name and disable changing it.
         if (name != null) {
             this.role.setText(name);
             this.role.setEnabled(false);
