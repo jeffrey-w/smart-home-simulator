@@ -7,12 +7,22 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * The {@code Avatar} class provides the UI element for a user profile image.
+ *
+ * @author Jeff Wilgus
+ */
 class Avatar extends JPanel {
 
     private static final int DIMENSION = 0x100;
 
     private BufferedImage avatar;
 
+    /**
+     * Constructs a new {@code Avatar} object from the image at the specified {@code file}
+     *
+     * @param file the specified file
+     */
     Avatar(File file) {
         try {
             avatar = scale(ImageIO.read(file));
@@ -28,8 +38,8 @@ class Avatar extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        int x = (getWidth() - DIMENSION) >>> 1;
-        int y = (getHeight() - DIMENSION) >>> 1;
+        int x = getWidth() - DIMENSION >>> 1;
+        int y = getHeight() - DIMENSION >>> 1;
         g.drawImage(avatar, x, y, null);
     }
 
