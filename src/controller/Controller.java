@@ -1,3 +1,5 @@
+package controller;
+
 import elements.House;
 import elements.Window;
 import parameters.Parameters;
@@ -27,6 +29,7 @@ public class Controller {
 
     private static final JSONFilter JSON_FILTER = new JSONFilter();
 
+
     // This is the entry point into the program
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
@@ -42,15 +45,14 @@ public class Controller {
         });
     }
 
-    private House house;
-    private final Parameters parameters;
+    private static House house;
+    private static final Parameters parameters = new Parameters();
     private final Dashboard dashboard;
 
     /**
      * Constructs a new {@code Controller} object
      */
     public Controller() {
-        parameters = new Parameters();
         dashboard = new Dashboard();
         dashboard.setTemperature(String.valueOf(parameters.getTemperature()));
         dashboard.setDate(parameters.getDate());
@@ -62,6 +64,25 @@ public class Controller {
         dashboard.addWindowActionListener(new WindowActionListener());
     }
 
+
+    /**
+     * This methods adds a new profile to the parameters.
+     * @param name
+     * @param permission
+     */
+    public static void addProfile(String name, Permission permission) {
+        parameters.addActor(name, permission); // TODO exception handling
+    }
+
+    /**
+     * This methods places a person in a specific place in the house
+     * @param name
+     * @param permission
+     * @param location
+     */
+    public static void placePerson(String name, Permission permission, String location) {
+        house.addPerson(name, permission, location);
+    }
     /*
      * Below are various event handlers that transform input from the user into data that can be manipulated by the data
      * model of a simulation
