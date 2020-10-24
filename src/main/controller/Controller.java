@@ -7,6 +7,7 @@ import main.model.parameters.permissions.Permission;
 import main.util.HouseReader;
 import main.util.JSONFilter;
 import main.view.Dashboard;
+import main.view.ProfileEditor;
 import main.view.ProfileViewer;
 
 import javax.swing.*;
@@ -18,11 +19,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Date;
-import java.util.NoSuchElementException;
 
 /**
- * The {@code Controller} class provides the interface between runtime simulation objects and the UI main.model.elements
- * to manipulate those objects. It serves as the entry point into the program.
+ * The {@code Controller} class provides the interface between runtime simulation objects and the UI elements to
+ * manipulate those objects. It serves as the entry point into the program.
  *
  * @author Jeff Wilgus
  */
@@ -45,9 +45,8 @@ public class Controller {
         });
     }
 
-    private static House house;
-    private static final Parameters parameters = new Parameters();
-
+    private House house;
+    private final Parameters parameters = new Parameters();
     private final Dashboard dashboard;
 
     /**
@@ -59,39 +58,13 @@ public class Controller {
         dashboard.setDate(parameters.getDate());
         dashboard.addLoadHouseListener(new LoadHouseListener());
         dashboard.addProfileEditListener(new ProfileEditListener());
+        dashboard.addEditProfileListener(new EditProfileListener());
         dashboard.addPermissionListener(new PermissionListener());
         dashboard.addTemperatureListener(new TemperatureListener());
         dashboard.addDateListener(new DateListener());
         dashboard.addWindowActionListener(new WindowActionListener());
     }
 
-    /**
-     * Adds a new profile to the simulation {@code Parameters}.
-     *
-     * @param name The name of the added profile
-     * @param permission The {@code Permission} level of the added profile
-     * @throws IllegalArgumentException if the specified {@code role} is not a non-empty string of word
-     *         characters (i.e. [a-z, A-Z, 0-9, _])
-     * @throws NullPointerException if the specified {@code permission} is {@code null}
-     */
-    public static void addProfile(String name, Permission permission) {
-        parameters.addActor(name, permission); // TODO exception handling
-    }
-
-    /**
-     * Places a person in a specific {@code Place} in the simulated {@code House}.
-     *
-     * @param name The name of the added person
-     * @param permission The {@code Permission} level of the added person
-     * @param location The place in the {@code House} the added person is inserted into
-     * @throws IllegalArgumentException if the specified {@code name} is not a non-empty string of word
-     *         characters (i.e. [a-z, A-Z, 0-9, _])
-     * @throws NoSuchElementException if the specified {@code location} does not exist in this {@code House}
-     * @throws NullPointerException if the specified {@code permission} is {@code null}
-     */
-    public static void placePerson(String name, Permission permission, String location) {
-        house.addPerson(name, permission, location);
-    }
     /*
      * Below are various event handlers that transform input from the user into data that can be manipulated by the data
      * model of a simulation
@@ -118,13 +91,68 @@ public class Controller {
     class ProfileEditListener implements ActionListener {
 
         @Override
+        public void actionPerformed(ActionEvent e) {
+            ProfileViewer viewer = dashboard.getProfileViewer();
+            viewer.clear();
+            viewer.populateList(parameters.getActors());
+            viewer.pack();
+            viewer.setLocationRelativeTo(dashboard);
+            viewer.setVisible(true);
+        }
+
+    }
+
+    class EditProfileListener implements ActionListener { // TODO rename this
+
+        @Override
         public void actionPerformed(final ActionEvent e) {
-            SwingUtilities.invokeLater(() -> {
-                ProfileViewer viewer = new ProfileViewer(parameters, house);
-                viewer.pack();
-                viewer.setLocationRelativeTo(dashboard);
-                viewer.setVisible(true);
-            });
+            String actionCommand = e.getActionCommand();
+            ProfileViewer viewer = dashboard.getProfileViewer();
+            switch (actionCommand) {
+                case "Add":
+                case "Edit": {
+                    ProfileEditor editor = new ProfileEditor(viewer.getSelectedValue(), house != null);
+                    if (house != null) {
+                        editor.addLocations(house.getLocations());
+                    }
+                    editor.pack();
+                    editor.setLocationRelativeTo(viewer);
+                    editor.setVisible(true);
+                    editor.addActionListener(f -> {
+                        // Extract input from user
+                        String name = editor.getRole();
+                        Permission permission = editor.getSelectedPermission();
+                        String location = editor.getSelectionLocation();
+
+                        // TODO validate input
+
+                        // Add profile
+                        parameters.addActor(name, permission);
+
+                        // Place person in location
+                        if (location != null) {
+                            house.addPerson(name, permission, location);
+                        }
+
+                        // Add in the ui
+                        if (!viewer.containsProfile(name)) {
+                            viewer.addProfile(name);
+                        }
+                        editor.dispose();
+                    });
+                    break;
+                }
+                case "Remove": {
+                    parameters.removeActor(viewer.getSelectedValue());
+                    if (house != null) {
+                        house.removePerson(viewer.getSelectedValue());
+                    }
+                    viewer.removeProfile(viewer.getSelectedValue());
+                    break;
+                }
+                default:
+                    throw new AssertionError();
+            }
         }
 
     }
