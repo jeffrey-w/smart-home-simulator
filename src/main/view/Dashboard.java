@@ -50,6 +50,7 @@ public class Dashboard extends JFrame {
     ActionPanel actions = new ActionPanel();
     HouseLayoutPanel layout = new HouseLayoutPanel(null);
     JTextArea console = new JTextArea("Welcome to Smart Home Simulator!");
+    ProfileViewer profileViewer = new ProfileViewer();
 
     /**
      * Creates the dashboard, which is to contain the {@code ParameterPanel}, a console, the {@code HouseLayout}. This
@@ -189,8 +190,12 @@ public class Dashboard extends JFrame {
      *
      * @param listener The specified event handler
      */
-    public void addProfileEditListener(ActionListener listener) {
+    public void addProfileEditListener(ActionListener listener) { // TODO rename this
         editor.editProfiles.addActionListener(listener);
+    }
+
+    public void addEditProfileListener(ActionListener listener) { // TODO rename this
+        profileViewer.addEditProfileListener(listener);
     }
 
     /**
@@ -268,4 +273,9 @@ public class Dashboard extends JFrame {
     public void sendToConsole(String message) {
         console.setText(console.getText() + '\n' + message);
     }
+
+    public ProfileViewer getProfileViewer() {
+        return profileViewer;
+    }
+
 }
