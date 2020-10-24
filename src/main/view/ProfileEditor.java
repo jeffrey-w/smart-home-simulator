@@ -5,6 +5,8 @@ import main.view.viewtils.SpringUtilities;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.util.Set;
 
 /**
  * The {@code ProfileEditor} class provides the UI elements to edit a specific profile ({@code Permission}
@@ -69,4 +71,25 @@ public class ProfileEditor extends JFrame {
         location.setEnabled(enableLocation);
     }
 
+    public void addLocations(Set<String> locations) {
+        for (String location : locations) {
+            this.location.addItem(location);
+        }
+    }
+
+    public void addActionListener(ActionListener listener) {
+        ok.addActionListener(listener);
+    }
+
+    public String getRole() {
+        return role.getText();
+    }
+
+    public Permission getSelectedPermission() {
+        return (Permission) permission.getSelectedItem();
+    }
+
+    public String getSelectionLocation() {
+        return (String) location.getSelectedItem();
+    }
 }
