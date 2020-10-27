@@ -34,15 +34,15 @@ public class Dashboard extends JFrame {
     };
 
     // Pre-determined size parameters
-    private static final int WINDOW_WIDTH = 0x600;
-    private static final int WINDOW_HEIGHT = 0x300;
-    private static final int PARAMETER_PANE_WIDTH = WINDOW_WIDTH >>> 2;
-    private static final int CONTENT_PANE_WIDTH = WINDOW_WIDTH - (WINDOW_WIDTH >>> 2); // x >>> y == x / 2^y
-    private static final int CONTENT_WIDTH = CONTENT_PANE_WIDTH >>> 1; // Computers like bitwise operators!
-    private static final int CONSOLE_HEIGHT = WINDOW_HEIGHT / 3;
-    private static final int CONTENT_HEIGHT = WINDOW_HEIGHT - CONSOLE_HEIGHT;
-    private static final int CONTENT_PADDING = 0x20;
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm a");
+    static final int WINDOW_WIDTH = 0x600;
+    static final int WINDOW_HEIGHT = 0x300;
+    static final int PARAMETER_PANE_WIDTH = WINDOW_WIDTH >>> 2;
+    static final int CONTENT_PANE_WIDTH = WINDOW_WIDTH - (WINDOW_WIDTH >>> 2); // x >>> y == x / 2^y
+    static final int CONTENT_WIDTH = CONTENT_PANE_WIDTH >>> 1; // Computers like bitwise operators!
+    static final int CONSOLE_HEIGHT = WINDOW_HEIGHT / 3;
+    static final int CONTENT_HEIGHT = WINDOW_HEIGHT - CONSOLE_HEIGHT;
+    static final int CONTENT_PADDING = 0x20;
+    static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm a");
 
     ParameterPanel parameters = new ParameterPanel();
     ParameterEditor editor = new ParameterEditor();
@@ -190,7 +190,7 @@ public class Dashboard extends JFrame {
      *
      * @param listener The specified event handler
      */
-    public void addProfileEditListener(ActionListener listener) { // TODO rename this
+    public void addManageProfilesListener(ActionListener listener) { // TODO rename this
         editor.editProfiles.addActionListener(listener);
     }
 
@@ -234,13 +234,9 @@ public class Dashboard extends JFrame {
         editor.date.addChangeListener(listener);
     }
 
-    /**
-     * Registers an event handler for processing {@code Window}-specific {@code Action}s.
-     *
-     * @param listener The specified event handler
-     */
-    public void addWindowActionListener(MouseListener listener) {
-        ActionPanel.WINDOW_ACTION_LISTENER = listener;
+    // TODO comment this
+    public void addActionSelectionListener(MouseListener listener) {
+        actions.actions.addMouseListener(listener);
     }
 
     /**
@@ -274,8 +270,14 @@ public class Dashboard extends JFrame {
         console.setText(console.getText() + '\n' + message);
     }
 
+    // TODO comment this
     public ProfileViewer getProfileViewer() {
         return profileViewer;
+    }
+
+    // TODO comment this
+    public ActionPanel getActions() {
+        return actions;
     }
 
 }
