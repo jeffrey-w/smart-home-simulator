@@ -72,6 +72,18 @@ public enum Action {
             return true;
         }
 
+    },
+
+    BLOCK_WINDOW {
+        @Override
+        public boolean isChildPermissible() {
+            return false;
+        }
+
+        @Override
+        public boolean isGuestPermissible() {
+            return false;
+        }
     };
 
     /**
