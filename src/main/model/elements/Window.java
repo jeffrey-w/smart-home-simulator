@@ -1,5 +1,7 @@
 package main.model.elements;
 
+import main.model.parameters.permissions.Action;
+
 /**
  * The {@code Window} class represents the Window object, which the user can interact with. A user can choose to
  * obstruct windows as they please.
@@ -7,7 +9,7 @@ package main.model.elements;
  * @author Émilie Martin
  * @author Philippe Vo
  */
-public class Window {
+public class Window implements Manipulable {
 
     // If not provided by the user, the system uses these default values.
     private final boolean DEFAULT_WINDOW_LOCATION = true;
@@ -87,4 +89,8 @@ public class Window {
         return wall.toString();
     }
 
+    @Override
+    public void doAction(Action action) {
+        // TODO
+    }
 }
