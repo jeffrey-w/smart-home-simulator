@@ -17,6 +17,17 @@ import static main.util.NameValidator.validateName;
  */
 public class House implements Iterable<Room> {
 
+    public boolean contains(String role) {
+        return people.containsKey(role);
+    }
+
+    public String locationOf(String role) {
+        if (contains(role)) {
+            return people.get(role);
+        }
+        throw new NoSuchElementException("No person by that name exists in this house.");
+     }
+
     private static class Node {
         Room room;
         Set<String> adjacents;
