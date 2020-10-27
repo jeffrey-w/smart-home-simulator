@@ -1,19 +1,17 @@
 package main.controller;
 
 import main.model.elements.House;
-import main.model.elements.Window;
+import main.model.elements.Manipulable;
+import main.model.elements.Room;
 import main.model.parameters.Parameters;
 import main.model.parameters.permissions.Permission;
 import main.util.HouseReader;
 import main.util.JSONFilter;
-import main.view.Dashboard;
-import main.view.ProfileEditor;
-import main.view.ProfileViewer;
+import main.view.*;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -47,22 +45,21 @@ public class Controller {
 
     private House house;
     private final Parameters parameters = new Parameters();
-    private final Dashboard dashboard;
+    private final Dashboard dashboard = new Dashboard();
 
     /**
      * Constructs a new {@code Controller} object.
      */
     public Controller() {
-        dashboard = new Dashboard();
         dashboard.setTemperature(String.valueOf(parameters.getTemperature()));
         dashboard.setDate(parameters.getDate());
         dashboard.addLoadHouseListener(new LoadHouseListener());
-        dashboard.addProfileEditListener(new ProfileEditListener());
+        dashboard.addManageProfilesListener(new ManageProfilesListener());
         dashboard.addEditProfileListener(new EditProfileListener());
         dashboard.addPermissionListener(new PermissionListener());
         dashboard.addTemperatureListener(new TemperatureListener());
         dashboard.addDateListener(new DateListener());
-        dashboard.addWindowActionListener(new WindowActionListener());
+        dashboard.addActionSelectionListener(new ActionSelectionListener());
     }
 
     /*
@@ -88,7 +85,7 @@ public class Controller {
 
     }
 
-    class ProfileEditListener implements ActionListener {
+    class ManageProfilesListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -102,7 +99,7 @@ public class Controller {
 
     }
 
-    class EditProfileListener implements ActionListener { // TODO rename this
+    class EditProfileListener implements ActionListener {
 
         @Override
         public void actionPerformed(final ActionEvent e) {
@@ -114,32 +111,27 @@ public class Controller {
                     ProfileEditor editor = new ProfileEditor(viewer.getSelectedValue(), house != null);
                     if (house != null) {
                         editor.addLocations(house.getLocations());
+                        if (editor.getRole() != null && house.contains(editor.getRole())) {
+                            editor.selectLocation(house.locationOf(editor.getRole()));
+                        }
                     }
-                    editor.pack();
-                    editor.setLocationRelativeTo(viewer);
-                    editor.setVisible(true);
                     editor.addActionListener(f -> {
-                        // Extract input from user
                         String name = editor.getRole();
                         Permission permission = editor.getSelectedPermission();
                         String location = editor.getSelectionLocation();
-
                         // TODO validate input
-
-                        // Add profile
                         parameters.addActor(name, permission);
-
-                        // Place person in location
                         if (location != null) {
                             house.addPerson(name, permission, location);
                         }
-
-                        // Add in the ui
                         if (!viewer.containsProfile(name)) {
                             viewer.addProfile(name);
                         }
                         editor.dispose();
                     });
+                    editor.pack();
+                    editor.setLocationRelativeTo(viewer);
+                    editor.setVisible(true);
                     break;
                 }
                 case "Remove": {
@@ -207,45 +199,36 @@ public class Controller {
 
     }
 
-    public class WindowActionListener extends MouseAdapter {
+    class ActionSelectionListener extends MouseAdapter {
 
         @Override
         public void mouseClicked(final MouseEvent e) {
-            if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 2) {
-                SwingUtilities.invokeLater(() -> {
-                    WindowViewer viewer = new WindowViewer(house.getWindowsOf(parameters.getLocation()));
-                    viewer.pack();
-                    viewer.setLocationRelativeTo(dashboard);
-                    viewer.setVisible(true);
+            if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() > 1) {
+                ActionPanel actionPanel = dashboard.getActions();
+                ItemChooser chooser = ItemChooser.of(getItems(actionPanel.getSelectedItem()));
+                chooser.addActionListener(f -> {
+                    chooser.getSelectedItem()
+                            .doAction(parameters.getPermission().authorize(actionPanel.getSelectedAction()));
+                    chooser.dispose();
+                    dashboard.sendToConsole(
+                            actionPanel.getSelectedAction() + " performed on " + chooser.getSelectedItem() + " of "
+                                    + parameters.getLocation() + ".");
                 });
+                chooser.pack();
+                chooser.setLocationRelativeTo(dashboard);
+                chooser.setVisible(true);
             }
         }
-
     }
 
-    class WindowViewer extends JFrame {
-
-        JList<Window> list;
-
-        WindowViewer(Window[] windows) {
-            super("Obstruct Windows");
-            list = new JList<>(windows);
-            JButton ok = new JButton("Ok");
-            setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-            setLayout(new BorderLayout());
-            setPreferredSize(new Dimension(0x100, 0x100)); // TODO avoid magic constants
-            setResizable(false);
-            add(list);
-            add(ok, BorderLayout.SOUTH);
-            ok.addActionListener(e -> {
-                Window window = list.getSelectedValue();
-                house.getRoom(parameters.getLocation())
-                        .setObstructed(window.getWall().toInt(), true); // TODO parameterize obstructed
-                dashboard.sendToConsole("Blocked " + window.getWall() + " window in " + parameters.getLocation() + ".");
-                dispose();
-            });
+    private Manipulable[] getItems(String type) {
+        Room location = house.getRoom(parameters.getLocation());
+        switch (type) {
+            case "Windows":
+                return location.getWindows();
+            default:
+                throw new AssertionError(); // TODO what to do here?
         }
-
     }
 
 }
