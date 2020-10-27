@@ -14,9 +14,10 @@ public interface Permission {
      * so.
      *
      * @param action The specified {@code Action}
+     * @return the specified {@code Action}
      * @throws IllegalArgumentException if {@code action} is disallowed at this {@code Permission} level
      * @throws NullPointerException if {@code action} is {@code null}
      */
-    void authorize(Action action);
+    Action authorize(Action action);
 
 }

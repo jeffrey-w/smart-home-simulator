@@ -11,10 +11,11 @@ import java.util.Set;
 public abstract class AbstractPermission implements Permission {
 
     @Override
-    public void authorize(Action action) {
+    public Action authorize(Action action) {
         if (!allowed().contains(Objects.requireNonNull(action))) {
             throw new IllegalArgumentException("You do not have permission to perform that action.");
         }
+        return action;
     }
 
     /**
