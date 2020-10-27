@@ -48,11 +48,12 @@ public class ParameterEditor extends JPanel {
     }
 
     JButton loadHouse = new JButton("Load House");
-    JButton editProfiles = new JButton("Edit Profiles");
+    JButton editProfiles = new JButton("Manage Profiles");
     JComboBox<Permission> permission = permissionJComboBox();
     JComboBox<String> location = new JComboBox<>();
     JSpinner temperature = new JSpinner(TEMP_MODEL);
     JSpinner date = new JSpinner(DATE_MODEL);
+    // TODO add error message
 
     /**
      * Constructs a new {@code ParameterEditor} object.
