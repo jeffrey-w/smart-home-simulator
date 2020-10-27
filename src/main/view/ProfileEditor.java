@@ -92,4 +92,8 @@ public class ProfileEditor extends JFrame {
     public String getSelectionLocation() {
         return (String) location.getSelectedItem();
     }
+
+    public void selectLocation(String location) {
+        this.location.setSelectedItem(location);
+    }
 }
