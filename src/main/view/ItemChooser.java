@@ -1,6 +1,7 @@
 package main.view;
 
 import main.model.elements.Manipulable;
+import main.view.viewtils.ManipulableRenderer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,6 +17,7 @@ public class ItemChooser extends JFrame {
 
     public static ItemChooser of(Manipulable[] items) {
         ItemChooser chooser = new ItemChooser();
+        chooser.list.setCellRenderer(new ManipulableRenderer());
         for (Manipulable manipulable : items) {
             chooser.manipulables.addElement(manipulable);
         }
@@ -27,6 +29,7 @@ public class ItemChooser extends JFrame {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(DIM, DIM));
+        setResizable(false);
         add(list);
         add(ok, BorderLayout.SOUTH);
     }
