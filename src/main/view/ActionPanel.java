@@ -13,7 +13,7 @@ import java.util.Map;
  *
  * @author Jeff Wilgus
  */
-public class ActionPanel extends JPanel {
+public class ActionPanel extends JPanel { // TODO use JSplitPlane
 
     private static final Map<String, Action[]> ACTIONS = new HashMap<>();
 
