@@ -17,22 +17,11 @@ import static main.util.NameValidator.validateName;
  */
 public class House implements Iterable<Room> {
 
-    public boolean contains(String role) {
-        return people.containsKey(role);
-    }
-
-    public String locationOf(String role) {
-        if (contains(role)) {
-            return people.get(role);
-        }
-        throw new NoSuchElementException("No person by that name exists in this house.");
-     }
-
     private static class Node {
+
         Room room;
         Set<String> adjacents;
         boolean visited;
-
         Node(Room room) {
             this.room = Objects.requireNonNull(room);
             this.adjacents = new HashSet<>();
@@ -46,8 +35,8 @@ public class House implements Iterable<Room> {
             Node node = (Node) obj;
             return room.equals(node.room);
         }
-    }
 
+    }
     /**
      * The maximum number of {@code Room}s that another {@code Room} may be adjacent to.
      */
@@ -131,10 +120,9 @@ public class House implements Iterable<Room> {
      * Removes the person with the specified {@code name} from this {@code House}.
      *
      * @param name The specified name
-     * @throws NoSuchElementException if there is no person by the specified {@code name} in this {@code House}
      */
     public void removePerson(String name) {
-        validateLocation(people.remove(name)).room.removePerson(name);
+        rooms.get(people.remove(name)).room.removePerson(name);
     }
 
     /**
@@ -143,7 +131,7 @@ public class House implements Iterable<Room> {
      * @return The names of the {@code Room}s in this {@code House}
      */
     public Set<String> getLocations() {
-        return Collections.unmodifiableSet(rooms.keySet());
+        return Set.copyOf(rooms.keySet());
     }
 
     /**
@@ -158,21 +146,34 @@ public class House implements Iterable<Room> {
     }
 
     /**
-     * Provides the collection of {@code Windows} in the {@code Room} at the specified {@code location}.
-     *
-     * @param location The specified location
-     * @return The {@code Windows} at the specified {@code location}
-     * @throws NoSuchElementException if the specified {@code location} does not exist in this {@code House}
-     */
-    public Window[] getWindowsOf(String location) {
-        return validateLocation(location).room.getWindows();
-    }
-
-    /**
      * @return The number of {@code Room}s in this house
      */
     public int size() {
         return rooms.size();
+    }
+
+    /**
+     * Determines whether or not the specified {@code person} is in this {@code House}.
+     *
+     * @param person The specified person
+     * @return {@code true} if the specified {@code person} is in this {@code House}
+     */
+    public boolean contains(String person) {
+        return people.containsKey(person);
+    }
+
+    /**
+     * Provides the location of the specified {@code person} in this {@code House}.
+     *
+     * @param person The specified person
+     * @return The name of the {@code Room} that the specified {@code person} is in.
+     * @throws NoSuchElementException If the specified {@code person} is not in this {@code House}
+     */
+    public String locationOf(String person) {
+        if (contains(person)) {
+            return people.get(person);
+        }
+        throw new NoSuchElementException("No person by that person exists in this house.");
     }
 
     /**
