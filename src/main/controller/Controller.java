@@ -17,6 +17,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Date;
+import java.util.NoSuchElementException;
 
 /**
  * The {@code Controller} class provides the interface between runtime simulation objects and the UI elements to
@@ -60,6 +61,7 @@ public class Controller {
         dashboard.addTemperatureListener(new TemperatureListener());
         dashboard.addDateListener(new DateListener());
         dashboard.addActionSelectionListener(new ActionSelectionListener());
+        dashboard.drawHouse(house);
     }
 
     /*
@@ -119,10 +121,14 @@ public class Controller {
                         String name = editor.getRole();
                         Permission permission = editor.getSelectedPermission();
                         String location = editor.getSelectionLocation();
-                        // TODO validate input
                         parameters.addActor(name, permission);
-                        if (location != null) {
-                            house.addPerson(name, permission, location);
+                        if (location != null) { // Assume that house is non-null since location field is enabled.
+                            try {
+                                house.addPerson(name, permission, location);
+                                dashboard.sendToConsole(name + " entered " + location + ".");
+                            } catch (Exception exception) {
+                                dashboard.sendToConsole(exception.getMessage());
+                            }
                         }
                         if (!viewer.containsProfile(name)) {
                             viewer.addProfile(name);
@@ -158,7 +164,13 @@ public class Controller {
             parameters.setPermission(permission);
             dashboard.setPermission(permission.toString());
             if (house != null && location != null) {
-                house.addPerson("user", permission, location);
+                try {
+                    house.addPerson("user", permission, location);
+                } catch (Exception exception) {
+                    parameters.setLocation(null);
+                    house.removePerson("user");
+                    dashboard.setLocation((String) null);
+                }
             }
         }
 
@@ -168,11 +180,17 @@ public class Controller {
 
         @Override
         public void actionPerformed(final ActionEvent e) {
-            // TODO require that permission be set
             String location = dashboard.getLocationInput();
             parameters.setLocation(location);
             dashboard.setLocation(location);
-            house.addPerson("user", parameters.getPermission(), location);
+            try {
+                house.addPerson("user", parameters.getPermission(), location);
+                dashboard.sendToConsole("You have entered " + location + ".");
+            } catch (NoSuchElementException exception) {
+                dashboard.sendToConsole("You have removed yourself for the house.");
+            } catch (Exception exception) {
+                dashboard.sendToConsole(exception.getMessage());
+            }
         }
 
     }
@@ -204,21 +222,36 @@ public class Controller {
         @Override
         public void mouseClicked(final MouseEvent e) {
             if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() > 1) {
-                ActionPanel actionPanel = dashboard.getActions();
-                ItemChooser chooser = ItemChooser.of(getItems(actionPanel.getSelectedItem()));
-                chooser.addActionListener(f -> {
-                    chooser.getSelectedItem()
-                            .doAction(parameters.getPermission().authorize(actionPanel.getSelectedAction()));
-                    chooser.dispose();
-                    dashboard.sendToConsole(
-                            actionPanel.getSelectedAction() + " performed on " + chooser.getSelectedItem() + " of "
-                                    + parameters.getLocation() + ".");
-                });
-                chooser.pack();
-                chooser.setLocationRelativeTo(dashboard);
-                chooser.setVisible(true);
+                if (canAct()) {
+                    ActionPanel actionPanel = dashboard.getActions();
+                    ItemChooser chooser = ItemChooser.of(getItems(actionPanel.getSelectedItem()));
+                    chooser.addActionListener(f -> {
+                        try {
+                            chooser.getSelectedItem()
+                                    .manipulate(parameters.getPermission().authorize(actionPanel.getSelectedAction()));
+                            dashboard.sendToConsole(
+                                    actionPanel.getSelectedAction() + " performed on " + chooser.getSelectedItem()
+                                            + " of " + parameters.getLocation() + ".");
+                        } catch (IllegalArgumentException exception) {
+                            dashboard.sendToConsole(exception.getMessage());
+                        }
+                        chooser.dispose();
+                    });
+                    chooser.pack();
+                    chooser.setLocationRelativeTo(dashboard);
+                    chooser.setVisible(true);
+                } else {
+                    dashboard.sendToConsole("Please select a permission and location to choose an action.");
+                    if (house == null) {
+                        dashboard.sendToConsole("You must first load a house to select a location.");
+                    }
+                }
             }
         }
+    }
+
+    private boolean canAct() {
+        return !(parameters.getPermission() == null || parameters.getLocation() == null);
     }
 
     private Manipulable[] getItems(String type) {
@@ -227,7 +260,7 @@ public class Controller {
             case "Windows":
                 return location.getWindows();
             default:
-                throw new AssertionError(); // TODO what to do here?
+                throw new AssertionError();
         }
     }
 
