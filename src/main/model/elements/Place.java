@@ -36,7 +36,7 @@ public abstract class Place {
      * @throws NullPointerException if the specified {@code permission} is {@code null}
      */
     public void addPerson(String name, Permission permission) {
-        people.put(validateName(name), Objects.requireNonNull(permission));
+        people.put(validateName(name), Objects.requireNonNull(permission, "Please select a permission level."));
     }
 
     /**
@@ -45,7 +45,7 @@ public abstract class Place {
      * @param name The name of the person/user to remove from this {@code Place}
      */
     public void removePerson(String name) {
-        // TODO: Do we need to consider people with the same name located in the same room?
         people.remove(name);
     }
+
 }
