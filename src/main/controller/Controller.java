@@ -121,19 +121,23 @@ public class Controller {
                         String name = editor.getRole();
                         Permission permission = editor.getSelectedPermission();
                         String location = editor.getSelectionLocation();
-                        parameters.addActor(name, permission);
-                        if (location != null) { // Assume that house is non-null since location field is enabled.
-                            try {
+                        try {
+                            parameters.addActor(name, permission);
+                            if (location != null) { // Assume that house is non-null since location field is enabled.
                                 house.addPerson(name, permission, location);
                                 dashboard.sendToConsole(name + " entered " + location + ".");
-                            } catch (Exception exception) {
-                                dashboard.sendToConsole(exception.getMessage());
+                            } else {
+                                if (house != null && house.removePerson(name)) {
+                                    dashboard.sendToConsole(name + " exited the house.");
+                                }
                             }
+                            if (!viewer.containsProfile(name)) {
+                                viewer.addProfile(name);
+                            }
+                            editor.dispose();
+                        } catch (Exception exception) {
+                            dashboard.sendToConsole(exception.getMessage());
                         }
-                        if (!viewer.containsProfile(name)) {
-                            viewer.addProfile(name);
-                        }
-                        editor.dispose();
                     });
                     editor.pack();
                     editor.setLocationRelativeTo(viewer);
