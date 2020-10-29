@@ -3,6 +3,7 @@ package main.view;
 import main.model.parameters.permissions.Action;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,8 +14,9 @@ import java.util.Map;
  *
  * @author Jeff Wilgus
  */
-public class ActionPanel extends JPanel { // TODO use JSplitPlane
+public class ActionPanel extends JPanel {
 
+    private static final int NUM_ROWS = 2;
     private static final Map<String, Action[]> ACTIONS = new HashMap<>();
 
     static {
@@ -29,14 +31,13 @@ public class ActionPanel extends JPanel { // TODO use JSplitPlane
      * Constructs a new {@code ActionPanel} object.
      */
     public ActionPanel() {
-        JPanel top = new JPanel(new BorderLayout()), bottom = new JPanel(new BorderLayout());
-        setLayout(new BorderLayout());
-        add(top);
-        add(bottom, BorderLayout.SOUTH);
-        top.add(new JLabel("Items"), BorderLayout.NORTH);
-        top.add(items);
-        bottom.add(new JLabel("Actions"), BorderLayout.NORTH);
-        bottom.add(actions);
+        JScrollPane itemPane = new JScrollPane(items);
+        JScrollPane actionPane = new JScrollPane(actions);
+        setLayout(new GridLayout(NUM_ROWS, 1));
+        itemPane.setBorder(new TitledBorder(BorderFactory.createEmptyBorder(), "Items"));
+        actionPane.setBorder(new TitledBorder(BorderFactory.createEmptyBorder(), "Actions"));
+        add(itemPane);
+        add(actionPane);
         items.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 if (items.getSelectedIndex() == -1) {
@@ -51,10 +52,20 @@ public class ActionPanel extends JPanel { // TODO use JSplitPlane
         });
     }
 
+    /**
+     * Provides the {@code House} item currently selected by this {@code ActionPanel}.
+     *
+     * @return The selected {@code House} item
+     */
     public String getSelectedItem() {
         return items.getSelectedValue();
     }
 
+    /**
+     * Provides the {@code Action} currently selected by this {@code ActionPanel}.
+     *
+     * @return The selected {@code Action}
+     */
     public Action getSelectedAction() {
         return actions.getSelectedValue();
     }
