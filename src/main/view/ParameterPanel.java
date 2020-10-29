@@ -48,20 +48,18 @@ public class ParameterPanel extends JPanel {
      * Setter to modify the permission of a user
      *
      * @param permission The new assigned user permission
-     * @throws NullPointerException if the specified {@code permission} is {@code null}
      */
     void setPermission(String permission) {
-        this.permission.setText("Permission: " + Objects.requireNonNull(permission));
+        this.permission.setText("Permission: " + ((permission == null) ? "" : permission));
     }
 
     /**
      * Setter to modify the location of a user
      *
      * @param location The user's new position
-     * @throws NullPointerException if the specified {@code location} is {@code null}
      */
-    void setLocation(String location) { // TODO rename this
-        this.location.setText("Location: " + Objects.requireNonNull(location));
+    void setLocation(String location) {
+        this.location.setText("Location: " + ((location == null) ? "" : location));
     }
 
     /**
