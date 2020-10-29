@@ -11,45 +11,35 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class HouseReaderTest {
 
-    HouseReader houseReader = new HouseReader(new File("src/test/houseLayoutTest.json"));
+    HouseReader houseReader = new HouseReader(new File("src/test/io/houseLayoutTest.json"));
 
     @Test
     void testReadHouse() {
         // Build living room
-        Door livingRoomDoor1 = new Door(false, false);
-        Door livingRoomDoor2 = new Door(true, false);
-        Door livingRoomDoor3 = new Door(false, false);
-        Door livingRoomDoor4 = new Door(true, false);
-        Door[] livingRoomDoors = new Door[] {livingRoomDoor1, livingRoomDoor2, livingRoomDoor3, livingRoomDoor4};
+        Door livingRoomDoor1 = new Door();
+        Door livingRoomDoor2 = new Door();
+        Door[] livingRoomDoors = new Door[] {null, livingRoomDoor1, null, livingRoomDoor2};
 
-        Light livingRoomLight1 = new Light(true, true);
-        Light livingRoomLight2 = new Light(true, true);
-        Light[] livingRoomLights = new Light[] {livingRoomLight1, livingRoomLight2};
+        Light livingRoomLight1 = new Light();
+        Light livingRoomLight2 = new Light();
+        Light[] livingRoomLights = new Light[] {livingRoomLight1, livingRoomLight2, null, null};
 
-        Window livingRoomWindow1 = new Window(true, false, Wall.NORTH);
-        Window livingRoomWindow2 = new Window(false, false, Wall.EAST);
-        Window livingRoomWindow3 = new Window(false, false, Wall.SOUTH);
-        Window livingRoomWindow4 = new Window(true, false, Wall.WEST);
-        Window[] livingRoomWindows =
-                new Window[] {livingRoomWindow1, livingRoomWindow2, livingRoomWindow3, livingRoomWindow4};
+        Window livingRoomWindow1 = new Window();
+        Window livingRoomWindow2 = new Window();
+        Window[] livingRoomWindows = new Window[] {livingRoomWindow1, null, null, livingRoomWindow2};
 
         // Build kitchen
-        Door kitchenDoor1 = new Door(false, false);
-        Door kitchenDoor2 = new Door(false, false);
-        Door kitchenDoor3 = new Door(false, false);
-        Door kitchenDoor4 = new Door(true, false);
-        Door[] kitchenDoors = new Door[] {kitchenDoor1, kitchenDoor2, kitchenDoor3, kitchenDoor4};
+        Door kitchenDoor1 = new Door();
+        Door[] kitchenDoors = new Door[] {null, null, null, kitchenDoor1};
 
-        Light kitchenLight1 = new Light(true, true);
-        Light kitchenLight2 = new Light(true, false);
-        Light kitchenLight3 = new Light(true, true);
-        Light[] kitchenLights = new Light[] {kitchenLight1, kitchenLight2, kitchenLight3};
+        Light kitchenLight1 = new Light();
+        Light kitchenLight2 = new Light();
+        Light kitchenLight3 = new Light();
+        Light[] kitchenLights = new Light[] {kitchenLight1, kitchenLight2, kitchenLight3, null};
 
-        Window kitchenWindow1 = new Window(true, false, Wall.NORTH);
-        Window kitchenWindow2 = new Window(true, true, Wall.EAST);
-        Window kitchenWindow3 = new Window(false, false, Wall.SOUTH);
-        Window kitchenWindow4 = new Window(false, false, Wall.WEST);
-        Window[] kitchenWindows = new Window[] {kitchenWindow1, kitchenWindow2, kitchenWindow3, kitchenWindow4};
+        Window kitchenWindow1 = new Window();
+        Window kitchenWindow2 = new Window();
+        Window[] kitchenWindows = new Window[] {kitchenWindow1, kitchenWindow2, null, null};
 
         Room livingRoom = new Room(livingRoomDoors, livingRoomLights, livingRoomWindows);
         Room kitchen = new Room(kitchenDoors, kitchenLights, kitchenWindows);

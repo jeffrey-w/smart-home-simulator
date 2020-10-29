@@ -4,32 +4,26 @@
     {
       "id": "living_room",
       "doors": {
-        "location": [false, true, false, true],
-        "locked": [false, false, false, false]
+        "location": [false, true, false, true]
       },
       "lights": {
-        "present": [true, true],
-        "on": [true, true]
+        "location": [true, true, false, false]
       },
       "windows": {
-        "location": [true, false, false, true],
-        "obstructed": [false, false, false, false]
+        "location": [true, false, false, true]
       },
       "connections": ["kitchen"]
     },
     {
       "id": "kitchen",
       "doors": {
-        "location": [false, false, false, true],
-        "locked": [false, false, false, false]
+        "location": [false, false, false, true]
       },
       "lights": {
-        "present": [true, true, true],
-        "on": [true, false, true]
+        "location": [true, true, true, false]
       },
       "windows": {
-        "location": [true, true, false, false],
-        "obstructed": [false, true, false, false]
+        "location": [true, true, false, false]
       }
     }
   ]
