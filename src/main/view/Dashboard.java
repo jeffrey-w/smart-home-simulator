@@ -23,17 +23,6 @@ import java.util.Set;
  */
 public class Dashboard extends JFrame {
 
-    /**
-     * A collection of default {@code Permission} levels.
-     */
-    public static final Permission[] PERMISSIONS = new Permission[] {
-            null,
-            new ParentPermission(),
-            new ChildPermission(),
-            new GuestPermission(),
-            new StrangerPermission()
-    };
-
     // Pre-determined size parameters
     static final int WINDOW_WIDTH = 0x600;
     static final int WINDOW_HEIGHT = 0x300;
