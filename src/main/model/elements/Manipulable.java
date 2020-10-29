@@ -14,7 +14,7 @@ public interface Manipulable {
     /**
      * Performs the specified {@code action} on this {@code Manipulable}.
      *
-     * @param action the specified {@code Action}
+     * @param action The specified {@code Action}
      */
     void manipulate(Action action);
 
