@@ -26,7 +26,8 @@ public class Dashboard extends JFrame {
     /**
      * A collection of default {@code Permission} levels.
      */
-    public static final Permission[] PERMISSIONS = new Permission[] { // TODO rethink this
+    public static final Permission[] PERMISSIONS = new Permission[] {
+            null,
             new ParentPermission(),
             new ChildPermission(),
             new GuestPermission(),
@@ -46,10 +47,9 @@ public class Dashboard extends JFrame {
 
     ParameterPanel parameters = new ParameterPanel();
     ParameterEditor editor = new ParameterEditor();
-    JPanel content = new JPanel(); // TODO encapsulate actions and layout into one JPanel
     ActionPanel actions = new ActionPanel();
-    HouseLayoutPanel layout = new HouseLayoutPanel(null);
-    JTextArea console = new JTextArea("Welcome to Smart Home Simulator!");
+    HouseLayoutPanel layout = new HouseLayoutPanel();
+    JTextArea console = new JTextArea("Welcome to Smart Home Simulator!\n");
     ProfileViewer profileViewer = new ProfileViewer();
 
     /**
@@ -63,6 +63,7 @@ public class Dashboard extends JFrame {
         // Top-level containers for window content.
         JTabbedPane parameterPane = new JTabbedPane();
         JTabbedPane contentPane = new JTabbedPane();
+        JPanel content = new JPanel();
 
         // Set window display behavior.
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -83,7 +84,7 @@ public class Dashboard extends JFrame {
         contentPane.addTab("Simulation", content);
         contentPane.setPreferredSize(new Dimension(CONTENT_PANE_WIDTH, WINDOW_HEIGHT));
 
-        // Add main.model.elements to content panel.
+        // Add elements to content panel.
         content.setLayout(new BorderLayout());
         content.add(actions, BorderLayout.WEST);
         content.add(layout, BorderLayout.EAST);
@@ -116,7 +117,7 @@ public class Dashboard extends JFrame {
      * @param location The specified location
      * @throws NullPointerException if the specified {@code location} is {@code null}
      */
-    public void setLocation(String location) { // TODO rename this
+    public void setLocation(String location) {
         parameters.setLocation(location);
     }
 
@@ -177,6 +178,24 @@ public class Dashboard extends JFrame {
     }
 
     /**
+     * Retrieves this {@code Dashboard}'s {@code ProfileViewer}.
+     *
+     * @return The {@code ProfileViewer} for this {@code Dashboard}
+     */
+    public ProfileViewer getProfileViewer() {
+        return profileViewer;
+    }
+
+    /**
+     * Retrieves this {@code Dashboard}'s {@code ActionPanel}.
+     *
+     * @return The {@code ActionPanel} for this {@code Dashboard}
+     */
+    public ActionPanel getActions() {
+        return actions;
+    }
+
+    /**
      * Registers an event handler for loading {@code House} layouts.
      *
      * @param listener The specified event handler
@@ -190,11 +209,11 @@ public class Dashboard extends JFrame {
      *
      * @param listener The specified event handler
      */
-    public void addManageProfilesListener(ActionListener listener) { // TODO rename this
-        editor.editProfiles.addActionListener(listener);
+    public void addManageProfilesListener(ActionListener listener) {
+        editor.manageProfiles.addActionListener(listener);
     }
 
-    public void addEditProfileListener(ActionListener listener) { // TODO rename this
+    public void addEditProfileListener(ActionListener listener) {
         profileViewer.addEditProfileListener(listener);
     }
 
@@ -234,7 +253,11 @@ public class Dashboard extends JFrame {
         editor.date.addChangeListener(listener);
     }
 
-    // TODO comment this
+    /**
+     * Registers an event handler for selecting an {@code Action} to perform on a {@code Manipulable}
+     *
+     * @param listener the specified event handler
+     */
     public void addActionSelectionListener(MouseListener listener) {
         actions.actions.addMouseListener(listener);
     }
@@ -246,6 +269,7 @@ public class Dashboard extends JFrame {
      * @param locations The specified locations
      */
     public void activateLocations(Set<String> locations) {
+        editor.location.addItem(null);
         for (String location : locations) {
             editor.location.addItem(location);
         }
@@ -258,7 +282,7 @@ public class Dashboard extends JFrame {
      * @param house The specified house
      */
     public void drawHouse(House house) {
-        layout.setHouse(house);
+        layout.drawHouse(house);
     }
 
     /**
@@ -267,17 +291,7 @@ public class Dashboard extends JFrame {
      * @param message The specified message
      */
     public void sendToConsole(String message) {
-        console.setText(console.getText() + '\n' + message);
-    }
-
-    // TODO comment this
-    public ProfileViewer getProfileViewer() {
-        return profileViewer;
-    }
-
-    // TODO comment this
-    public ActionPanel getActions() {
-        return actions;
+        console.setText(console.getText() + "\n> " + message);
     }
 
 }
