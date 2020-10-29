@@ -10,52 +10,63 @@ package main.model.elements;
 
 public class Door {
 
-    //If not provided by the user, the system uses these default values.
-    private static final boolean DEFAULT_DOOR_LOCATION = true;
-    private static final boolean DEFAULT_DOOR_LOCK = false;
+    // If not provided by the user, the system uses these default values.
+    private static final boolean DEFAULT_OPEN_VALUE = false;
+    private static final boolean DEFAULT_LOCKED_VALUE = false;
 
-    private final boolean located;
-    private boolean isLocked;
+    private boolean open;
+    private boolean locked;
 
     /**
-     * Constructs a {@code Door} with the default location and locked state.
+     * Constructs a {@code Door} with a {@value DEFAULT_OPEN_VALUE} open state a {@value DEFAULT_LOCKED_VALUE} locked
+     * state.
      */
     public Door() {
-        this.located = DEFAULT_DOOR_LOCATION;
-        this.isLocked = DEFAULT_DOOR_LOCK;
+        this(DEFAULT_OPEN_VALUE, DEFAULT_LOCKED_VALUE);
     }
 
     /**
-     * Constructs a {@code Door} with a given location and locked state.
+     * Constructs a {@code Door} with the specified {@code open} {@code locked} state.
      *
-     * @param loc This boolean refers to whether a door is located on a wall or not. Each room contains a Door
-     *         array of length 4 to signify each wall (N-E-S-W)
-     * @param locked This boolean refers to the state of the door, be it locked or not. If the boolean is false,
-     *         then it is unlocked. If it is true, it is locked.
+     * @param open The specified open state
+     * @param locked The specified locked state
      */
-    public Door(boolean loc, boolean locked) {
-        this.located = loc;
-        this.isLocked = locked;
+    public Door(boolean open, boolean locked) {
+        setOpen(open);
+        setLocked(locked);
     }
 
     /**
-     * This setter allows the user to lock a door.
      *
-     * @param locked The new door state.
+     * @return The open state of this {@code Door}
      */
-    void setLocked(boolean locked) {
-        this.isLocked = locked;
+    public boolean isOpen() {
+        return open;
     }
 
     /**
-     * Outputs the state of the door to the user.
+     * @return {@code true} if this {@code Door} is locked
      */
-    void isLockedString() {
-        if (this.isLocked) {
-            System.out.println("This door is locked.");
-        } else {
-            System.out.println("This door is not locked.");
-        }
+    public boolean isLocked() {
+        return locked;
+    }
+
+    /**
+     * Sets the {@code open} state of this {@code Door} to that specified.
+     *
+     * @param open The specified open state
+     */
+    public void setOpen(boolean open) {
+        this.open = open;
+    }
+
+    /**
+     * Sets the {@code locked} state of this {@code Door} to that specified.
+     *
+     * @param locked The specified locked state
+     */
+    public void setLocked(boolean locked) {
+        this.locked = locked;
     }
 
     @Override
@@ -63,16 +74,14 @@ public class Door {
         if (!(obj instanceof Door)) {
             return false;
         }
-        Door door = (Door) obj;
-        return located == door.located && isLocked == door.isLocked;
+        return locked == ((Door) obj).locked;
     }
 
     @Override
     public int hashCode() {
         int prime = 31;
         int result = 1;
-        result = prime * result + Boolean.hashCode(located);
-        result = prime * result + Boolean.hashCode(isLocked);
+        result = prime * result + Boolean.hashCode(locked);
         return result;
     }
 }
