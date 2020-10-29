@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * The {@code Avatar} class provides the UI element for a user profile image.
@@ -25,13 +26,10 @@ class Avatar extends JPanel {
      */
     Avatar(File file) {
         try {
-            avatar = scale(ImageIO.read(file));
-        } catch (IOException | IllegalArgumentException e) { // TODO remove IllegalArgumentException
-            try { // TODO this is sloppy
-                avatar = scale(ImageIO.read(new File("assets/default-avatar.png")));
-            } catch (IOException ioException) {
-                System.err.println("Failed to load default image.");
-            }
+            avatar = scale(ImageIO
+                    .read(Objects.requireNonNullElseGet(file, () -> new File("assets/default-avatar.png"))));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
