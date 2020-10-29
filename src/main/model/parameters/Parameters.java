@@ -52,7 +52,7 @@ public class Parameters {
      * @throws NullPointerException if the specified {@code permission} is {@code null}
      */
     public void addActor(String name, Permission permission) {
-        actors.put(validateName(name), Objects.requireNonNull(permission));
+        actors.put(validateName(name), Objects.requireNonNull(permission, "Please select a permission level."));
     }
 
     /**
