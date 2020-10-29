@@ -79,7 +79,7 @@ public class ProfileViewer extends JFrame {
         profiles.clear();
     }
 
-    public void addEditProfileListener(ActionListener listener) { // TODO rename this
+    public void addEditProfileListener(ActionListener listener) {
         add.addActionListener(listener);
         edit.addActionListener(listener);
         remove.addActionListener(listener);
