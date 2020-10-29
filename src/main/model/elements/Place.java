@@ -40,12 +40,13 @@ public abstract class Place {
     }
 
     /**
-     * Remove the specified person from this {@code Place}
+     * Remove the specified {@code person} from this {@code Place}
      *
-     * @param name The name of the person/user to remove from this {@code Place}
+     * @param person The specified person
+     * @return {@code true} if the specified {@code person} was removed from this {@code Place}.
      */
-    public void removePerson(String name) {
-        people.remove(name);
+    public boolean removePerson(String person) {
+        return people.remove(person) != null;
     }
 
 }

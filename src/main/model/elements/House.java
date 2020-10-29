@@ -117,12 +117,13 @@ public class House implements Iterable<Room> {
     }
 
     /**
-     * Removes the person with the specified {@code name} from this {@code House}.
+     * Removes the person with the specified {@code person} from this {@code House}.
      *
-     * @param name The specified name
+     * @param person The specified person
+     * @return {@code true} if the specified {@code person} was removed from this {@code House}
      */
-    public void removePerson(String name) {
-        rooms.get(people.remove(name)).room.removePerson(name);
+    public boolean removePerson(String person) {
+        return rooms.get(people.remove(person)).room.removePerson(person);
     }
 
     /**
