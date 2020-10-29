@@ -1,7 +1,7 @@
 package main.view;
 
 import main.model.parameters.Parameters;
-import main.model.parameters.permissions.Permission;
+import main.model.parameters.permissions.*;
 import main.view.viewtils.SpringUtilities;
 
 import javax.swing.*;
@@ -11,8 +11,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * The {@code ParameterEditor} class provides the UI elements for a user to set the global settings of a
- * simulation (such as the external temperature and the date) and their own {@code Permission} level and location.
+ * The {@code ParameterEditor} class provides the UI elements for a user to set the global settings of a simulation
+ * (such as the external temperature and the date) and their own {@code Permission} level and location.
  *
  * @author Jeff Wilgus
  */
@@ -26,7 +26,14 @@ public class ParameterEditor extends JPanel {
     private static final int FIELD_COLUMNS = 2;
     private static final int FIELD_Y_PADDING = 0x80;
 
-    private static JComboBox<Permission> PERMISSION_J_COMBO_BOX;
+    private static final ComboBoxModel<Permission> PERMISSION_COMBO_BOX_MODEL =
+            new DefaultComboBoxModel<>(new Permission[] {
+                    null,
+                    new ParentPermission(),
+                    new ChildPermission(),
+                    new GuestPermission(),
+                    new StrangerPermission()
+            });
     private static final SpinnerNumberModel TEMP_MODEL =
             new SpinnerNumberModel(Parameters.DEFAULT_TEMPERATURE, Parameters.MIN_TEMPERATURE,
                     Parameters.MAX_TEMPERATURE, 1);
@@ -34,13 +41,7 @@ public class ParameterEditor extends JPanel {
             new SpinnerDateModel(Date.from(Instant.now()), null, null, Calendar.DAY_OF_YEAR);
 
     static JComboBox<Permission> permissionJComboBox() {
-        if (PERMISSION_J_COMBO_BOX == null) {
-            PERMISSION_J_COMBO_BOX = new JComboBox<>();
-            for (Permission permission : Dashboard.PERMISSIONS) {
-                PERMISSION_J_COMBO_BOX.addItem(permission);
-            }
-        }
-        return PERMISSION_J_COMBO_BOX;
+        return new JComboBox<>(PERMISSION_COMBO_BOX_MODEL);
     }
 
     static JLabel labelFactory(String text) {
