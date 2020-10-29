@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public class HouseLayoutPanel extends JPanel {
 
-    private static final int ROOM_DIM = 100;
+    private static final int ROOM_DIM = 0x80;
     private static final String NULL_HOUSE_MESSAGE = "No house loaded.";
 
     int x, y;
@@ -56,4 +56,5 @@ public class HouseLayoutPanel extends JPanel {
             }
         }
     }
+
 }
