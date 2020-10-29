@@ -1,9 +1,10 @@
 package main.model.elements;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
- * A {@code Room} is comprised of many house main.model.elements, such as {@code Door}s, {@code Light}s, {@code
+ * A {@code Room} is comprised of many {@code House} elements, such as {@code Door}s, {@code Light}s, and {@code
  * Window}s.
  *
  * @author Philippe Vo
@@ -22,62 +23,47 @@ public class Room extends Place {
     private final Window[] windows;
 
     /**
-     * Constructs a Room with the given doors, lights, and windows.
+     * Constructs a {@code Room} with the given {@code doors}, {@code lights}, and {@code windows}.
      *
-     * @param doors An array of all doors contained within the room (location + lock state)
-     * @param lights An array of all lights contained within the room (presence + on state)
-     * @param windows An array of all windows contained within the room (location + obstruction state)
+     * @param doors A collection of {@code Door}s in this {@code Room}
+     * @param lights A collection of {@code Light}s in this {@code Room}
+     * @param windows A collection of {@code Window}s in this {@code Room}
      */
     public Room(Door[] doors, Light[] lights, Window[] windows) {
         this.temperature = DEFAULT_ROOM_TEMPERATURE;
-        this.doors = doors;
-        this.lights = lights;
-        this.windows = windows;
+        this.doors = Objects.requireNonNull(doors); // TODO consider making defensive copies in a future release
+        this.lights = Objects.requireNonNull(lights);
+        this.windows = Objects.requireNonNull(windows);
     }
 
     /**
-     * @return All doors contained within this {@code Room}
+     * @return All {@code Door}s contained within this {@code Room}
      */
     public Door[] getDoors() {
         return this.doors;
     }
 
     /**
-     * @return All lights contained within this {@code Room}
+     * @return All {@code Light}s contained within this {@code Room}
      */
     public Light[] getLights() {
         return this.lights;
     }
 
     /**
-     * @return All windows contained within this {@code Room}
+     * @return All {@code Window}s contained within this {@code Room}
      */
     public Window[] getWindows() {
         return this.windows;
     }
 
     /**
-     * Setter to change the temperature of this {@code Room}
+     * Sets the internal {@code temperature} of this {@code Room} to that specified.
      *
-     * @param temp The new temperature
+     * @param temperature The specified temeperature
      */
-    public void setTemperature(int temp) {
-        this.temperature = temp;
-    }
-
-    /**
-     * Sets the {@code obstructed} status of the {@code Window} at the specified {@code wall} to that specified.
-     *
-     * @param wall The specified wall
-     * @param obstructed The specified obstructed status
-     * @throws IllegalArgumentException if the specified {@code wall} does not have a {@code Window}
-     */
-    public void setObstructed(int wall, boolean obstructed) {
-        try {
-            windows[wall].setObstructed(obstructed);
-        } catch (NullPointerException e) {
-            throw new IllegalArgumentException("There is no window on that wall");
-        }
+    public void setTemperature(int temperature) {
+        this.temperature = temperature;
     }
 
     @Override
