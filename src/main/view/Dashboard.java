@@ -29,12 +29,11 @@ public class Dashboard extends JFrame {
     // Pre-determined size parameters
     static final int WINDOW_WIDTH = 0x600;
     static final int WINDOW_HEIGHT = 0x300;
-    static final int PARAMETER_PANE_WIDTH = WINDOW_WIDTH >>> 2;
-    static final int CONTENT_PANE_WIDTH = WINDOW_WIDTH - (WINDOW_WIDTH >>> 2); // x >>> y == x / 2^y
+    static final int PARAMETER_PANE_WIDTH = WINDOW_WIDTH >>> 2; // x >>> y == x / 2^y
+    static final int CONTENT_PANE_WIDTH = WINDOW_WIDTH - PARAMETER_PANE_WIDTH;
     static final int CONTENT_WIDTH = CONTENT_PANE_WIDTH >>> 1; // Computers like bitwise operators!
     static final int CONSOLE_WIDTH = CONTENT_WIDTH / 0x10;
     static final int CONSOLE_HEIGHT = (WINDOW_HEIGHT / 3) / 0x10;
-    static final int CONSOLE_PADDING = 8;
     static final int CONTENT_HEIGHT = WINDOW_HEIGHT - CONSOLE_HEIGHT;
     static final int CONTENT_PADDING = 0x20;
     static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm a");
@@ -91,7 +90,7 @@ public class Dashboard extends JFrame {
         layout.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 
         // Set console display behavior.
-        console.setMargin(new Insets(CONSOLE_PADDING, CONSOLE_PADDING, CONSOLE_PADDING, CONSOLE_PADDING));
+        console.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
         console.setEditable(false);
         console.setCaretPosition(console.getDocument().getLength());
         console.getCaret().setVisible(true);
