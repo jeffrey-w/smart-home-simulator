@@ -26,14 +26,13 @@ public class ParameterEditor extends JPanel {
     private static final int FIELD_COLUMNS = 2;
     private static final int FIELD_Y_PADDING = 0x80;
 
-    private static final ComboBoxModel<Permission> PERMISSION_COMBO_BOX_MODEL =
-            new DefaultComboBoxModel<>(new Permission[] {
-                    null,
-                    new ParentPermission(),
-                    new ChildPermission(),
-                    new GuestPermission(),
-                    new StrangerPermission()
-            });
+    private static final Permission[] PERMISSIONS = new Permission[] {
+            null,
+            new ParentPermission(),
+            new ChildPermission(),
+            new GuestPermission(),
+            new StrangerPermission()
+    };
     private static final SpinnerNumberModel TEMP_MODEL =
             new SpinnerNumberModel(Parameters.DEFAULT_TEMPERATURE, Parameters.MIN_TEMPERATURE,
                     Parameters.MAX_TEMPERATURE, 1);
@@ -41,7 +40,7 @@ public class ParameterEditor extends JPanel {
             new SpinnerDateModel(Date.from(Instant.now()), null, null, Calendar.DAY_OF_YEAR);
 
     static JComboBox<Permission> permissionJComboBox() {
-        return new JComboBox<>(PERMISSION_COMBO_BOX_MODEL);
+        return new JComboBox<>(PERMISSIONS);
     }
 
     static JLabel labelFactory(String text) {
