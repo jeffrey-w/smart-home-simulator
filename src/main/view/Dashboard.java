@@ -1,7 +1,7 @@
 package main.view;
 
 import main.model.elements.House;
-import main.model.parameters.permissions.*;
+import main.model.parameters.permissions.Permission;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -13,6 +13,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
+
+import static java.awt.BorderLayout.EAST;
+import static java.awt.BorderLayout.WEST;
 
 /**
  * The dashboard represents the user interface. It is through the dashboard that the user can interact with the
@@ -29,7 +32,9 @@ public class Dashboard extends JFrame {
     static final int PARAMETER_PANE_WIDTH = WINDOW_WIDTH >>> 2;
     static final int CONTENT_PANE_WIDTH = WINDOW_WIDTH - (WINDOW_WIDTH >>> 2); // x >>> y == x / 2^y
     static final int CONTENT_WIDTH = CONTENT_PANE_WIDTH >>> 1; // Computers like bitwise operators!
-    static final int CONSOLE_HEIGHT = WINDOW_HEIGHT / 3;
+    static final int CONSOLE_WIDTH = CONTENT_WIDTH / 0x10;
+    static final int CONSOLE_HEIGHT = (WINDOW_HEIGHT / 3) / 0x10;
+    static final int CONSOLE_PADDING = 8;
     static final int CONTENT_HEIGHT = WINDOW_HEIGHT - CONSOLE_HEIGHT;
     static final int CONTENT_PADDING = 0x20;
     static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm a");
@@ -38,7 +43,7 @@ public class Dashboard extends JFrame {
     ParameterEditor editor = new ParameterEditor();
     ActionPanel actions = new ActionPanel();
     HouseLayoutPanel layout = new HouseLayoutPanel();
-    JTextArea console = new JTextArea("Welcome to Smart Home Simulator!\n");
+    JTextArea console = new JTextArea("Welcome to Smart Home Simulator!\n\n> ", CONSOLE_HEIGHT, CONSOLE_WIDTH);
     ProfileViewer profileViewer = new ProfileViewer();
 
     /**
@@ -55,14 +60,14 @@ public class Dashboard extends JFrame {
         JPanel content = new JPanel();
 
         // Set window display behavior.
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         setResizable(false);
 
         // Add top-level content containers to the window.
-        add(parameterPane, BorderLayout.WEST);
-        add(contentPane, BorderLayout.EAST);
+        add(parameterPane, WEST);
+        add(contentPane, EAST);
 
         // Add tabs to parameter panel.
         parameterPane.addTab("Parameters", parameters);
@@ -75,8 +80,8 @@ public class Dashboard extends JFrame {
 
         // Add elements to content panel.
         content.setLayout(new BorderLayout());
-        content.add(actions, BorderLayout.WEST);
-        content.add(layout, BorderLayout.EAST);
+        content.add(actions, WEST);
+        content.add(layout, EAST);
         content.add(new JScrollPane(console), BorderLayout.SOUTH);
 
         // Set content display behavior.
@@ -86,8 +91,10 @@ public class Dashboard extends JFrame {
         layout.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 
         // Set console display behavior.
-        console.setPreferredSize(new Dimension(CONTENT_PANE_WIDTH, CONSOLE_HEIGHT));
-        console.setEnabled(false);
+        console.setMargin(new Insets(CONSOLE_PADDING, CONSOLE_PADDING, CONSOLE_PADDING, CONSOLE_PADDING));
+        console.setEditable(false);
+        console.setCaretPosition(console.getDocument().getLength());
+        console.getCaret().setVisible(true);
     }
 
     /**
@@ -280,7 +287,8 @@ public class Dashboard extends JFrame {
      * @param message The specified message
      */
     public void sendToConsole(String message) {
-        console.setText(console.getText() + "\n> " + message);
+        console.setText(console.getText() + message + "\n> ");
+        console.setCaretPosition(console.getDocument().getLength());
     }
 
 }
