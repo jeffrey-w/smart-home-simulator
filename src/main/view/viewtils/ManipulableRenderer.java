@@ -3,6 +3,12 @@ package main.view.viewtils;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * The {@code ManipulableRenderer} class provides a means for displaying a list of {@code Manipulable} elements in a
+ * user-friendly way.
+ *
+ * @author Jeff Wilgus
+ */
 public class ManipulableRenderer extends DefaultListCellRenderer {
 
     private static final int NORTH = 0;
