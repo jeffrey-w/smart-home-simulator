@@ -245,10 +245,11 @@ public class Controller {
                     chooser.setLocationRelativeTo(dashboard);
                     chooser.setVisible(true);
                 } else {
-                    dashboard.sendToConsole("Please select a permission and location to choose an action.");
+                    String message = "Please select a permission and location to choose an action.";
                     if (house == null) {
-                        dashboard.sendToConsole("You must first load a house to select a location.");
+                        message += " You must first load a house to select a location.";
                     }
+                    dashboard.sendToConsole(message);
                 }
             }
         }
