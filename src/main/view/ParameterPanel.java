@@ -39,7 +39,7 @@ public class ParameterPanel extends JPanel {
         // Set element display behavior.
         SpringUtilities.makeCompactGrid(this, ROWS, 1, 1, 1, 1, 1);
 
-        // Set default values for empty main.model.parameters.
+        // Set default values for empty parameters.
         setPermission("");
         setLocation("");
     }
