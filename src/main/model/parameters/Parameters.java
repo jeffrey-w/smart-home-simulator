@@ -47,8 +47,8 @@ public class Parameters {
      *
      * @param name A unique identifier
      * @param permission The {@code Permission} level of the newly added actor
-     * @throws IllegalArgumentException if the specified {@code name} is not a non-empty string of word
-     *         characters (i.e. [a-z, A-Z, 0-9, _])
+     * @throws IllegalArgumentException if the specified {@code name} is not a non-empty string of word characters (i.e.
+     * [a-z, A-Z, 0-9, _])
      * @throws NullPointerException if the specified {@code permission} is {@code null}
      */
     public void addActor(String name, Permission permission) {
@@ -120,8 +120,8 @@ public class Parameters {
      * Sets the {@code location} of the user to that specified. A {@code null} location is permitted.
      *
      * @param location The specified location
-     * @throws IllegalArgumentException if the specified {@code location} is not a non-empty string of word
-     *         characters (i.e. [a-z, A-Z, 0-9, _])
+     * @throws IllegalArgumentException if the specified {@code location} is not a non-empty string of word characters
+     * (i.e. [a-z, A-Z, 0-9, _])
      */
     public void setLocation(String location) {
         this.location = location == null ? null : validateName(location);
@@ -141,8 +141,8 @@ public class Parameters {
      * Sets the current {@code temperature} of the simulation to that specified.
      *
      * @param temperature The specified temperature
-     * @throws IllegalArgumentException if the specified {@code temperature} is above {@value #MAX_TEMPERATURE}
-     *         or below {@value #MIN_TEMPERATURE}
+     * @throws IllegalArgumentException if the specified {@code temperature} is above {@value #MAX_TEMPERATURE} or below
+     * {@value #MIN_TEMPERATURE}
      */
     public void setTemperature(int temperature) {
         if (temperature < MIN_TEMPERATURE || temperature > MAX_TEMPERATURE) {
@@ -160,4 +160,14 @@ public class Parameters {
         this.on = on;
     }
 
+    /**
+     * Provides the {@code Permission} level of the specified {@code actor}.
+     *
+     * @param actor the specified actor
+     * @return The {@code Permission} level of the specified {@code actor} or {@code null} if the specified {@code
+     * actor} does not exist
+     */
+    public Permission permissionOf(String actor) {
+        return actors.get(actor);
+    }
 }
