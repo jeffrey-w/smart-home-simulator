@@ -111,6 +111,7 @@ public class Controller {
                 case "Add":
                 case "Edit": {
                     ProfileEditor editor = new ProfileEditor(viewer.getSelectedValue(), house != null);
+                    editor.setPermission(parameters.permissionOf(editor.getRole()));
                     if (house != null) {
                         editor.addLocations(house.getLocations());
                         if (editor.getRole() != null && house.contains(editor.getRole())) {
@@ -153,7 +154,7 @@ public class Controller {
                     break;
                 }
                 default:
-                    throw new AssertionError();
+                    throw new AssertionError(); // Defensive measure; this should never happen.
             }
         }
 
@@ -191,7 +192,7 @@ public class Controller {
                 house.addPerson("user", parameters.getPermission(), location);
                 dashboard.sendToConsole("You have entered " + location + ".");
             } catch (NoSuchElementException exception) {
-                dashboard.sendToConsole("You have removed yourself for the house.");
+                dashboard.sendToConsole("You have removed yourself from the house.");
             } catch (Exception exception) {
                 dashboard.sendToConsole(exception.getMessage());
             }
