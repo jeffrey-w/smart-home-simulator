@@ -38,7 +38,7 @@ public class HouseReader extends JPanel {
         try (FileReader reader = new FileReader(file)) {
             layoutFile = (JSONObject) PARSER.parse(reader);
         } catch (FileNotFoundException fnfe) {
-            System.out.println("The file you are looking for cannot be found.");
+            System.err.println("The file you are looking for cannot be found.");
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }

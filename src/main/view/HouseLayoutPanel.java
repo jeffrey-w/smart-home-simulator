@@ -21,6 +21,10 @@ public class HouseLayoutPanel extends JPanel {
     int drawn = 0;
     Map<String, Point> rooms = new LinkedHashMap<>();
 
+    /**
+     * Provides a visual representation of the specified {@code house}.
+     * @param house the specified {@code House}
+     */
     public void drawHouse(House house) {
         rooms.clear();
         if (house != null) {

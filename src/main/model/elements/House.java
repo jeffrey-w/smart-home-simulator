@@ -60,7 +60,7 @@ public class House implements Iterable<Room> {
      *
      * @param room The specified {@code Room}
      * @param location The specified location
-     * @throws IllegalArgumentException if the specified {@code location} is not a non-empty string of word
+     * @throws IllegalArgumentException If the specified {@code location} is not a non-empty string of word
      *         characters (i.e. [a-z, A-Z, 0-9, _])
      */
     public void addRoom(Room room, String location) {
@@ -72,10 +72,10 @@ public class House implements Iterable<Room> {
      *
      * @param locationOne The first location
      * @param locationTwo The other location
-     * @throws IllegalArgumentException if the {@code Room} at either of the specified locations is already
+     * @throws IllegalArgumentException If the {@code Room} at either of the specified locations is already
      *         connected to {@value #MAX_CONNECTIONS} other {@code Room}s, or if they both share a connection to another
      *         {@code Room} already.
-     * @throws NoSuchElementException if either of the specified locations does not exist in this {@code House}
+     * @throws NoSuchElementException If either of the specified locations does not exist in this {@code House}
      */
     public void addConnection(String locationOne, String locationTwo) {
         Node nodeOne = validateLocation(locationOne);
@@ -106,10 +106,10 @@ public class House implements Iterable<Room> {
      * @param name The specified name
      * @param permission The specified {@code Permission}
      * @param location The specified location
-     * @throws IllegalArgumentException if the specified {@code name} is not a non-empty string of word
+     * @throws IllegalArgumentException If the specified {@code name} is not a non-empty string of word
      *         characters (i.e. [a-z, A-Z, 0-9, _])
-     * @throws NoSuchElementException if the specified {@code location} does not exist in this {@code House}
-     * @throws NullPointerException if the specified {@code permission} is {@code null}
+     * @throws NoSuchElementException If the specified {@code location} does not exist in this {@code House}
+     * @throws NullPointerException If the specified {@code permission} is {@code null}
      */
     public void addPerson(String name, Permission permission, String location) {
         validateLocation(location).room.addPerson(name, permission);
@@ -140,7 +140,7 @@ public class House implements Iterable<Room> {
      *
      * @param location The specified location
      * @return The {@code Room} at the specified {@code location}
-     * @throws NoSuchElementException if the specified {@code location} does not exist in this {@code House}
+     * @throws NoSuchElementException If the specified {@code location} does not exist in this {@code House}
      */
     public Room getRoom(String location) {
         return validateLocation(location).room;
@@ -182,7 +182,7 @@ public class House implements Iterable<Room> {
      * tour}s of this {@code House} will begin from the specified {@code root}
      *
      * @param root The specified root
-     * @throws NoSuchElementException if the specified {@code location} does not exist in this {@code House}
+     * @throws NoSuchElementException If the specified {@code location} does not exist in this {@code House}
      */
     public void setRoot(String root) {
         if (!rooms.containsKey(root)) {
@@ -196,8 +196,8 @@ public class House implements Iterable<Room> {
      * of this {@code House}.
      *
      * @param action The specified action to perform
-     * @throws IllegalStateException if the root of this {@code House} has not been set
-     * @throws NullPointerException if the specified {@code action} is {@code null}
+     * @throws IllegalStateException If the root of this {@code House} has not been set
+     * @throws NullPointerException If the specified {@code action} is {@code null}
      */
     public void tour(BiConsumer<String, Room> action) {
         /*

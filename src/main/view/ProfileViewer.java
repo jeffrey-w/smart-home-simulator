@@ -69,6 +69,8 @@ public class ProfileViewer extends JFrame {
         });
     }
 
+    // TODO add comments
+
     public void populateList(Set<String> names) {
         for (String name : names) {
             profiles.addElement(name);

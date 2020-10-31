@@ -31,9 +31,9 @@ public abstract class Place {
      *
      * @param name The name of the person/user to be added
      * @param permission The {@code Permission} level of the added person
-     * @throws IllegalArgumentException if the specified {@code name} is not a non-empty string of word
+     * @throws IllegalArgumentException If the specified {@code name} is not a non-empty string of word
      *         characters (i.e. [a-z, A-Z, 0-9, _])
-     * @throws NullPointerException if the specified {@code permission} is {@code null}
+     * @throws NullPointerException If the specified {@code permission} is {@code null}
      */
     public void addPerson(String name, Permission permission) {
         people.put(validateName(name), Objects.requireNonNull(permission, "Please select a permission level."));

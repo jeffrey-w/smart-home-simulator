@@ -100,7 +100,6 @@ public class Dashboard extends JFrame {
      * Sets the {@code permission} level displayed to the user to that specified.
      *
      * @param permission The specified permission level
-     * @throws NullPointerException if the specified {@code permission} is {@code null}
      */
     public void setPermission(String permission) {
         parameters.setPermission(permission);
@@ -110,7 +109,6 @@ public class Dashboard extends JFrame {
      * Sets the {@code location} level displayed to the user to that specified.
      *
      * @param location The specified location
-     * @throws NullPointerException if the specified {@code location} is {@code null}
      */
     public void setLocation(String location) {
         parameters.setLocation(location);
@@ -120,7 +118,7 @@ public class Dashboard extends JFrame {
      * Sets the {@code temperature} level displayed to the user to that specified.
      *
      * @param temperature The specified temperature
-     * @throws NullPointerException if the specified {@code temperature} is {@code null}
+     * @throws NullPointerException If the specified {@code temperature} is {@code null}
      */
     public void setTemperature(String temperature) {
         parameters.setTemperature(temperature);
@@ -130,15 +128,13 @@ public class Dashboard extends JFrame {
      * Sets the {@code date} level displayed to the user to that specified.
      *
      * @param date The specified date
-     * @throws NullPointerException if the specified {@code date} is {@code null}
+     * @throws NullPointerException If the specified {@code date} is {@code null}
      */
     public void setDate(Date date) {
         parameters.setDate(DATE_FORMAT.format(date));
     }
 
     /**
-     * Retrieves the {@code Permission} level selected by the user.
-     *
      * @return The {@code Permission} level the user has selected for themselves
      */
     public Permission getPermissionInput() {
@@ -146,26 +142,20 @@ public class Dashboard extends JFrame {
     }
 
     /**
-     * Retrieves the {@code location} selected by the user.
-     *
-     * @return The {@code location} the user has selected for themselves
+     * @return The location the user has selected for themselves
      */
     public String getLocationInput() {
         return (String) editor.location.getSelectedItem();
     }
 
     /**
-     * Retrieves the {@code temperature} selected by the user.
-     *
-     * @return The {@code temperature} the user has selected for the outside of their simulated {@code House}
+     * @return The temperature the user has selected for the outside of their simulated {@code House}
      */
     public Integer getTemperatureInput() {
         return (Integer) editor.temperature.getValue();
     }
 
     /**
-     * Retrieves the {@code Date} selected by the user.
-     *
      * @return The {@code Date} the user has selected for the simulation
      */
     public Date getDateInput() {
@@ -173,8 +163,6 @@ public class Dashboard extends JFrame {
     }
 
     /**
-     * Retrieves this {@code Dashboard}'s {@code ProfileViewer}.
-     *
      * @return The {@code ProfileViewer} for this {@code Dashboard}
      */
     public ProfileViewer getProfileViewer() {
@@ -182,8 +170,6 @@ public class Dashboard extends JFrame {
     }
 
     /**
-     * Retrieves this {@code Dashboard}'s {@code ActionPanel}.
-     *
      * @return The {@code ActionPanel} for this {@code Dashboard}
      */
     public ActionPanel getActions() {
@@ -281,7 +267,7 @@ public class Dashboard extends JFrame {
     }
 
     /**
-     * Writes the specified message to the console of this {@code Dashboard}.
+     * Writes the specified {@code message} to the console of this {@code Dashboard}.
      *
      * @param message The specified message
      */

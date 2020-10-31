@@ -60,9 +60,9 @@ public class Room extends Place {
     /**
      * Sets the internal {@code temperature} of this {@code Room} to that specified.
      *
-     * @param temperature The specified temeperature
+     * @param temperature The specified temperature
      */
-    public void setTemperature(int temperature) {
+    public void setTemperature(int temperature) { // TODO do bounds checking
         this.temperature = temperature;
     }
 

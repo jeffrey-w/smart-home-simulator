@@ -9,8 +9,8 @@ import java.awt.event.ActionListener;
 import java.util.Set;
 
 /**
- * The {@code ProfileEditor} class provides the UI elements to edit a specific profile ({@code Permission}
- * level, and location) that has been added to a simulation.
+ * The {@code ProfileEditor} class provides the UI elements to edit a specific profile ({@code Permission} level, and
+ * location) that has been added to a simulation.
  *
  * @author Jeff Wilgus
  */
@@ -71,6 +71,8 @@ public class ProfileEditor extends JFrame {
         location.setEnabled(enableLocation);
     }
 
+    // TODO add comments
+
     public void addLocations(Set<String> locations) {
         this.location.addItem(null);
         for (String location : locations) {
@@ -101,4 +103,5 @@ public class ProfileEditor extends JFrame {
     public void setPermission(Permission permission) {
         this.permission.setSelectedItem(permission);
     }
+
 }

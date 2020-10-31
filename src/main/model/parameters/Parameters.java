@@ -1,5 +1,6 @@
 package main.model.parameters;
 
+import main.model.elements.Room;
 import main.model.parameters.permissions.Permission;
 
 import java.time.Instant;
@@ -10,9 +11,11 @@ import static main.util.NameValidator.validateName;
 /**
  * The {@code Parameters} class specifies those simulation attributes that are under direct control of a user and not an
  * actor in the simulation. Such attributes include the User's own {@code Permission} level in the simulation, the
- * number and {@code Permission}s of other actors, the room they occupy, and the current temperature and date.
+ * number and {@code Permission}s of other actors, the {@code Room} they occupy, and the current temperature and date.
  *
  * @author Jeff Wilgus
+ * @see Permission
+ * @see Room
  */
 public class Parameters {
 
@@ -47,9 +50,9 @@ public class Parameters {
      *
      * @param name A unique identifier
      * @param permission The {@code Permission} level of the newly added actor
-     * @throws IllegalArgumentException if the specified {@code name} is not a non-empty string of word characters (i.e.
+     * @throws IllegalArgumentException If the specified {@code name} is not a non-empty string of word characters (i.e.
      * [a-z, A-Z, 0-9, _])
-     * @throws NullPointerException if the specified {@code permission} is {@code null}
+     * @throws NullPointerException If the specified {@code permission} is {@code null}
      */
     public void addActor(String name, Permission permission) {
         actors.put(validateName(name), Objects.requireNonNull(permission, "Please select a permission level."));
@@ -87,7 +90,7 @@ public class Parameters {
     }
 
     /**
-     * @return the current date set by the user
+     * @return The current date set by the user
      */
     public Date getDate() {
         return date;
@@ -120,7 +123,7 @@ public class Parameters {
      * Sets the {@code location} of the user to that specified. A {@code null} location is permitted.
      *
      * @param location The specified location
-     * @throws IllegalArgumentException if the specified {@code location} is not a non-empty string of word characters
+     * @throws IllegalArgumentException If the specified {@code location} is not a non-empty string of word characters
      * (i.e. [a-z, A-Z, 0-9, _])
      */
     public void setLocation(String location) {
@@ -131,7 +134,7 @@ public class Parameters {
      * Sets the current {@code date} of the simulation to that specified.
      *
      * @param date The specified date
-     * @throws NullPointerException if the specified {@code date} is {@code null}
+     * @throws NullPointerException If the specified {@code date} is {@code null}
      */
     public void setDate(Date date) {
         this.date = Objects.requireNonNull(date);
@@ -141,7 +144,7 @@ public class Parameters {
      * Sets the current {@code temperature} of the simulation to that specified.
      *
      * @param temperature The specified temperature
-     * @throws IllegalArgumentException if the specified {@code temperature} is above {@value #MAX_TEMPERATURE} or below
+     * @throws IllegalArgumentException If the specified {@code temperature} is above {@value #MAX_TEMPERATURE} or below
      * {@value #MIN_TEMPERATURE}
      */
     public void setTemperature(int temperature) {
@@ -163,7 +166,7 @@ public class Parameters {
     /**
      * Provides the {@code Permission} level of the specified {@code actor}.
      *
-     * @param actor the specified actor
+     * @param actor The specified actor
      * @return The {@code Permission} level of the specified {@code actor} or {@code null} if the specified {@code
      * actor} does not exist
      */

@@ -266,7 +266,7 @@ public class Controller {
             case "Windows":
                 return location.getWindows();
             default:
-                throw new AssertionError();
+                throw new AssertionError(); // Defensive measure; this should never happen.
         }
     }
 

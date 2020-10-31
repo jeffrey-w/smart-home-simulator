@@ -66,7 +66,7 @@ public class ParameterPanel extends JPanel {
      * Setter that allows the user to change the temperature
      *
      * @param temperature The new temperature
-     * @throws NullPointerException if the specified {@code temperature} is {@code null}
+     * @throws NullPointerException If the specified {@code temperature} is {@code null}
      */
     void setTemperature(String temperature) {
         this.temperature.setText("Temperature: " + Objects.requireNonNull(temperature) + " C");
@@ -76,7 +76,7 @@ public class ParameterPanel extends JPanel {
      * Setter that allows the user to change the simulation date
      *
      * @param date The new date
-     * @throws NullPointerException if the specified {@code date} is {@code null}
+     * @throws NullPointerException If the specified {@code date} is {@code null}
      */
     void setDate(String date) {
         this.date.setText("Date: " + Objects.requireNonNull(date));

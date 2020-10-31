@@ -19,8 +19,8 @@ public class Window implements Manipulable {
     private boolean obstructed;
 
     /**
-     * Constructs a {@code Window} with a {@value DEFAULT_OPEN_VALUE} open state and a {@code value
-     * DEFAULT_OBSTRUCTED_VALUE} obstructed state.
+     * Constructs a {@code Window} with a {@value DEFAULT_OPEN_VALUE} open state and a {@value DEFAULT_OBSTRUCTED_VALUE}
+     * obstructed state.
      */
     public Window() {
         this(DEFAULT_OPEN_VALUE, DEFAULT_OBSTRUCTED_VALUE);
@@ -38,7 +38,6 @@ public class Window implements Manipulable {
     }
 
     /**
-     *
      * @return The open state of this {@code Window}
      */
     public boolean isOpen() {
@@ -54,6 +53,7 @@ public class Window implements Manipulable {
 
     /**
      * Sets the {@code open} state of this {@code Window} to that specified.
+     *
      * @param open The specified open state
      */
     public void setOpen(boolean open) {

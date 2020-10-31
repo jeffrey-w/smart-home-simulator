@@ -22,7 +22,7 @@ class Avatar extends JPanel {
     /**
      * Constructs a new {@code Avatar} object from the image at the specified {@code file}
      *
-     * @param file the specified file
+     * @param file The specified {@code File}
      */
     Avatar(File file) {
         try {
@@ -41,6 +41,7 @@ class Avatar extends JPanel {
         g.drawImage(avatar, x, y, null);
     }
 
+    // Resize the avatar
     private BufferedImage scale(BufferedImage image) {
         Image temp = image.getScaledInstance(DIMENSION, DIMENSION, Image.SCALE_SMOOTH);
         BufferedImage bufferedImage = new BufferedImage(DIMENSION, DIMENSION, BufferedImage.TYPE_INT_ARGB);
