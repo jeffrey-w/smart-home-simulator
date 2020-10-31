@@ -97,4 +97,8 @@ public class ProfileEditor extends JFrame {
     public void selectLocation(String location) {
         this.location.setSelectedItem(location);
     }
+
+    public void setPermission(Permission permission) {
+        this.permission.setSelectedItem(permission);
+    }
 }
