@@ -286,7 +286,7 @@ public class Dashboard extends JFrame {
      * @param message The specified message
      */
     public void sendToConsole(String message) {
-        console.setText(console.getText() + message + "\n> ");
+        console.append(message + "\n> ");
         console.setCaretPosition(console.getDocument().getLength());
     }
 
