@@ -117,13 +117,13 @@ public class House implements Iterable<Room> {
     }
 
     /**
-     * Removes the person with the specified {@code person} from this {@code House}.
+     * Removes the person with the specified {@code name} from this {@code House}.
      *
-     * @param person The specified person
-     * @return {@code true} if the specified {@code person} was removed from this {@code House}
+     * @param name The specified name
+     * @return {@code true} if the specified person was removed from this {@code House}
      */
-    public boolean removePerson(String person) {
-        return rooms.get(people.remove(person)).room.removePerson(person);
+    public boolean removePerson(String name) {
+        return rooms.get(people.remove(name)).room.removePerson(name);
     }
 
     /**
@@ -174,7 +174,7 @@ public class House implements Iterable<Room> {
         if (contains(person)) {
             return people.get(person);
         }
-        throw new NoSuchElementException("No person by that person exists in this house.");
+        throw new NoSuchElementException("No person by that name exists in this house.");
     }
 
     /**
