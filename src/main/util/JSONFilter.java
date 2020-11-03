@@ -4,8 +4,8 @@ import javax.swing.filechooser.FileFilter;
 import java.io.File;
 
 /**
- * The {@code JSONFilter} class imposes a restriction on {@code File} arguments to JSON files (i.e. those with the
- * suffix '.json').
+ * The {@code JSONFilter} class imposes a restriction that {@code File} arguments may only refer to JSON files (i.e.
+ * those with the suffix '.json').
  *
  * @author Jeff Wilgus
  */

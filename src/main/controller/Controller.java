@@ -1,18 +1,17 @@
 package main.controller;
 
 import main.model.elements.House;
-import main.model.elements.Window;
+import main.model.elements.Manipulable;
+import main.model.elements.Room;
 import main.model.parameters.Parameters;
 import main.model.parameters.permissions.Permission;
 import main.util.HouseReader;
 import main.util.JSONFilter;
-import main.view.Dashboard;
-import main.view.ProfileViewer;
+import main.view.*;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -21,8 +20,8 @@ import java.util.Date;
 import java.util.NoSuchElementException;
 
 /**
- * The {@code Controller} class provides the interface between runtime simulation objects and the UI main.model.elements
- * to manipulate those objects. It serves as the entry point into the program.
+ * The {@code Controller} class provides the interface between runtime simulation objects and the UI elements to
+ * manipulate those objects. It serves as the entry point into the program.
  *
  * @author Jeff Wilgus
  */
@@ -45,53 +44,26 @@ public class Controller {
         });
     }
 
-    private static House house;
-    private static final Parameters parameters = new Parameters();
-
-    private final Dashboard dashboard;
+    private House house;
+    private final Parameters parameters = new Parameters();
+    private final Dashboard dashboard = new Dashboard();
 
     /**
      * Constructs a new {@code Controller} object.
      */
     public Controller() {
-        dashboard = new Dashboard();
         dashboard.setTemperature(String.valueOf(parameters.getTemperature()));
         dashboard.setDate(parameters.getDate());
         dashboard.addLoadHouseListener(new LoadHouseListener());
-        dashboard.addProfileEditListener(new ProfileEditListener());
+        dashboard.addManageProfilesListener(new ManageProfilesListener());
+        dashboard.addEditProfileListener(new EditProfileListener());
         dashboard.addPermissionListener(new PermissionListener());
         dashboard.addTemperatureListener(new TemperatureListener());
         dashboard.addDateListener(new DateListener());
-        dashboard.addWindowActionListener(new WindowActionListener());
+        dashboard.addActionSelectionListener(new ActionSelectionListener());
+        dashboard.drawHouse(house);
     }
 
-    /**
-     * Adds a new profile to the simulation {@code Parameters}.
-     *
-     * @param name The name of the added profile
-     * @param permission The {@code Permission} level of the added profile
-     * @throws IllegalArgumentException if the specified {@code role} is not a non-empty string of word
-     *         characters (i.e. [a-z, A-Z, 0-9, _])
-     * @throws NullPointerException if the specified {@code permission} is {@code null}
-     */
-    public static void addProfile(String name, Permission permission) {
-        parameters.addActor(name, permission); // TODO exception handling
-    }
-
-    /**
-     * Places a person in a specific {@code Place} in the simulated {@code House}.
-     *
-     * @param name The name of the added person
-     * @param permission The {@code Permission} level of the added person
-     * @param location The place in the {@code House} the added person is inserted into
-     * @throws IllegalArgumentException if the specified {@code name} is not a non-empty string of word
-     *         characters (i.e. [a-z, A-Z, 0-9, _])
-     * @throws NoSuchElementException if the specified {@code location} does not exist in this {@code House}
-     * @throws NullPointerException if the specified {@code permission} is {@code null}
-     */
-    public static void placePerson(String name, Permission permission, String location) {
-        house.addPerson(name, permission, location);
-    }
     /*
      * Below are various event handlers that transform input from the user into data that can be manipulated by the data
      * model of a simulation
@@ -115,16 +87,75 @@ public class Controller {
 
     }
 
-    class ProfileEditListener implements ActionListener {
+    class ManageProfilesListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            ProfileViewer viewer = dashboard.getProfileViewer();
+            viewer.clear();
+            viewer.populateList(parameters.getActors());
+            viewer.pack();
+            viewer.setLocationRelativeTo(dashboard);
+            viewer.setVisible(true);
+        }
+
+    }
+
+    class EditProfileListener implements ActionListener {
 
         @Override
         public void actionPerformed(final ActionEvent e) {
-            SwingUtilities.invokeLater(() -> {
-                ProfileViewer viewer = new ProfileViewer(parameters, house);
-                viewer.pack();
-                viewer.setLocationRelativeTo(dashboard);
-                viewer.setVisible(true);
-            });
+            String actionCommand = e.getActionCommand();
+            ProfileViewer viewer = dashboard.getProfileViewer();
+            switch (actionCommand) {
+                case "Add":
+                case "Edit": {
+                    ProfileEditor editor = new ProfileEditor(viewer.getSelectedValue(), house != null);
+                    editor.setPermission(parameters.permissionOf(editor.getRole()));
+                    if (house != null) {
+                        editor.addLocations(house.getLocations());
+                        if (editor.getRole() != null && house.contains(editor.getRole())) {
+                            editor.selectLocation(house.locationOf(editor.getRole()));
+                        }
+                    }
+                    editor.addActionListener(f -> {
+                        String name = editor.getRole();
+                        Permission permission = editor.getSelectedPermission();
+                        String location = editor.getSelectionLocation();
+                        try {
+                            parameters.addActor(name, permission);
+                            if (location != null) { // Assume that house is non-null since location field is enabled.
+                                house.addPerson(name, permission, location);
+                                dashboard.sendToConsole(name + " entered " + location + ".");
+                            } else {
+                                if (house != null && house.removePerson(name)) {
+                                    dashboard.sendToConsole(name + " exited the house.");
+                                }
+                            }
+                            if (!viewer.containsProfile(name)) {
+                                viewer.addProfile(name);
+                            }
+                            editor.dispose();
+                        } catch (Exception exception) {
+                            dashboard.sendToConsole(exception.getMessage());
+                        }
+                    });
+                    editor.pack();
+                    editor.setLocationRelativeTo(viewer);
+                    editor.setVisible(true);
+                    break;
+                }
+                case "Remove": {
+                    parameters.removeActor(viewer.getSelectedValue());
+                    if (house != null) {
+                        house.removePerson(viewer.getSelectedValue());
+                    }
+                    viewer.removeProfile(viewer.getSelectedValue());
+                    break;
+                }
+                default:
+                    throw new AssertionError(); // Defensive measure; this should never happen.
+            }
         }
 
     }
@@ -138,7 +169,13 @@ public class Controller {
             parameters.setPermission(permission);
             dashboard.setPermission(permission.toString());
             if (house != null && location != null) {
-                house.addPerson("user", permission, location);
+                try {
+                    house.addPerson("user", permission, location);
+                } catch (Exception exception) {
+                    parameters.setLocation(null);
+                    house.removePerson("user");
+                    dashboard.setLocation((String) null);
+                }
             }
         }
 
@@ -148,11 +185,17 @@ public class Controller {
 
         @Override
         public void actionPerformed(final ActionEvent e) {
-            // TODO require that permission be set
             String location = dashboard.getLocationInput();
             parameters.setLocation(location);
             dashboard.setLocation(location);
-            house.addPerson("user", parameters.getPermission(), location);
+            try {
+                house.addPerson("user", parameters.getPermission(), location);
+                dashboard.sendToConsole("You have entered " + location + ".");
+            } catch (NoSuchElementException exception) {
+                dashboard.sendToConsole("You have removed yourself from the house.");
+            } catch (Exception exception) {
+                dashboard.sendToConsole(exception.getMessage());
+            }
         }
 
     }
@@ -179,45 +222,52 @@ public class Controller {
 
     }
 
-    public class WindowActionListener extends MouseAdapter {
+    class ActionSelectionListener extends MouseAdapter {
 
         @Override
         public void mouseClicked(final MouseEvent e) {
-            if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 2) {
-                SwingUtilities.invokeLater(() -> {
-                    WindowViewer viewer = new WindowViewer(house.getWindowsOf(parameters.getLocation()));
-                    viewer.pack();
-                    viewer.setLocationRelativeTo(dashboard);
-                    viewer.setVisible(true);
-                });
+            if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() > 1) {
+                if (canAct()) {
+                    ActionPanel actionPanel = dashboard.getActions();
+                    ItemChooser chooser = ItemChooser.of(getItems(actionPanel.getSelectedItem()));
+                    chooser.addActionListener(f -> {
+                        try {
+                            chooser.getSelectedItem()
+                                    .manipulate(parameters.getPermission().authorize(actionPanel.getSelectedAction()));
+                            dashboard.sendToConsole(
+                                    actionPanel.getSelectedAction() + " performed on " + chooser.getSelectedItem()
+                                            + " of " + parameters.getLocation() + ".");
+                        } catch (IllegalArgumentException exception) {
+                            dashboard.sendToConsole(exception.getMessage());
+                        }
+                        chooser.dispose();
+                    });
+                    chooser.pack();
+                    chooser.setLocationRelativeTo(dashboard);
+                    chooser.setVisible(true);
+                } else {
+                    String message = "Please select a permission and location to choose an action.";
+                    if (house == null) {
+                        message += " You must first load a house to select a location.";
+                    }
+                    dashboard.sendToConsole(message);
+                }
             }
         }
-
     }
 
-    class WindowViewer extends JFrame {
+    private boolean canAct() {
+        return !(parameters.getPermission() == null || parameters.getLocation() == null);
+    }
 
-        JList<Window> list;
-
-        WindowViewer(Window[] windows) {
-            super("Obstruct Windows");
-            list = new JList<>(windows);
-            JButton ok = new JButton("Ok");
-            setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-            setLayout(new BorderLayout());
-            setPreferredSize(new Dimension(0x100, 0x100)); // TODO avoid magic constants
-            setResizable(false);
-            add(list);
-            add(ok, BorderLayout.SOUTH);
-            ok.addActionListener(e -> {
-                Window window = list.getSelectedValue();
-                house.getRoom(parameters.getLocation())
-                        .setObstructed(window.getWall().toInt(), true); // TODO parameterize obstructed
-                dashboard.sendToConsole("Blocked " + window.getWall() + " window in " + parameters.getLocation() + ".");
-                dispose();
-            });
+    private Manipulable[] getItems(String type) {
+        Room location = house.getRoom(parameters.getLocation());
+        switch (type) {
+            case "Windows":
+                return location.getWindows();
+            default:
+                throw new AssertionError(); // Defensive measure; this should never happen.
         }
-
     }
 
 }

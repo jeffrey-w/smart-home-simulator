@@ -1,5 +1,7 @@
 package main.model.elements;
 
+import main.model.parameters.permissions.Action;
+
 /**
  * The {@code Window} class represents the Window object, which the user can interact with. A user can choose to
  * obstruct windows as they please.
@@ -7,61 +9,64 @@ package main.model.elements;
  * @author Émilie Martin
  * @author Philippe Vo
  */
-public class Window {
+public class Window implements Manipulable {
 
     // If not provided by the user, the system uses these default values.
-    private final boolean DEFAULT_WINDOW_LOCATION = true;
-    private final boolean DEFAULT_WINDOW_OBSTRUCTION = false;
+    private static final boolean DEFAULT_OPEN_VALUE = false;
+    private static final boolean DEFAULT_OBSTRUCTED_VALUE = false;
 
-    private final boolean located;
-    private boolean isObstructed;
-    private Wall wall;
+    private boolean open;
+    private boolean obstructed;
 
     /**
-     * Constructs a {@code Window} with the default location and obstruction state.
+     * Constructs a {@code Window} with a {@value DEFAULT_OPEN_VALUE} open state and a {@value DEFAULT_OBSTRUCTED_VALUE}
+     * obstructed state.
      */
     public Window() {
-        this.located = DEFAULT_WINDOW_LOCATION;
-        this.isObstructed = DEFAULT_WINDOW_OBSTRUCTION;
+        this(DEFAULT_OPEN_VALUE, DEFAULT_OBSTRUCTED_VALUE);
     }
 
     /**
-     * Constructs a {@code Window} with the given location, obstructed state, and wall.
+     * Constructs a {@code Window} with the specified {@code open} and {@code obstructed} state.
      *
-     * @param loc This boolean refers to whether a window is located on a wall or not. Each room contains a
-     *         Window array of length 4 to signify each wall (N-E-S-W)
-     * @param obstr This boolean refers to the state of the window, be it obstructed or not. If the boolean is
-     *         true, then it is obstructed. If it is false, it is not obstructed.
-     * @param wall the {@code Wall} that this window is on
+     * @param open The specified open state
+     * @param obstructed The specified obstructed state
      */
-    public Window(boolean loc, boolean obstr, Wall wall) {
-        this.located = loc;
-        this.isObstructed = obstr;
-        this.wall = wall;
+    public Window(boolean open, boolean obstructed) {
+        setOpen(open);
+        setObstructed(obstructed);
     }
 
     /**
-     * @return The obstructed status of this {@code Window}
+     * @return The open state of this {@code Window}
+     */
+    public boolean isOpen() {
+        return open;
+    }
+
+    /**
+     * @return The obstructed state of this {@code Window}
      */
     public boolean isObstructed() {
-        return isObstructed;
+        return obstructed;
     }
 
     /**
-     * @return The wall that this {@code Window} is on
-     */
-    public Wall getWall() {
-        return wall;
-
-    }
-
-    /**
-     * This setter allows the user to obstruct a window.
+     * Sets the {@code open} state of this {@code Window} to that specified.
      *
-     * @param obstr The new window state
+     * @param open The specified open state
      */
-    public void setObstructed(boolean obstr) {
-        this.isObstructed = obstr;
+    public void setOpen(boolean open) {
+        this.open = open;
+    }
+
+    /**
+     * Sets the {@code obstructed} state of this {@code Window} to that specified.
+     *
+     * @param obstructed The specified obstructed state
+     */
+    public void setObstructed(boolean obstructed) {
+        this.obstructed = obstructed;
     }
 
     @Override
@@ -70,21 +75,20 @@ public class Window {
             return false;
         }
         Window window = (Window) obj;
-        return located == window.located && isObstructed == window.isObstructed;
+        return open == window.open && obstructed == window.obstructed;
     }
 
     @Override
     public int hashCode() {
         int prime = 31;
         int result = 1;
-        result = prime * result + Boolean.hashCode(located);
-        result = prime * result + Boolean.hashCode(isObstructed);
+        result = prime * result + Boolean.hashCode(open);
+        result = prime * result + Boolean.hashCode(obstructed);
         return result;
     }
 
     @Override
-    public String toString() {
-        return wall.toString();
+    public void manipulate(Action action) {
+        // TODO
     }
-
 }

@@ -5,10 +5,12 @@ import main.view.viewtils.SpringUtilities;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.util.Set;
 
 /**
- * The {@code ProfileEditor} class provides the UI elements to edit a specific profile ({@code Permission}
- * level, and location) that has been added to a simulation.
+ * The {@code ProfileEditor} class provides the UI elements to edit a specific profile ({@code Permission} level, and
+ * location) that has been added to a simulation.
  *
  * @author Jeff Wilgus
  */
@@ -67,6 +69,39 @@ public class ProfileEditor extends JFrame {
 
         // Set whether or not locations may be edited.
         location.setEnabled(enableLocation);
+    }
+
+    // TODO add comments
+
+    public void addLocations(Set<String> locations) {
+        this.location.addItem(null);
+        for (String location : locations) {
+            this.location.addItem(location);
+        }
+    }
+
+    public void addActionListener(ActionListener listener) {
+        ok.addActionListener(listener);
+    }
+
+    public String getRole() {
+        return role.getText();
+    }
+
+    public Permission getSelectedPermission() {
+        return (Permission) permission.getSelectedItem();
+    }
+
+    public String getSelectionLocation() {
+        return (String) location.getSelectedItem();
+    }
+
+    public void selectLocation(String location) {
+        this.location.setSelectedItem(location);
+    }
+
+    public void setPermission(Permission permission) {
+        this.permission.setSelectedItem(permission);
     }
 
 }

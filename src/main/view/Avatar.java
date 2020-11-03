@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * The {@code Avatar} class provides the UI element for a user profile image.
@@ -21,17 +22,14 @@ class Avatar extends JPanel {
     /**
      * Constructs a new {@code Avatar} object from the image at the specified {@code file}
      *
-     * @param file the specified file
+     * @param file The specified {@code File}
      */
     Avatar(File file) {
         try {
-            avatar = scale(ImageIO.read(file));
-        } catch (IOException | IllegalArgumentException e) { // TODO remove IllegalArgumentException
-            try { // TODO this is sloppy
-                avatar = scale(ImageIO.read(new File("assets/default-avatar.png")));
-            } catch (IOException ioException) {
-                System.err.println("Failed to load default image.");
-            }
+            avatar = scale(ImageIO
+                    .read(Objects.requireNonNullElseGet(file, () -> new File("assets/default-avatar.png"))));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -43,6 +41,7 @@ class Avatar extends JPanel {
         g.drawImage(avatar, x, y, null);
     }
 
+    // Resize the avatar
     private BufferedImage scale(BufferedImage image) {
         Image temp = image.getScaledInstance(DIMENSION, DIMENSION, Image.SCALE_SMOOTH);
         BufferedImage bufferedImage = new BufferedImage(DIMENSION, DIMENSION, BufferedImage.TYPE_INT_ARGB);

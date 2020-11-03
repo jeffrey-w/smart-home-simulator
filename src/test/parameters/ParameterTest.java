@@ -14,6 +14,7 @@ class ParameterTest {
 
     private static final String TEST_ROLE = "Test";
     private static final Permission TEST_PERMISSION = action -> {
+        return action;
     };
 
     Parameters parameters;
@@ -35,6 +36,7 @@ class ParameterTest {
     void testEditProfile() {
         parameters.addActor(TEST_ROLE, TEST_PERMISSION);
         parameters.addActor(TEST_ROLE, action -> {
+            return action;
         });
         assertEquals(parameters.getActors().size(), 1);
     }

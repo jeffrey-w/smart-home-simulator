@@ -11,7 +11,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The main.util.HouseReader class parses through a house layout JSON file. Its function {@link #readHouse()} returns a
@@ -22,13 +23,14 @@ import java.util.*;
  */
 public class HouseReader extends JPanel {
 
+    private static final int NUMBER_OF_WALLS = 4;
     private static final JSONParser PARSER = new JSONParser();
 
     JSONObject layoutFile;
 
     /**
-     * Constructs a {@code main.util.HouseReader} object, which accepts a {@code File} to read. The file refers to the
-     * house layout and assumes it has the right format.
+     * Constructs a {@code HouseReader} object, which accepts a {@code File} to read. The file refers to the house
+     * layout and assumes it has the right format.
      *
      * @param file The file to be read
      */
@@ -36,7 +38,7 @@ public class HouseReader extends JPanel {
         try (FileReader reader = new FileReader(file)) {
             layoutFile = (JSONObject) PARSER.parse(reader);
         } catch (FileNotFoundException fnfe) {
-            System.out.println("The file you are looking for cannot be found.");
+            System.err.println("The file you are looking for cannot be found.");
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
@@ -90,119 +92,91 @@ public class HouseReader extends JPanel {
         return house;
     }
 
-    /**
+    /*
      * This function parses through the house layout, builds and returns a Door[]
      *
      * @param doorObj The Door object contained within the house layout. Of the following form:
-     *                {
-     *                  "location": Boolean[](4), >> each element of the array represents a wall (N-E-S-W)
-     *                  "locked": Boolean[](4) >> each elements corresponds to the state of a door
-     *                }
-     *                The position of the Boolean in either array represents the same door. As in:
-     *                {
-     *                  "location": [true, false, false],
-     *                  "locked": [false, false, true]
-     *                }
-     *               Wherein the North wall has one unlocked door and the East wall has one locked door.
+     *      {
+     *          "present": Boolean[](4) >> each element of the array represents a wall (N-E-S-W)
+     *      }
+     * The position of the Boolean in either array represents the same door. As in:
+     *      {
+     *          "present": [true, false, false, true]
+     *      }
+     * Wherein the North and West walls have doors.
      * @return A Door[] encompassing all doors found in a room
      */
     private Door[] parseDoors(JSONObject doorObj) {
-        JSONArray doorLocArr = (JSONArray) doorObj.get("location");
-        JSONArray doorLockArr = (JSONArray) doorObj.get("locked");
-
-        Iterator<Boolean> doorLocationIterator = doorLocArr.iterator();
-        Iterator<Boolean> lockedIterator = doorLockArr.iterator();
-
-        ArrayList<Door> doorAL = new ArrayList<>();
-
-        // TODO: double-check that if a door location is set to FALSE, then its locked boolean should automatically be FALSE
-        //       (or mention something about its value not mattering)
-        while (doorLocationIterator.hasNext() && lockedIterator.hasNext()) {
-            doorAL.add(new Door(doorLocationIterator.next(), lockedIterator.next()));
+        int index = 0;
+        Door[] doors = new Door[NUMBER_OF_WALLS];
+        for (Object isPresent : (JSONArray) doorObj.get("location")) {
+            try {
+                doors[index++] = ((boolean) isPresent) ? new Door() : null;
+            } catch (ArrayIndexOutOfBoundsException e) {
+                throw new IllegalArgumentException(
+                        "The file you've selected specifies an invalid number of doors. There can be a maximum of "
+                                + "four.");
+            }
         }
-
-        // Convert ArrayList<>to Door[]
-        Door[] doorArr = new Door[doorAL.size()];
-        doorArr = doorAL.toArray(doorArr);
-
-        return doorArr;
+        return doors;
     }
 
-    /**
+    /*
      * This function parses through the house layout, builds and returns a Light[]
      *
      * @param lightObj The Light object contained within the house layout. Of the following form:
-     *                 {
-     *                   "location": Boolean[](),
-     *                   "on": Boolean[]()
-     *                 }
-     *                 The position of the Boolean in either array represents the same light. As in:
-     *                 {
-     *                   "location": [true, true, true, true, true],
-     *                   "on": [false, false, true, false, true]
-     *                 }
-     *                 Wherein the room contains 5 lights, of which two are turned on.
-     * @return A Light[] encompassing all lights in a room
+     *      {
+     *          "present": Boolean[](4) >> each element of the array represents a wall (N-E-S-W)
+     *      }
+     * The position of the Boolean in either array represents the same light. As in:
+     *      {
+     *          "present": [true, false, false, true]
+     *      }
+     * Wherein the North and West walls have Lights.
+     * @return A Light[] encompassing all doors found in a room
      */
     private Light[] parseLights(JSONObject lightObj) {
-        JSONArray lightLocArr = (JSONArray) lightObj.get("present");
-        JSONArray lightStateArr = (JSONArray) lightObj.get("on");
-
-        Iterator<Boolean> lightLocationIterator = lightLocArr.iterator();
-        Iterator<Boolean> stateIterator = lightStateArr.iterator();
-
-        ArrayList<Light> lightAL = new ArrayList<>();
-
-        // TODO: do we need to be concerned with the contents of the Boolean[] present array
-        //       or just take the size and worry about the Boolean[] on array? take care about presence too?
-        while (lightLocationIterator.hasNext() && stateIterator.hasNext()) {
-            lightAL.add(new Light(lightLocationIterator.next(), stateIterator.next()));
+        int index = 0;
+        Light[] lights = new Light[NUMBER_OF_WALLS];
+        for (Object isPresent : (JSONArray) lightObj.get("location")) {
+            try {
+                lights[index++] = ((boolean) isPresent) ? new Light() : null;
+            } catch (ArrayIndexOutOfBoundsException e) {
+                throw new IllegalArgumentException(
+                        "The file you've selected specifies an invalid number of lights. There can be a maximum of "
+                                + "four.");
+            }
         }
-
-        // Convert ArrayList<> to Light[]
-        Light[] lightArr = new Light[lightAL.size()];
-        lightArr = lightAL.toArray(lightArr);
-
-        return lightArr;
+        return lights;
     }
 
-    /**
+    /*
      * This function parses through the house layout, builds and returns a Window[]
      *
      * @param windowObj The Window object contained within the house layout. Of the following form:
-     *                {
-     *                  "location": Boolean[](4), >> each element of the array represents a wall (N-E-S-W)
-     *                  "obstructed": Boolean[](4) >> each elements corresponds to the obstruction of a window
-     *                }
-     *                The position of the Boolean in either array represents the same window. As in:
-     *                {
-     *                  "location": [true, false, false],
-     *                  "obstructed": [false, false, true]
-     *                }
-     *                Wherein the North wall has one unobstructed window and the East wall has one obstructed window.
-     * @return A Window[] encompassing all windows found in a room
+     *      {
+     *          "present": Boolean[](4) >> each element of the array represents a wall (N-E-S-W)
+     *      }
+     * The position of the Boolean in either array represents the same Window. As in:
+     *      {
+     *          "present": [true, false, false, true]
+     *      }
+     * Wherein the North and West walls have Windows.
+     * @return A Window[] encompassing all doors found in a room
      */
     private Window[] parseWindows(JSONObject windowObj) {
-        JSONArray windowLocArr = (JSONArray) windowObj.get("location");
-        JSONArray windowObstrArr = (JSONArray) windowObj.get("obstructed");
-
-        Iterator<Boolean> windowLocationIterator = windowLocArr.iterator();
-        Iterator<Boolean> obstructedIterator = windowObstrArr.iterator();
-        Iterator<Wall> bearings = Arrays.asList(Wall.values()).iterator();
-
-        ArrayList<Window> windowAL = new ArrayList<>();
-
-        // TODO: double-check that if a window location is set to FALSE, then its obstructed boolean should automatically be FALSE
-        //       (or mention something about its value not mattering)
-        while (windowLocationIterator.hasNext() && obstructedIterator.hasNext()) {
-            windowAL.add(new Window(windowLocationIterator.next(), obstructedIterator.next(), bearings.next()));
+        int index = 0;
+        Window[] windows = new Window[NUMBER_OF_WALLS];
+        for (Object isPresent : (JSONArray) windowObj.get("location")) {
+            try {
+                windows[index++] = ((boolean) isPresent) ? new Window() : null;
+            } catch (ArrayIndexOutOfBoundsException e) {
+                throw new IllegalArgumentException(
+                        "The file you've selected specifies an invalid number of windows. There can be a maximum of "
+                                + "four.");
+            }
         }
-
-        // Convert ArrayList<> to Window[]
-        Window[] windowArr = new Window[windowAL.size()];
-        windowArr = windowAL.toArray(windowArr);
-
-        return windowArr;
+        return windows;
     }
 
 }

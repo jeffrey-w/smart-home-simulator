@@ -1,7 +1,7 @@
 package main.view;
 
 import main.model.elements.House;
-import main.model.parameters.permissions.*;
+import main.model.parameters.permissions.Permission;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -14,6 +14,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
 
+import static java.awt.BorderLayout.EAST;
+import static java.awt.BorderLayout.WEST;
+
 /**
  * The dashboard represents the user interface. It is through the dashboard that the user can interact with the
  * simulation.
@@ -23,33 +26,24 @@ import java.util.Set;
  */
 public class Dashboard extends JFrame {
 
-    /**
-     * A collection of default {@code Permission} levels.
-     */
-    public static final Permission[] PERMISSIONS = new Permission[] { // TODO rethink this
-            new ParentPermission(),
-            new ChildPermission(),
-            new GuestPermission(),
-            new StrangerPermission()
-    };
-
     // Pre-determined size parameters
-    private static final int WINDOW_WIDTH = 0x600;
-    private static final int WINDOW_HEIGHT = 0x300;
-    private static final int PARAMETER_PANE_WIDTH = WINDOW_WIDTH >>> 2;
-    private static final int CONTENT_PANE_WIDTH = WINDOW_WIDTH - (WINDOW_WIDTH >>> 2); // x >>> y == x / 2^y
-    private static final int CONTENT_WIDTH = CONTENT_PANE_WIDTH >>> 1; // Computers like bitwise operators!
-    private static final int CONSOLE_HEIGHT = WINDOW_HEIGHT / 3;
-    private static final int CONTENT_HEIGHT = WINDOW_HEIGHT - CONSOLE_HEIGHT;
-    private static final int CONTENT_PADDING = 0x20;
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm a");
+    static final int WINDOW_WIDTH = 0x600;
+    static final int WINDOW_HEIGHT = 0x300;
+    static final int PARAMETER_PANE_WIDTH = WINDOW_WIDTH >>> 2; // x >>> y == x / 2^y
+    static final int CONTENT_PANE_WIDTH = WINDOW_WIDTH - PARAMETER_PANE_WIDTH;
+    static final int CONTENT_WIDTH = CONTENT_PANE_WIDTH >>> 1; // Computers like bitwise operators!
+    static final int CONSOLE_WIDTH = CONTENT_WIDTH / 0x10;
+    static final int CONSOLE_HEIGHT = (WINDOW_HEIGHT / 3) / 0x10;
+    static final int CONTENT_HEIGHT = WINDOW_HEIGHT - CONSOLE_HEIGHT;
+    static final int CONTENT_PADDING = 0x20;
+    static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm a");
 
     ParameterPanel parameters = new ParameterPanel();
     ParameterEditor editor = new ParameterEditor();
-    JPanel content = new JPanel(); // TODO encapsulate actions and layout into one JPanel
     ActionPanel actions = new ActionPanel();
-    HouseLayoutPanel layout = new HouseLayoutPanel(null);
-    JTextArea console = new JTextArea("Welcome to Smart Home Simulator!");
+    HouseLayoutPanel layout = new HouseLayoutPanel();
+    JTextArea console = new JTextArea("Welcome to Smart Home Simulator!\n\n> ", CONSOLE_HEIGHT, CONSOLE_WIDTH);
+    ProfileViewer profileViewer = new ProfileViewer();
 
     /**
      * Creates the dashboard, which is to contain the {@code ParameterPanel}, a console, the {@code HouseLayout}. This
@@ -62,16 +56,17 @@ public class Dashboard extends JFrame {
         // Top-level containers for window content.
         JTabbedPane parameterPane = new JTabbedPane();
         JTabbedPane contentPane = new JTabbedPane();
+        JPanel content = new JPanel();
 
         // Set window display behavior.
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         setResizable(false);
 
         // Add top-level content containers to the window.
-        add(parameterPane, BorderLayout.WEST);
-        add(contentPane, BorderLayout.EAST);
+        add(parameterPane, WEST);
+        add(contentPane, EAST);
 
         // Add tabs to parameter panel.
         parameterPane.addTab("Parameters", parameters);
@@ -82,10 +77,10 @@ public class Dashboard extends JFrame {
         contentPane.addTab("Simulation", content);
         contentPane.setPreferredSize(new Dimension(CONTENT_PANE_WIDTH, WINDOW_HEIGHT));
 
-        // Add main.model.elements to content panel.
+        // Add elements to content panel.
         content.setLayout(new BorderLayout());
-        content.add(actions, BorderLayout.WEST);
-        content.add(layout, BorderLayout.EAST);
+        content.add(actions, WEST);
+        content.add(layout, EAST);
         content.add(new JScrollPane(console), BorderLayout.SOUTH);
 
         // Set content display behavior.
@@ -95,15 +90,16 @@ public class Dashboard extends JFrame {
         layout.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 
         // Set console display behavior.
-        console.setPreferredSize(new Dimension(CONTENT_PANE_WIDTH, CONSOLE_HEIGHT));
-        console.setEnabled(false);
+        console.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+        console.setEditable(false);
+        console.setCaretPosition(console.getDocument().getLength());
+        console.getCaret().setVisible(true);
     }
 
     /**
      * Sets the {@code permission} level displayed to the user to that specified.
      *
      * @param permission The specified permission level
-     * @throws NullPointerException if the specified {@code permission} is {@code null}
      */
     public void setPermission(String permission) {
         parameters.setPermission(permission);
@@ -113,9 +109,8 @@ public class Dashboard extends JFrame {
      * Sets the {@code location} level displayed to the user to that specified.
      *
      * @param location The specified location
-     * @throws NullPointerException if the specified {@code location} is {@code null}
      */
-    public void setLocation(String location) { // TODO rename this
+    public void setLocation(String location) {
         parameters.setLocation(location);
     }
 
@@ -123,7 +118,7 @@ public class Dashboard extends JFrame {
      * Sets the {@code temperature} level displayed to the user to that specified.
      *
      * @param temperature The specified temperature
-     * @throws NullPointerException if the specified {@code temperature} is {@code null}
+     * @throws NullPointerException If the specified {@code temperature} is {@code null}
      */
     public void setTemperature(String temperature) {
         parameters.setTemperature(temperature);
@@ -133,15 +128,13 @@ public class Dashboard extends JFrame {
      * Sets the {@code date} level displayed to the user to that specified.
      *
      * @param date The specified date
-     * @throws NullPointerException if the specified {@code date} is {@code null}
+     * @throws NullPointerException If the specified {@code date} is {@code null}
      */
     public void setDate(Date date) {
         parameters.setDate(DATE_FORMAT.format(date));
     }
 
     /**
-     * Retrieves the {@code Permission} level selected by the user.
-     *
      * @return The {@code Permission} level the user has selected for themselves
      */
     public Permission getPermissionInput() {
@@ -149,30 +142,38 @@ public class Dashboard extends JFrame {
     }
 
     /**
-     * Retrieves the {@code location} selected by the user.
-     *
-     * @return The {@code location} the user has selected for themselves
+     * @return The location the user has selected for themselves
      */
     public String getLocationInput() {
         return (String) editor.location.getSelectedItem();
     }
 
     /**
-     * Retrieves the {@code temperature} selected by the user.
-     *
-     * @return The {@code temperature} the user has selected for the outside of their simulated {@code House}
+     * @return The temperature the user has selected for the outside of their simulated {@code House}
      */
     public Integer getTemperatureInput() {
         return (Integer) editor.temperature.getValue();
     }
 
     /**
-     * Retrieves the {@code Date} selected by the user.
-     *
      * @return The {@code Date} the user has selected for the simulation
      */
     public Date getDateInput() {
         return (Date) editor.date.getValue();
+    }
+
+    /**
+     * @return The {@code ProfileViewer} for this {@code Dashboard}
+     */
+    public ProfileViewer getProfileViewer() {
+        return profileViewer;
+    }
+
+    /**
+     * @return The {@code ActionPanel} for this {@code Dashboard}
+     */
+    public ActionPanel getActions() {
+        return actions;
     }
 
     /**
@@ -189,8 +190,12 @@ public class Dashboard extends JFrame {
      *
      * @param listener The specified event handler
      */
-    public void addProfileEditListener(ActionListener listener) {
-        editor.editProfiles.addActionListener(listener);
+    public void addManageProfilesListener(ActionListener listener) {
+        editor.manageProfiles.addActionListener(listener);
+    }
+
+    public void addEditProfileListener(ActionListener listener) {
+        profileViewer.addEditProfileListener(listener);
     }
 
     /**
@@ -230,12 +235,12 @@ public class Dashboard extends JFrame {
     }
 
     /**
-     * Registers an event handler for processing {@code Window}-specific {@code Action}s.
+     * Registers an event handler for selecting an {@code Action} to perform on a {@code Manipulable}
      *
-     * @param listener The specified event handler
+     * @param listener the specified event handler
      */
-    public void addWindowActionListener(MouseListener listener) {
-        ActionPanel.WINDOW_ACTION_LISTENER = listener;
+    public void addActionSelectionListener(MouseListener listener) {
+        actions.actions.addMouseListener(listener);
     }
 
     /**
@@ -245,6 +250,7 @@ public class Dashboard extends JFrame {
      * @param locations The specified locations
      */
     public void activateLocations(Set<String> locations) {
+        editor.location.addItem(null);
         for (String location : locations) {
             editor.location.addItem(location);
         }
@@ -257,15 +263,17 @@ public class Dashboard extends JFrame {
      * @param house The specified house
      */
     public void drawHouse(House house) {
-        layout.setHouse(house);
+        layout.drawHouse(house);
     }
 
     /**
-     * Writes the specified message to the console of this {@code Dashboard}.
+     * Writes the specified {@code message} to the console of this {@code Dashboard}.
      *
      * @param message The specified message
      */
     public void sendToConsole(String message) {
-        console.setText(console.getText() + '\n' + message);
+        console.append(message + "\n> ");
+        console.setCaretPosition(console.getDocument().getLength());
     }
+
 }

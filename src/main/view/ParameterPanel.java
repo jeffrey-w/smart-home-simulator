@@ -39,7 +39,7 @@ public class ParameterPanel extends JPanel {
         // Set element display behavior.
         SpringUtilities.makeCompactGrid(this, ROWS, 1, 1, 1, 1, 1);
 
-        // Set default values for empty main.model.parameters.
+        // Set default values for empty parameters.
         setPermission("");
         setLocation("");
     }
@@ -48,27 +48,25 @@ public class ParameterPanel extends JPanel {
      * Setter to modify the permission of a user
      *
      * @param permission The new assigned user permission
-     * @throws NullPointerException if the specified {@code permission} is {@code null}
      */
     void setPermission(String permission) {
-        this.permission.setText("Permission: " + Objects.requireNonNull(permission));
+        this.permission.setText("Permission: " + ((permission == null) ? "" : permission));
     }
 
     /**
      * Setter to modify the location of a user
      *
      * @param location The user's new position
-     * @throws NullPointerException if the specified {@code location} is {@code null}
      */
-    void setLocation(String location) { // TODO rename this
-        this.location.setText("Location: " + Objects.requireNonNull(location));
+    void setLocation(String location) {
+        this.location.setText("Location: " + ((location == null) ? "" : location));
     }
 
     /**
      * Setter that allows the user to change the temperature
      *
      * @param temperature The new temperature
-     * @throws NullPointerException if the specified {@code temperature} is {@code null}
+     * @throws NullPointerException If the specified {@code temperature} is {@code null}
      */
     void setTemperature(String temperature) {
         this.temperature.setText("Temperature: " + Objects.requireNonNull(temperature) + " C");
@@ -78,7 +76,7 @@ public class ParameterPanel extends JPanel {
      * Setter that allows the user to change the simulation date
      *
      * @param date The new date
-     * @throws NullPointerException if the specified {@code date} is {@code null}
+     * @throws NullPointerException If the specified {@code date} is {@code null}
      */
     void setDate(String date) {
         this.date.setText("Date: " + Objects.requireNonNull(date));

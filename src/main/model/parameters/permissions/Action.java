@@ -20,6 +20,11 @@ public enum Action {
             return false;
         }
 
+        @Override
+        public String toString() {
+            return "Change Temperature";
+        }
+
     },
 
     LOCK_DOOR {
@@ -31,6 +36,11 @@ public enum Action {
         @Override
         public boolean isGuestPermissible() {
             return false;
+        }
+
+        @Override
+        public String toString() {
+            return "Lock Door";
         }
 
     },
@@ -46,6 +56,11 @@ public enum Action {
             return true;
         }
 
+        @Override
+        public String toString() {
+            return "Open Door";
+        }
+
     },
 
     OPEN_WINDOW {
@@ -57,6 +72,11 @@ public enum Action {
         @Override
         public boolean isGuestPermissible() {
             return true;
+        }
+
+        @Override
+        public String toString() {
+            return "Open Window";
         }
 
     },
@@ -72,6 +92,29 @@ public enum Action {
             return true;
         }
 
+        @Override
+        public String toString() {
+            return "Turn On Light";
+        }
+
+    },
+
+    BLOCK_WINDOW {
+        @Override
+        public boolean isChildPermissible() {
+            return false;
+        }
+
+        @Override
+        public boolean isGuestPermissible() {
+            return false;
+        }
+
+        @Override
+        public String toString() {
+            return "Block Window";
+        }
+
     };
 
     /**
@@ -83,5 +126,8 @@ public enum Action {
      * @return {@code true} if this {@code Action} is alloed to be taken by a guest.
      */
     public abstract boolean isGuestPermissible();
+
+    @Override
+    public abstract String toString();
 
 }

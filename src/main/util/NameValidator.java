@@ -19,8 +19,8 @@ public class NameValidator {
      *
      * @param name The specified name
      * @return The specified {@code name} provided it is valid
-     * @throws IllegalArgumentException if the specified {@code name} is not valid
-     * @throws NullPointerException if the specified {@code name} is {@code null}
+     * @throws IllegalArgumentException If the specified {@code name} is not valid
+     * @throws NullPointerException If the specified {@code name} is {@code null}
      */
     public static String validateName(String name) {
         if (!NAME_PATTERN.matcher(name).matches()) {
