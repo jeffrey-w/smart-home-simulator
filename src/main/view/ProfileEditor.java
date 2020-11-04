@@ -118,7 +118,7 @@ public class ProfileEditor extends JFrame {
      *
      * @param location The given location
      */
-    public void setLocation(String location) {
+    public void selectLocation(String location) {
         this.location.setSelectedItem(location);
     }
 
