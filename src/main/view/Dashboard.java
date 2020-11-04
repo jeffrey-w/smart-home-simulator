@@ -8,6 +8,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -198,6 +199,11 @@ public class Dashboard extends JFrame {
         profileViewer.addEditProfileListener(listener);
     }
 
+    // TODO comment this
+    public void addAwayModeListener(ActionListener listener) {
+        editor.setAwayMode.addActionListener(listener);
+    }
+
     /**
      * Registers an event handler for setting a users' {@code Permission} level.
      *
@@ -274,6 +280,32 @@ public class Dashboard extends JFrame {
     public void sendToConsole(String message) {
         console.append(message + "\n> ");
         console.setCaretPosition(console.getDocument().getLength());
+    }
+
+    int inputLoc;
+
+    // TODO comment this
+    public void addConsoleListener(KeyListener listener, String prompt) {
+        if (listener == null) {
+            for (KeyListener l : console.getKeyListeners()) {
+                console.removeKeyListener(l);
+            }
+            console.setEditable(false);
+        } else {
+            console.append(prompt + " ");
+            console.addKeyListener(listener);
+            console.setEditable(true);
+            console.grabFocus();
+            inputLoc = console.getDocument().getLength();
+        }
+    }
+
+    // TODO comment this
+    public String getLastConsoleMessage() {
+        String message;
+        message = console.getText();
+        message = message.substring(inputLoc);
+        return message.toUpperCase();
     }
 
 }
