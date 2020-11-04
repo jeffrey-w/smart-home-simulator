@@ -18,9 +18,9 @@ import java.util.Date;
  */
 public class ParameterEditor extends JPanel {
 
-    private static final int BUTTON_COLUMNS = 2;
-    private static final int BUTTON_OFFSET = 0x20;
-    private static final int BUTTON_X_PADDING = 0x20;
+    private static final int BUTTON_COLUMNS = 3;
+    private static final int BUTTON_OFFSET = 2;
+    private static final int BUTTON_X_PADDING = 2;
     private static final int BUTTON_Y_PADDING = 0x20;
     private static final int FIELD_ROWS = 4;
     private static final int FIELD_COLUMNS = 2;
@@ -49,6 +49,7 @@ public class ParameterEditor extends JPanel {
 
     JButton loadHouse = new JButton("Load House");
     JButton manageProfiles = new JButton("Manage Profiles");
+    JToggleButton setAwayMode = new JToggleButton("Set Away");
     JComboBox<Permission> permission = permissionJComboBox();
     JComboBox<String> location = new JComboBox<>();
     JSpinner temperature = new JSpinner(TEMP_MODEL);
@@ -72,6 +73,7 @@ public class ParameterEditor extends JPanel {
         // Add buttons to button panel.
         buttons.add(loadHouse);
         buttons.add(manageProfiles);
+        buttons.add(setAwayMode);
 
         // Set button panel display behavior
         SpringUtilities
