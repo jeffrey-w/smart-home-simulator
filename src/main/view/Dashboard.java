@@ -45,6 +45,11 @@ public class Dashboard extends JFrame {
     JTextArea console = new JTextArea("Welcome to Smart Home Simulator!\n\n> ", CONSOLE_HEIGHT, CONSOLE_WIDTH);
     ProfileViewer profileViewer = new ProfileViewer();
 
+    // TODO comment this
+    public void blockWindowIn(String room) {
+        layout.blockWindowInRoom(room);
+    }
+
     /**
      * Creates the dashboard, which is to contain the {@code ParameterPanel}, a console, the {@code HouseLayout}. This
      * is also the interface on which the simulation will be displayed and interacted with.
