@@ -1,5 +1,8 @@
 package main.model.parameters.permissions;
 
+import main.model.elements.Door;
+import main.model.elements.Manipulable;
+
 /**
  * An {@code Action} describes an attempt on the part of an actor to change a simulation, which requires {@code
  * Permission}.
@@ -36,6 +39,17 @@ public enum Action {
         @Override
         public boolean isGuestPermissible() {
             return false;
+        }
+
+        @Override
+        public String doAction(Manipulable manipulable) {
+            Door door = (Door) manipulable;
+            if (door.isOpen()) {
+                return "Please close this door first.";
+            } else {
+                door.setLocked(!door.isLocked());
+                return "Door has been locked.";
+            }
         }
 
         @Override
@@ -123,9 +137,19 @@ public enum Action {
     public abstract boolean isChildPermissible();
 
     /**
-     * @return {@code true} if this {@code Action} is alloed to be taken by a guest.
+     * @return {@code true} if this {@code Action} is allowed to be taken by a guest.
      */
     public abstract boolean isGuestPermissible();
+
+    /**
+     * Performs this {@code Action} on the specified {@code manipulable}.
+     *
+     * @param manipulable The specified {@code Manipulable}
+     * @return A description of the result of performing this {@code Action} on the specified {@code manipulable}
+     * @throws ClassCastException If this {@code Action} cannot be performed on the type of item the specified {@code
+     * manipulable} is
+     */
+    public abstract String doAction(Manipulable manipulable);
 
     @Override
     public abstract String toString();
