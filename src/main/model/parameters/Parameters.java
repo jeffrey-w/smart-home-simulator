@@ -173,4 +173,14 @@ public class Parameters {
     public Permission permissionOf(String actor) {
         return actors.get(actor);
     }
+
+    // TODO comment this
+    public int getAwayDelay() {
+        return 10_000; // TODO
+    }
+
+    // TODO
+    public void setAwayMode(boolean awayMode) {
+        // TODO
+    }
 }
