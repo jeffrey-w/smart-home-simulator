@@ -2,6 +2,7 @@ package main.model.parameters;
 
 import main.model.elements.Room;
 import main.model.parameters.permissions.Permission;
+import main.util.ProfileReader;
 
 import java.time.Instant;
 import java.util.*;
@@ -38,7 +39,7 @@ public class Parameters {
      */
     public Parameters() {
         permission = null;
-        actors = new HashMap<>();
+        actors = ProfileReader.loadProfiles();
         location = null;
         date = Date.from(Instant.now());
         temperature = DEFAULT_TEMPERATURE;
