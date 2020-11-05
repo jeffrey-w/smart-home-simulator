@@ -237,7 +237,7 @@ public class Controller {
                             dashboard.sendToConsole(
                                     actionPanel.getSelectedAction() + " performed on " + chooser.getSelectedItem()
                                             + " of " + parameters.getLocation() + ".");
-                            dashboard.blockWindowIn(parameters.getLocation());
+                            dashboard.updateRoom(parameters.getLocation(), house.getRoom(parameters.getLocation()));
                         } catch (IllegalArgumentException exception) {
                             dashboard.sendToConsole(exception.getMessage());
                         }
