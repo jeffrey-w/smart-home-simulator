@@ -1,5 +1,7 @@
 package main.view;
 
+import main.model.Module;
+import main.model.parameters.permissions.Action;
 import main.model.elements.House;
 import main.model.parameters.permissions.Permission;
 
@@ -86,6 +88,8 @@ public class Dashboard extends JFrame {
         // Set content display behavior.
         actions.setPreferredSize(new Dimension(CONTENT_WIDTH - CONTENT_PADDING, CONTENT_HEIGHT));
         actions.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+        actions.addModule(Module.SHC);
+        actions.addModule(Module.SHP);
         layout.setPreferredSize(new Dimension(CONTENT_WIDTH, CONTENT_HEIGHT));
         layout.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 
@@ -240,7 +244,9 @@ public class Dashboard extends JFrame {
      * @param listener the specified event handler
      */
     public void addActionSelectionListener(MouseListener listener) {
-        actions.actions.addMouseListener(listener);
+        for (JList<Action> actionList : actions.actions) {
+            actionList.addMouseListener(listener);
+        }
     }
 
     /**
