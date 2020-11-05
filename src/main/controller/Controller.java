@@ -263,6 +263,8 @@ public class Controller {
     private Manipulable[] getItems(String type) {
         Room location = house.getRoom(parameters.getLocation());
         switch (type) {
+            case "Doors":
+                return location.getDoors();
             case "Windows":
                 return location.getWindows();
             default:
