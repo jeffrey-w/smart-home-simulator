@@ -49,4 +49,9 @@ public abstract class Place {
         return people.remove(person) != null;
     }
 
+    // TODO comment this
+    public int getNumberOfPeople() {
+        return people.size();
+    }
+
 }

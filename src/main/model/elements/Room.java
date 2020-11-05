@@ -2,6 +2,8 @@ package main.model.elements;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * A {@code Room} is comprised of many {@code House} elements, such as {@code Door}s, {@code Light}s, and {@code
@@ -87,4 +89,60 @@ public class Room extends Place {
         return result;
     }
 
+    static Random random = ThreadLocalRandom.current(); // TODO delete this
+
+    public int getNumberOfOpenDoors() {
+//        int count = 0;
+//        for (Door door : doors) {
+//            if (door.isOpen()) {
+//                count++;
+//            }
+//        }
+//        return count;
+        return random.nextInt(10);
+    }
+
+    public int getNumberOfLockedDoors() {
+//        int count = 0;
+//        for (Door door : doors) {
+//            if (door.isLocked()) {
+//                count++;
+//            }
+//        }
+//        return count;
+        return random.nextInt(10);
+    }
+
+    public int getNumberOfLightsOn() {
+//        int count = 0;
+//        for (Light light : lights) {
+//            if (light.isOn()) {
+//                count++;
+//            }
+//        }
+//        return count;
+        return random.nextInt(10);
+    }
+
+    public int getNumberOfWindowsOpen() {
+//        int count = 0;
+//        for (Window window : windows) {
+//            if (window.isOpen()) {
+//                count++;
+//            }
+//        }
+//        return count;
+        return random.nextInt(10);
+    }
+
+    public int getNumberOfWindowsBlocked() {
+//        int count = 0;
+//        for (Window window : windows) {
+//            if (window.isObstructed()) { // TODO rename blocked to obstructed or vice versa
+//                count++;
+//            }
+//        }
+//        return count;
+        return random.nextInt(10);
+    }
 }
