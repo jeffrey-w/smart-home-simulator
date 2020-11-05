@@ -1,5 +1,7 @@
 package main;
 
+import org.tinylog.Logger;
+
 import main.model.elements.Door;
 import main.model.elements.Window;
 import main.model.elements.Light;
@@ -38,6 +40,8 @@ public class TestMain {
         Room room = new Room(doors,lights,windows);
         ParentPermission perm = new ParentPermission();
         room.addPerson("Nam", perm);
+
+        Logger.info("example log");
 
     }
 }

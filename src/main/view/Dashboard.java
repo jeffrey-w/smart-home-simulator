@@ -17,6 +17,8 @@ import java.util.Set;
 import static java.awt.BorderLayout.EAST;
 import static java.awt.BorderLayout.WEST;
 
+import org.tinylog.Logger;
+
 /**
  * The dashboard represents the user interface. It is through the dashboard that the user can interact with the
  * simulation.
@@ -274,6 +276,9 @@ public class Dashboard extends JFrame {
     public void sendToConsole(String message) {
         console.append(message + "\n> ");
         console.setCaretPosition(console.getDocument().getLength());
+
+        // Send message to log file as well
+        Logger.info(message);
     }
 
 }
