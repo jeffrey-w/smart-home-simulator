@@ -24,12 +24,26 @@ public class AwayMode {
     }
 
     /**
+     * @return The AwayMode state
+     */
+    public boolean getAwayMode() {
+        return (this.on);
+    }
+
+    /**
      * Allows the user to set {@code AwayMode} to specified value.
      *
      * @param bool The given value of {@code AwayMode}. If true turns ON, else turns OFF.
      */
     public void setAwayMode(boolean bool) {
         this.on = bool;
+    }
+
+    /**
+     * @return The AwayMode delay
+     */
+    public int getAwayModeDelay() {
+        return (this.delay);
     }
 
     /**
