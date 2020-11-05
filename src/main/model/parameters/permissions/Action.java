@@ -1,6 +1,8 @@
 package main.model.parameters.permissions;
 
 import main.model.elements.Door;
+import main.model.elements.Window;
+import main.model.elements.Light;
 import main.model.elements.Manipulable;
 
 /**
@@ -24,13 +26,17 @@ public enum Action {
         }
 
         @Override
+        public String doAction(Manipulable manipulable) {
+            return "in progress";
+        }
+
+        @Override
         public String toString() {
             return "Change Temperature";
         }
-
     },
 
-    LOCK_DOOR {
+    TOGGLE_LOCK_DOOR {
         @Override
         public boolean isChildPermissible() {
             return true;
@@ -48,18 +54,20 @@ public enum Action {
                 return "Please close this door first.";
             } else {
                 door.setLocked(!door.isLocked());
-                return "Door has been locked.";
+                String message = door.isLocked() ? "Door has been locked." :  "Door has been unlocked";
+                return message;
             }
         }
 
         @Override
         public String toString() {
-            return "Lock Door";
+            return "Toggle Lock Door";
         }
 
     },
 
-    OPEN_DOOR {
+    // toggle open/close door
+    TOGGLE_DOOR {
         @Override
         public boolean isChildPermissible() {
             return false;
@@ -68,16 +76,29 @@ public enum Action {
         @Override
         public boolean isGuestPermissible() {
             return true;
+        }
+
+        @Override
+        public String doAction(Manipulable manipulable) {
+            Door door = (Door) manipulable;
+            boolean requestedState = !door.isOpen();
+            if(requestedState == true && door.isLocked()){
+                return "Please unlock this door first.";
+            }
+            else{
+                door.setOpen(!door.isOpen());
+                String message = door.isOpen() ? "Door has been opened." :  "Door has been closed";
+                return message;
+            }
         }
 
         @Override
         public String toString() {
-            return "Open Door";
+            return "Toggle Door";
         }
-
     },
 
-    OPEN_WINDOW {
+    TOGGLE_WINDOW {
         @Override
         public boolean isChildPermissible() {
             return false;
@@ -86,6 +107,19 @@ public enum Action {
         @Override
         public boolean isGuestPermissible() {
             return true;
+        }
+
+        @Override
+        public String doAction(Manipulable manipulable) {
+            Window window = (Window) manipulable;
+            if(window.isObstructed()){
+                return "Please unblock this window first.";
+            }
+            else{
+                window.setOpen(!window.isOpen());
+                String message = window.isOpen() ? "Window has been opened." :  "Window has been closed";
+                return message;
+            }
         }
 
         @Override
@@ -95,7 +129,7 @@ public enum Action {
 
     },
 
-    TURN_ON_LIGHT {
+    TOGGLE_LIGHT {
         @Override
         public boolean isChildPermissible() {
             return true;
@@ -111,9 +145,16 @@ public enum Action {
             return "Turn On Light";
         }
 
+        @Override
+        public String doAction(Manipulable manipulable) {
+            Light light = (Light) manipulable;
+            light.setOn(!light.isOn());
+            String message = light.isOn() ? "Light has been opened." :  "Light has been closed";
+            return message;
+            }
     },
 
-    BLOCK_WINDOW {
+    TOGGLE_BLOCK_WINDOW {
         @Override
         public boolean isChildPermissible() {
             return false;
@@ -128,7 +169,13 @@ public enum Action {
         public String toString() {
             return "Block Window";
         }
-
+        @Override
+        public String doAction(Manipulable manipulable) {
+                Window window = (Window) manipulable;
+                window.setObstructed(!window.isObstructed());
+                String message = window.isObstructed() ? "Window has been blocked." :  "Window has been unblocked";
+                return message;
+                }
     };
 
     /**

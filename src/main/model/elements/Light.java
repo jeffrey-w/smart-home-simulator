@@ -41,7 +41,7 @@ public class Light {
      *
      * @param state The specified on state
      */
-    void setOn(boolean state) {
+    public void setOn(boolean state) {
         this.on = state;
     }
 
