@@ -10,7 +10,11 @@ import main.model.elements.Manipulable;
  * Permission}.
  *
  * @author Jeff Wilgus
+ * @author Philippe Vo
  * @see Permission
+ *
+ * FIXME       : Maybe it would be better to have the logic of
+ * FIXME cont. : "not being able to open a window because its blocked inside window.setOpen() itself ? "
  */
 public enum Action {
 
