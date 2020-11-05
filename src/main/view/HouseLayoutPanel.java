@@ -1,6 +1,7 @@
 package main.view;
 
 import main.model.elements.House;
+import main.model.elements.Room;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,11 +18,12 @@ public class HouseLayoutPanel extends JPanel {
     private static class RoomInfo {
 
         Point coordinates;
-        int[] states = new int[NUM_STATES];
+        int[] states = new int[NUMBER_OF_STATES];
 
         RoomInfo(int x, int y) {
             coordinates = new Point(x, y);
         }
+
 
     }
 
@@ -31,22 +33,23 @@ public class HouseLayoutPanel extends JPanel {
     public static final int WINDOWS_OPEN = 3;
     public static final int WINDOWS_BLOCKED = 4;
     public static final int NUMBER_OF_PEOPLE = 5;
+    private static final int NUMBER_OF_STATES = 6;
     private static final int ROOM_DIM = 0x80;
-    private static final int NUM_STATES = 6;
-    private static final int OFFSET = 8;
+    private static final int OFFSET = 4;
     private static final int STATE_DIM = 0x10;
     private static final String NULL_HOUSE_MESSAGE = "No house loaded.";
+
     private static final Color[] STATE_COLORS = {
-            Color.ORANGE,
+            Color.BLUE,
             Color.RED,
             Color.YELLOW,
             Color.GREEN,
             Color.GRAY,
             Color.PINK
     };
-
     int x, y;
     int drawn = 0;
+
     Map<String, RoomInfo> rooms = new LinkedHashMap<>();
 
     /**
@@ -72,13 +75,39 @@ public class HouseLayoutPanel extends JPanel {
         repaint();
     }
 
-    public void changeStatusOfIn(boolean status, int of, String in) {
-        if (rooms.containsKey(in)) {
-            rooms.get(in).states[of] += (status) ? 1 : -1;
-            revalidate();
-            repaint();
+    // TODO comment this
+    public void updateRoom(String location, Room room) {
+        RoomInfo info = rooms.get(location); // TODO validate location
+        for (int i = 0; i < NUMBER_OF_STATES; i++) {
+            updateState(room, info, i);
         }
-        // TODO throw exception?
+        revalidate();
+        repaint();
+    }
+
+    private void updateState(Room room, RoomInfo info, int state) {
+        switch (state) {
+            case DOORS_OPEN:
+                info.states[state] = room.getNumberOfOpenDoors();
+                break;
+            case DOORS_LOCKED:
+                info.states[state] = room.getNumberOfLockedDoors();
+                break;
+            case LIGHTS_ON:
+                info.states[state] = room.getNumberOfLightsOn();
+                break;
+            case WINDOWS_OPEN:
+                info.states[state] = room.getNumberOfWindowsOpen();
+                break;
+            case WINDOWS_BLOCKED:
+                info.states[state] = room.getNumberOfWindowsBlocked();
+                break;
+            case NUMBER_OF_PEOPLE:
+                info.states[state] = room.getNumberOfPeople();
+                break;
+            default:
+                throw new AssertionError();
+        }
     }
 
     @Override
@@ -91,7 +120,7 @@ public class HouseLayoutPanel extends JPanel {
         } else {
             for (Map.Entry<String, RoomInfo> entry : rooms.entrySet()) {
                 int x = entry.getValue().coordinates.x, y = entry.getValue().coordinates.y;
-                int offset = OFFSET, stateIndex = 0;
+                int stateIndex = 0, offset = OFFSET;
                 String location = entry.getKey();
                 g.drawRect(x, y, ROOM_DIM, ROOM_DIM);
                 g.drawString(location, x + (ROOM_DIM - g.getFontMetrics().stringWidth(location) >>> 1),
@@ -99,9 +128,10 @@ public class HouseLayoutPanel extends JPanel {
                 for (int state : entry.getValue().states) {
                     if (state > 0) {
                         g.setColor(STATE_COLORS[stateIndex]);
-                        g.fillOval(x + offset, y + offset, STATE_DIM, STATE_DIM);
+                        g.fillOval(x + offset, y + OFFSET, STATE_DIM, STATE_DIM);
                         offset += OFFSET + STATE_DIM;
                     }
+                    g.setColor(Color.WHITE);
                     stateIndex++;
                 }
             }
