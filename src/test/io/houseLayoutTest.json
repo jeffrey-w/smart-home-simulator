@@ -1,0 +1,30 @@
+{
+  "root": "living_room",
+  "rooms": [
+    {
+      "id": "living_room",
+      "doors": {
+        "location": [false, true, false, true]
+      },
+      "lights": {
+        "location": [true, true, false, false]
+      },
+      "windows": {
+        "location": [true, false, false, true]
+      },
+      "connections": ["kitchen"]
+    },
+    {
+      "id": "kitchen",
+      "doors": {
+        "location": [false, false, false, true]
+      },
+      "lights": {
+        "location": [true, true, true, false]
+      },
+      "windows": {
+        "location": [true, true, false, false]
+      }
+    }
+  ]
+}
