@@ -9,7 +9,7 @@ package main.model.elements;
 public class Yard extends Place {
 
     // Singleton object
-    private static Yard yard = null;
+    private static volatile Yard yard;
 
     /**
      * Get the {@code Yard} of a {@code House}
@@ -18,7 +18,11 @@ public class Yard extends Place {
      */
     public static Yard getInstance() {
         if (yard == null) {
-            yard = new Yard();
+            synchronized (Yard.class) {
+                if (yard == null) {
+                    yard = new Yard();
+                }
+            }
         }
         return yard;
     }
@@ -44,4 +48,5 @@ public class Yard extends Place {
         // empty for now
         return "no operations done";
     }
+    
 }
