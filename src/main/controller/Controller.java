@@ -9,14 +9,12 @@ import main.util.HouseReader;
 import main.util.JSONFilter;
 import main.view.*;
 
+import javax.swing.Timer;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.event.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.*;
 
 /**
  * The {@code Controller} class provides the interface between runtime simulation objects and the UI elements to
@@ -28,6 +26,7 @@ public class Controller {
 
     private static final JSONFilter JSON_FILTER = new JSONFilter();
     private static final Set<String> CANCEL_KEYWORDS = new HashSet<>();
+    private static final Map<String, ActionListener> SUBROUTINES = new HashMap<>();
 
     static {
         CANCEL_KEYWORDS.add("YES");
@@ -59,6 +58,7 @@ public class Controller {
     public Controller() {
         dashboard.setTemperature(String.valueOf(parameters.getTemperature()));
         dashboard.setDate(parameters.getDate());
+        dashboard.addSimulationListener(new SimulationListener());
         dashboard.addLoadHouseListener(new LoadHouseListener());
         dashboard.addEditProfilesListener(new ManageProfilesListener());
         dashboard.addManageProfilesListener(new EditProfileListener());
@@ -73,6 +73,26 @@ public class Controller {
      * Below are various event handlers that transform input from the user into data that can be manipulated by the data
      * model of a simulation
      */
+
+    class SimulationListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (house != null) {
+                parameters.setOn(((JToggleButton) e.getSource()).isSelected());
+                dashboard.toggleOnButton();
+                for (String room : house.getLocations()) {
+                    updateHouseIfOn(room, false);
+                }
+                if (parameters.isOn() && parameters.getAwayMode()) {
+                    startAwayModeCountdown();
+                }
+            } else {
+                dashboard.sendToConsole("Please load a house to start the simulation.", Dashboard.MessageType.ERROR, true);
+            }
+        }
+
+    }
 
     class LoadHouseListener implements ActionListener {
 
@@ -131,10 +151,18 @@ public class Controller {
                             parameters.addActor(name, permission);
                             if (location != null) { // Assume that house is non-null since location field is enabled.
                                 house.addPerson(name, permission, location);
-                                dashboard.sendToConsole(name + " entered " + location + ".");
+                                dashboard.sendToConsole(name + " entered " + location + ".",
+                                        Dashboard.MessageType.NORMAL, true);
+                                if (parameters.isOn()) {
+                                    dashboard.updateRoom(location, house.getRoom(location));
+                                    if (parameters.getAwayMode()) {
+                                        startAwayModeCountdown();
+                                    }
+                                }
+                                updateHouseIfOn(location, true);
                             } else {
                                 if (house != null && house.removePerson(name)) {
-                                    dashboard.sendToConsole(name + " exited the house.");
+                                    dashboard.sendToConsole(name + " exited the house.", Dashboard.MessageType.NORMAL, true);
                                 }
                             }
                             if (!viewer.containsProfile(name)) {
@@ -142,7 +170,7 @@ public class Controller {
                             }
                             editor.dispose();
                         } catch (Exception exception) {
-                            dashboard.sendToConsole(exception.getMessage());
+                            dashboard.sendToConsole(exception.getMessage(), Dashboard.MessageType.ERROR, true);
                         }
                     });
                     editor.pack();
@@ -154,6 +182,7 @@ public class Controller {
                     parameters.removeActor(viewer.getSelectedValue());
                     if (house != null) {
                         house.removePerson(viewer.getSelectedValue());
+                        updateHouseIfOn(house.locationOf(viewer.getSelectedValue()), false);
                     }
                     viewer.removeProfile(viewer.getSelectedValue());
                     break;
@@ -195,14 +224,27 @@ public class Controller {
             dashboard.setLocation(location);
             try {
                 house.addPerson("user", parameters.getPermission(), location);
-                dashboard.sendToConsole("You have entered " + location + ".");
+                dashboard.sendToConsole("You have entered " + location + ".", Dashboard.MessageType.NORMAL, true);
             } catch (NoSuchElementException exception) {
-                dashboard.sendToConsole("You have removed yourself from the house.");
+                dashboard.sendToConsole("You have removed yourself from the house.", Dashboard.MessageType.NORMAL, true);
             } catch (Exception exception) {
-                dashboard.sendToConsole(exception.getMessage());
+                dashboard.sendToConsole(exception.getMessage(), Dashboard.MessageType.ERROR, true);
             }
+            updateHouseIfOn(location, true);
         }
 
+    }
+
+    private void updateHouseIfOn(String location, boolean initiateAwayMode) {
+        if (parameters.isOn()) {
+            dashboard.updateRoom(location, house.getRoom(location));
+            if (parameters.getAwayMode()) {
+                startAwayModeCountdown();
+            }
+        }
+        else {
+            dashboard.clearRoom(location);
+        }
     }
 
     class TemperatureListener implements ChangeListener {
@@ -234,26 +276,33 @@ public class Controller {
             if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() > 1) {
                 if (canAct()) {
                     ActionPanel actionPanel = dashboard.getActions();
-                    ItemChooser chooser = ItemChooser.of(getItems(actionPanel.getSelectedItem()));
-                    chooser.addActionListener(f -> {
-                        try {
-                            dashboard.sendToConsole(chooser.getSelectedItem()
-                                    .manipulate(parameters.getPermission().authorize(actionPanel.getSelectedAction())));
-                            dashboard.updateRoom(parameters.getLocation(), house.getRoom(parameters.getLocation()));
-                        } catch (IllegalArgumentException exception) {
-                            dashboard.sendToConsole(exception.getMessage());
-                        }
-                        chooser.dispose();
-                    });
-                    chooser.pack();
-                    chooser.setLocationRelativeTo(dashboard);
-                    chooser.setVisible(true);
+                    if (SUBROUTINES.containsKey(actionPanel.getSelectedItem())) {
+                        SUBROUTINES.get(actionPanel.getSelectedItem())
+                                .actionPerformed(
+                                        new ActionEvent(e.getSource(), e.getID(), actionPanel.getSelectedItem()));
+                    } else {
+                        ItemChooser chooser = ItemChooser.of(getItems(actionPanel.getSelectedItem()));
+                        chooser.addActionListener(f -> {
+                            try {
+                                dashboard.sendToConsole(chooser.getSelectedItem().manipulate(
+                                        parameters.getPermission().authorize(actionPanel.getSelectedAction())),
+                                        Dashboard.MessageType.NORMAL, true);
+                                updateHouseIfOn(parameters.getLocation(), false);
+                            } catch (IllegalArgumentException exception) {
+                                dashboard.sendToConsole(exception.getMessage(), Dashboard.MessageType.ERROR, true);
+                            }
+                            chooser.dispose();
+                        });
+                        chooser.pack();
+                        chooser.setLocationRelativeTo(dashboard);
+                        chooser.setVisible(true);
+                    }
                 } else {
                     String message = "Please select a permission and location to choose an action.";
                     if (house == null) {
                         message += " You must first load a house to select a location.";
                     }
-                    dashboard.sendToConsole(message);
+                    dashboard.sendToConsole(message, Dashboard.MessageType.ERROR, true);
                 }
             }
         }
@@ -266,6 +315,10 @@ public class Controller {
     private Manipulable[] getItems(String type) {
         Room location = house.getRoom(parameters.getLocation());
         switch (type) {
+            case "Doors":
+                return location.getDoors();
+            case "Lights":
+                return location.getLights();
             case "Windows":
                 return location.getWindows();
             default:
@@ -278,10 +331,11 @@ public class Controller {
         Timer timer = new Timer(parameters.getAwayDelay(), e -> {
             dashboard.addConsoleListener(null, null);
             if (cancel[0]) {
-                dashboard.sendToConsole("Crisis averted!");
+                dashboard.sendToConsole("Crisis averted!", Dashboard.MessageType.WARNING, true);
             } else {
                 dashboard.sendToConsole(
-                        (cancel[1] ? "" : "\n") + "Intruder detected, the authorities have been alerted!");
+                        (cancel[1] ? "" : "\n") + "Intruder detected, the authorities have been alerted!",
+                        Dashboard.MessageType.WARNING, true);
             }
         });
         dashboard.addConsoleListener(new KeyAdapter() {
