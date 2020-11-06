@@ -20,7 +20,7 @@ public class ActionPanel extends JPanel {
     private static final Map<String, Action[]> ACTIONS = new HashMap<>();
 
     static {
-        ACTIONS.put("Windows", new Action[] {Action.OPEN_WINDOW, Action.BLOCK_WINDOW});
+        ACTIONS.put("Windows", new Action[] {Action.TOGGLE_WINDOW, Action.TOGGLE_BLOCK_WINDOW});
     }
 
     DefaultListModel<Action> actionsModel = new DefaultListModel<>();

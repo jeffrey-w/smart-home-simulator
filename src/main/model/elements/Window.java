@@ -9,7 +9,7 @@ import main.model.parameters.permissions.Action;
  * @author Émilie Martin
  * @author Philippe Vo
  */
-public class Window implements Manipulable {
+public class Window extends AbstractManipulable {
 
     // If not provided by the user, the system uses these default values.
     private static final boolean DEFAULT_OPEN_VALUE = false;
@@ -87,8 +87,4 @@ public class Window implements Manipulable {
         return result;
     }
 
-    @Override
-    public void manipulate(Action action) {
-        // TODO
-    }
 }

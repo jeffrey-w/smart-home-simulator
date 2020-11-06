@@ -15,7 +15,8 @@ public interface Manipulable {
      * Performs the specified {@code action} on this {@code Manipulable}.
      *
      * @param action The specified {@code Action}
+     * @return A description of the result of the specified {@code action} on this {@code Manipulable}
      */
-    void manipulate(Action action);
+    String manipulate(Action action);
 
 }
