@@ -1,12 +1,10 @@
 package main.model.elements;
 
-import main.model.parameters.permissions.Action;
 import main.model.parameters.permissions.Permission;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 import static main.util.NameValidator.validateName;
 
@@ -67,10 +65,10 @@ public abstract class Place {
     }
 
     // runs a routine if there is a person added to the "Place'
-    public abstract String addRoutine();
+    public abstract String addRoutine(); // TODO rethink this
 
     // runs a routine if there is a person added to the "Place'
-    public abstract String removeRoutine();
+    public abstract String removeRoutine(); // TODO rethink this
 
     // TODO comment this
     public int getNumberOfPeople() {
