@@ -16,6 +16,7 @@ public class ParameterPanel extends JPanel {
     private static final int ROWS = 6;
 
     Avatar avatar;
+    JToggleButton on = new JToggleButton("On");
     JLabel permission = new JLabel();
     JLabel location = new JLabel();
     JLabel temperature = new JLabel();
@@ -29,7 +30,7 @@ public class ParameterPanel extends JPanel {
         setLayout(new SpringLayout());
 
         // Add main.model.elements to panel.
-        add(new JToggleButton("On"));
+        add(on);
         add(avatar = new Avatar(null));
         add(permission);
         add(location);
