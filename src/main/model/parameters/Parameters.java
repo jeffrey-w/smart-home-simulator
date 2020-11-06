@@ -39,7 +39,7 @@ public class Parameters {
      */
     public Parameters() {
         permission = null;
-        actors = ProfileManager.loadProfiles();
+        actors = new HashMap<>();
         location = null;
         date = Date.from(Instant.now());
         temperature = DEFAULT_TEMPERATURE;
@@ -57,7 +57,6 @@ public class Parameters {
      */
     public void addActor(String name, Permission permission) {
         actors.put(validateName(name), Objects.requireNonNull(permission, "Please select a permission level."));
-        ProfileManager.saveProfiles(actors);
     }
 
     /**
@@ -68,7 +67,6 @@ public class Parameters {
      */
     public void removeActor(String name) {
         actors.remove(name);
-        ProfileManager.saveProfiles(actors);
     }
 
     /**
