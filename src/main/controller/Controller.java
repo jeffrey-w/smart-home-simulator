@@ -93,7 +93,7 @@ public class Controller {
         public void actionPerformed(ActionEvent e) {
             ProfileViewer viewer = dashboard.getProfileViewer();
             viewer.clear();
-            viewer.populateList(parameters.getActors());
+            viewer.populateList(parameters.getActorsIdentifier());
             viewer.pack();
             viewer.setLocationRelativeTo(dashboard);
             viewer.setVisible(true);

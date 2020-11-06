@@ -79,7 +79,7 @@ public class Parameters {
     /**
      * @return The unique identifiers of the actors added to the simulation
      */
-    public Set<String> getActors() {
+    public Set<String> getActorsIdentifier() {
         return Collections.unmodifiableSet(actors.keySet());
     }
 
