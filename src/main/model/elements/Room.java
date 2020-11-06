@@ -1,10 +1,9 @@
 package main.model.elements;
 
+import main.model.parameters.permissions.Action;
+
 import java.util.Arrays;
 import java.util.Objects;
-import main.model.parameters.permissions.Action;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * A {@code Room} is comprised of many {@code House} elements, such as {@code Door}s, {@code Light}s, and {@code
@@ -44,13 +43,13 @@ public class Room extends Place {
      *
      * @return message depending on context
      */
+    @Override
     public String addRoutine(){
         // turn on the lights if there is someone in the room and if light is set to autoMode
         for (Light light : this.lights) {
             if (light.isAutoMode()) {
-                if(light.isOn() == false){ // only turn on light if it was off
-                    String msg = light.manipulate(Action.TOGGLE_LIGHT);
-                    return msg;
+                if(!light.isOn()){ // only turn on light if it was off
+                    return light.manipulate(Action.TOGGLE_LIGHT);
                 }
             }
         }
@@ -64,15 +63,15 @@ public class Room extends Place {
      *
      * @return message depending on context
      */
+    @Override
     public String removeRoutine() {
         // turn off the lights if there is no one in the room
         if (this.getNumPeople() == 0) {
             // turn on the lights if there is someone in the room and if light is set to autoMode
             for (Light light : this.lights) {
                 if (light.isAutoMode()) {
-                    if (light.isOn() == true) { // only turn on light if it was on
-                        String msg = light.manipulate(Action.TOGGLE_LIGHT);
-                        return msg;
+                    if (light.isOn()) { // only turn on light if it was on
+                        return light.manipulate(Action.TOGGLE_LIGHT);
                     }
                 }
             }
@@ -133,60 +132,53 @@ public class Room extends Place {
         return result;
     }
 
-    static Random random = ThreadLocalRandom.current(); // TODO delete this
-
     public int getNumberOfOpenDoors() {
-//        int count = 0;
-//        for (Door door : doors) {
-//            if (door.isOpen()) {
-//                count++;
-//            }
-//        }
-//        return count;
-        return random.nextInt(10);
+        int count = 0;
+        for (Door door : doors) {
+            if (door != null && door.isOpen()) {
+                count++;
+            }
+        }
+        return count;
     }
 
     public int getNumberOfLockedDoors() {
-//        int count = 0;
-//        for (Door door : doors) {
-//            if (door.isLocked()) {
-//                count++;
-//            }
-//        }
-//        return count;
-        return random.nextInt(10);
+        int count = 0;
+        for (Door door : doors) {
+            if (door != null && door.isLocked()) {
+                count++;
+            }
+        }
+        return count;
     }
 
     public int getNumberOfLightsOn() {
-//        int count = 0;
-//        for (Light light : lights) {
-//            if (light.isOn()) {
-//                count++;
-//            }
-//        }
-//        return count;
-        return random.nextInt(10);
+        int count = 0;
+        for (Light light : lights) {
+            if (light != null && light.isOn()) {
+                count++;
+            }
+        }
+        return count;
     }
 
     public int getNumberOfWindowsOpen() {
-//        int count = 0;
-//        for (Window window : windows) {
-//            if (window.isOpen()) {
-//                count++;
-//            }
-//        }
-//        return count;
-        return random.nextInt(10);
+        int count = 0;
+        for (Window window : windows) {
+            if (window != null &&  window.isOpen()) {
+                count++;
+            }
+        }
+        return count;
     }
 
     public int getNumberOfWindowsBlocked() {
-//        int count = 0;
-//        for (Window window : windows) {
-//            if (window.isObstructed()) { // TODO rename blocked to obstructed or vice versa
-//                count++;
-//            }
-//        }
-//        return count;
-        return random.nextInt(10);
+        int count = 0;
+        for (Window window : windows) {
+            if (window != null && window.isObstructed()) { // TODO rename blocked to obstructed or vice versa
+                count++;
+            }
+        }
+        return count;
     }
 }
