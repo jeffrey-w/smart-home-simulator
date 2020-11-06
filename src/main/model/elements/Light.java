@@ -9,10 +9,10 @@ package main.model.elements;
 public class Light extends AbstractManipulable {
 
     // If not provided by the user, the system uses this default value.
-    private static final boolean DEFAULT_ON_VALUE = true;
+    private static final boolean DEFAULT_ON_VALUE = false;
 
     private boolean on;
-    private boolean autoMode;
+    private boolean autoMode; // TODO rethink this
 
     /**
      * Constructs a {@code Light} object with a {@value DEFAULT_ON_VALUE} state.
