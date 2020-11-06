@@ -2,6 +2,7 @@ package main.view;
 
 import main.model.elements.House;
 import main.model.parameters.permissions.Permission;
+import org.tinylog.Logger;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -18,7 +19,6 @@ import java.util.Set;
 import static java.awt.BorderLayout.EAST;
 import static java.awt.BorderLayout.WEST;
 
-import org.tinylog.Logger;
 
 /**
  * The dashboard represents the user interface. It is through the dashboard that the user can interact with the
