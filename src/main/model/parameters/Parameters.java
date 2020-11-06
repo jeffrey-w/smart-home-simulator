@@ -2,7 +2,7 @@ package main.model.parameters;
 
 import main.model.elements.Room;
 import main.model.parameters.permissions.Permission;
-import main.util.ProfileReader;
+import main.util.ProfileManager;
 
 import java.time.Instant;
 import java.util.*;
@@ -39,7 +39,7 @@ public class Parameters {
      */
     public Parameters() {
         permission = null;
-        actors = ProfileReader.loadProfiles();
+        actors = ProfileManager.loadProfiles();
         location = null;
         date = Date.from(Instant.now());
         temperature = DEFAULT_TEMPERATURE;
@@ -57,6 +57,7 @@ public class Parameters {
      */
     public void addActor(String name, Permission permission) {
         actors.put(validateName(name), Objects.requireNonNull(permission, "Please select a permission level."));
+        ProfileManager.saveProfiles(actors);
     }
 
     /**
@@ -67,6 +68,7 @@ public class Parameters {
      */
     public void removeActor(String name) {
         actors.remove(name);
+        ProfileManager.saveProfiles(actors);
     }
 
     /**
