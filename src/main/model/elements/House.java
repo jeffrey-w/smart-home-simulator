@@ -17,6 +17,11 @@ import static main.util.NameValidator.validateName;
  */
 public class House implements Iterable<Room> {
 
+    // TODO comment this
+    public boolean hasStrangers() {
+        return true; // TODO
+    }
+
     private static class Node {
 
         Room room;

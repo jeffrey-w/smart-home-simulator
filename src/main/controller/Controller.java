@@ -12,12 +12,11 @@ import main.view.*;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 /**
  * The {@code Controller} class provides the interface between runtime simulation objects and the UI elements to
@@ -28,6 +27,12 @@ import java.util.NoSuchElementException;
 public class Controller {
 
     private static final JSONFilter JSON_FILTER = new JSONFilter();
+    private static final Set<String> CANCEL_KEYWORDS = new HashSet<>();
+
+    static {
+        CANCEL_KEYWORDS.add("YES");
+        CANCEL_KEYWORDS.add("Y");
+    }
 
     // This is the entry point into the program
     public static void main(String[] args) {
@@ -57,6 +62,7 @@ public class Controller {
         dashboard.addLoadHouseListener(new LoadHouseListener());
         dashboard.addEditProfilesListener(new ManageProfilesListener());
         dashboard.addManageProfilesListener(new EditProfileListener());
+        dashboard.addAwayModeListener(new AwayModeListener());
         dashboard.addPermissionListener(new PermissionListener());
         dashboard.addTemperatureListener(new TemperatureListener());
         dashboard.addDateListener(new DateListener());
@@ -155,6 +161,20 @@ public class Controller {
                 }
                 default:
                     throw new AssertionError(); // Defensive measure; this should never happen.
+            }
+        }
+
+    }
+
+    class AwayModeListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (((JToggleButton)e.getSource()).isSelected()) {
+                parameters.setAwayMode(true);
+                if (house.hasStrangers()) {
+                    startAwayModeCountdown();
+                }
             }
         }
 
@@ -268,6 +288,35 @@ public class Controller {
             default:
                 throw new AssertionError(); // Defensive measure; this should never happen.
         }
+    }
+
+    private void startAwayModeCountdown() {
+        final boolean[] cancel = {false, false};
+        Timer timer = new Timer(parameters.getAwayDelay(), e -> {
+            dashboard.addConsoleListener(null, null);
+            if (cancel[0]) {
+                dashboard.sendToConsole("Crisis averted!");
+            } else {
+                dashboard.sendToConsole((cancel[1] ? "" : "\n") +"Intruder detected, the authorities have been alerted!");
+            }
+        });
+        dashboard.addConsoleListener(new KeyAdapter() {
+
+            @Override
+            public void keyPressed(final KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    if (CANCEL_KEYWORDS.contains(dashboard.getLastConsoleMessage())) {
+                        cancel[0] = true;
+                        timer.setInitialDelay(0);
+                        timer.restart();
+                    }
+                    cancel[1] = true;
+                }
+            }
+
+        }, "Potential break in, do you want to disable the alarm [y/N]?");
+        timer.setRepeats(false);
+        timer.start();
     }
 
 }
