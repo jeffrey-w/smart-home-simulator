@@ -62,7 +62,6 @@ public class Controller {
         dashboard.addLoadHouseListener(new LoadHouseListener());
         dashboard.addEditProfilesListener(new ManageProfilesListener());
         dashboard.addManageProfilesListener(new EditProfileListener());
-        dashboard.addAwayModeListener(new AwayModeListener());
         dashboard.addPermissionListener(new PermissionListener());
         dashboard.addTemperatureListener(new TemperatureListener());
         dashboard.addDateListener(new DateListener());
@@ -166,20 +165,6 @@ public class Controller {
 
     }
 
-    class AwayModeListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (((JToggleButton)e.getSource()).isSelected()) {
-                parameters.setAwayMode(true);
-                if (house.hasStrangers()) {
-                    startAwayModeCountdown();
-                }
-            }
-        }
-
-    }
-
     class PermissionListener implements ActionListener {
 
         @Override
@@ -252,11 +237,8 @@ public class Controller {
                     ItemChooser chooser = ItemChooser.of(getItems(actionPanel.getSelectedItem()));
                     chooser.addActionListener(f -> {
                         try {
-                            chooser.getSelectedItem()
-                                    .manipulate(parameters.getPermission().authorize(actionPanel.getSelectedAction()));
-                            dashboard.sendToConsole(
-                                    actionPanel.getSelectedAction() + " performed on " + chooser.getSelectedItem()
-                                            + " of " + parameters.getLocation() + ".");
+                            dashboard.sendToConsole(chooser.getSelectedItem()
+                                    .manipulate(parameters.getPermission().authorize(actionPanel.getSelectedAction())));
                             dashboard.updateRoom(parameters.getLocation(), house.getRoom(parameters.getLocation()));
                         } catch (IllegalArgumentException exception) {
                             dashboard.sendToConsole(exception.getMessage());
@@ -298,7 +280,8 @@ public class Controller {
             if (cancel[0]) {
                 dashboard.sendToConsole("Crisis averted!");
             } else {
-                dashboard.sendToConsole((cancel[1] ? "" : "\n") +"Intruder detected, the authorities have been alerted!");
+                dashboard.sendToConsole(
+                        (cancel[1] ? "" : "\n") + "Intruder detected, the authorities have been alerted!");
             }
         });
         dashboard.addConsoleListener(new KeyAdapter() {
