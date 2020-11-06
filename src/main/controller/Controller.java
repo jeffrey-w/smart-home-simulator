@@ -132,8 +132,6 @@ public class Controller {
      */
     class SimulationListener implements ActionListener {
 
-
-
         @Override
         public void actionPerformed(ActionEvent e) {
             if (house != null) {
@@ -208,12 +206,6 @@ public class Controller {
                             if (location != null) { // Assume that house is non-null since location field is enabled.
                                 house.addPerson(name, permission, location);
                                 sendToConsole(name + " has entered the " + location + ".", Dashboard.MessageType.NORMAL);
-                                if (parameters.isOn()) {
-                                    dashboard.updateRoom(location, house.getRoom(location));
-                                    if (parameters.getAwayMode()) {
-                                        startAwayModeCountdown();
-                                    }
-                                }
                             } else {
                                 if (house != null && house.removePerson(name)) {
                                     sendToConsole(name + " has exited the house.", Dashboard.MessageType.NORMAL);
@@ -250,8 +242,6 @@ public class Controller {
     }
     class PermissionListener implements ActionListener {
 
-
-
         @Override
         public void actionPerformed(final ActionEvent e) {
             Permission permission = dashboard.getPermissionInput();
@@ -269,6 +259,7 @@ public class Controller {
             }
         }
     }
+
     class LocationListener implements ActionListener {
 
         @Override
