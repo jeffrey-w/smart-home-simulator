@@ -9,10 +9,10 @@ import java.util.Scanner;
 
 public abstract class ProfileManager {
 
-    public static HashMap<String, Permission> loadProfiles() {
+    public static HashMap<String, Permission> loadProfiles(String filePath) {
         HashMap<String, Permission> actors = new HashMap<>();
         try {
-            Scanner scanner = new Scanner(new File("assets/profiles.txt"));
+            Scanner scanner = new Scanner(new File(filePath));
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 String[] lineArray = line.split(" ");
@@ -30,9 +30,9 @@ public abstract class ProfileManager {
         return actors;
     }
 
-    public static void saveProfiles(Map<String, Permission> actors) {
+    public static void saveProfiles(Map<String, Permission> actors, String filePath) {
         try {
-            BufferedWriter out = new BufferedWriter(new FileWriter("assets/profiles.txt"));
+            BufferedWriter out = new BufferedWriter(new FileWriter(filePath));
             for (Map.Entry<String, Permission> item : actors.entrySet()) {
                 out.write(item.getKey() + " " + item.getValue());
                 out.newLine();
