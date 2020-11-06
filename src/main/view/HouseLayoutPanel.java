@@ -15,16 +15,6 @@ import java.util.Map;
  */
 public class HouseLayoutPanel extends JPanel {
 
-    // TODO comment this
-    public void clearRoom(String location) {
-        int[] states = rooms.get(location).states;
-        for (int i = 0; i < NUMBER_OF_STATES; i++) {
-            states[i] = 0;
-        }
-        revalidate();
-        repaint();
-    }
-
     private static class RoomInfo {
 
         Point coordinates;
@@ -59,7 +49,7 @@ public class HouseLayoutPanel extends JPanel {
     };
     int x, y;
     int drawn = 0;
-
+    boolean showStates = false;
     Map<String, RoomInfo> rooms = new LinkedHashMap<>();
 
     /**
@@ -91,8 +81,6 @@ public class HouseLayoutPanel extends JPanel {
         for (int i = 0; i < NUMBER_OF_STATES; i++) {
             updateState(room, info, i);
         }
-        revalidate();
-        repaint();
     }
 
     private void updateState(Room room, RoomInfo info, int state) {
@@ -135,14 +123,17 @@ public class HouseLayoutPanel extends JPanel {
                 g.drawRect(x, y, ROOM_DIM, ROOM_DIM);
                 g.drawString(location, x + (ROOM_DIM - g.getFontMetrics().stringWidth(location) >>> 1),
                         y + (ROOM_DIM >>> 1));
-                for (int state : entry.getValue().states) {
-                    if (state > 0) {
-                        g.setColor(STATE_COLORS[stateIndex]);
-                        g.fillOval(x + offset, y + OFFSET, STATE_DIM, STATE_DIM);
-                        offset += OFFSET + STATE_DIM;
+                if (showStates) {
+                    Color color = g.getColor();
+                    for (int state : entry.getValue().states) {
+                        if (state > 0) {
+                            g.setColor(STATE_COLORS[stateIndex]);
+                            g.fillOval(x + offset, y + OFFSET, STATE_DIM, STATE_DIM);
+                            offset += OFFSET + STATE_DIM;
+                        }
+                        stateIndex++;
                     }
-                    g.setColor(Color.WHITE);
-                    stateIndex++;
+                    g.setColor(color);
                 }
             }
         }
