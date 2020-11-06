@@ -112,6 +112,9 @@ public class House implements Iterable<Room> {
      * @throws NullPointerException If the specified {@code permission} is {@code null}
      */
     public void addPerson(String name, Permission permission, String location) {
+        if (people.containsKey(name)) {
+            rooms.get(locationOf(name)).room.removePerson(name);
+        }
         validateLocation(location).room.addPerson(name, permission);
         people.put(name, location);
     }
