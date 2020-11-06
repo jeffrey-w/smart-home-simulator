@@ -1,9 +1,9 @@
 package main.model.parameters.permissions;
 
 import main.model.elements.Door;
-import main.model.elements.Window;
 import main.model.elements.Light;
 import main.model.elements.Manipulable;
+import main.model.elements.Window;
 
 /**
  * An {@code Action} describes an attempt on the part of an actor to change a simulation, which requires {@code
@@ -12,9 +12,9 @@ import main.model.elements.Manipulable;
  * @author Jeff Wilgus
  * @author Philippe Vo
  * @see Permission
- *
- * FIXME       : Maybe it would be better to have the logic of
- * FIXME cont. : "not being able to open a window because its blocked inside window.setOpen() itself ? "
+ * <p>
+ * FIXME       : Maybe it would be better to have the logic of FIXME cont. : "not being able to open a window because
+ * its blocked inside window.setOpen() itself ? "
  */
 public enum Action {
 
@@ -58,7 +58,7 @@ public enum Action {
                 return "Please close this door first.";
             } else {
                 door.setLocked(!door.isLocked());
-                return door.isLocked() ? "Door has been locked." :  "Door has been unlocked";
+                return door.isLocked() ? "Door has been locked." : "Door has been unlocked";
             }
         }
 
@@ -84,12 +84,11 @@ public enum Action {
         @Override
         public String doAction(Manipulable manipulable) {
             Door door = (Door) manipulable;
-            if(!door.isOpen() && door.isLocked()){
+            if (!door.isOpen() && door.isLocked()) {
                 return "Please unlock this door first.";
-            }
-            else{
+            } else {
                 door.setOpen(!door.isOpen());
-                return door.isOpen() ? "Door has been opened." :  "Door has been closed";
+                return door.isOpen() ? "Door has been opened." : "Door has been closed";
             }
         }
 
@@ -113,12 +112,11 @@ public enum Action {
         @Override
         public String doAction(Manipulable manipulable) {
             Window window = (Window) manipulable;
-            if(window.isObstructed()){
+            if (window.isObstructed()) {
                 return "Please unblock this window first.";
-            }
-            else{
+            } else {
                 window.setOpen(!window.isOpen());
-                return window.isOpen() ? "Window has been opened." :  "Window has been closed";
+                return window.isOpen() ? "Window has been opened." : "Window has been closed";
             }
         }
 
@@ -149,8 +147,8 @@ public enum Action {
         public String doAction(Manipulable manipulable) {
             Light light = (Light) manipulable;
             light.setOn(!light.isOn());
-            return light.isOn() ? "Light has been opened." :  "Light has been closed";
-            }
+            return light.isOn() ? "Light has been opened." : "Light has been closed";
+        }
     },
 
     TOGGLE_BLOCK_WINDOW {
@@ -168,12 +166,13 @@ public enum Action {
         public String toString() {
             return "Block Window";
         }
+
         @Override
         public String doAction(Manipulable manipulable) {
-                Window window = (Window) manipulable;
-                window.setObstructed(!window.isObstructed());
-            return window.isObstructed() ? "Window has been blocked." :  "Window has been unblocked";
-                }
+            Window window = (Window) manipulable;
+            window.setObstructed(!window.isObstructed());
+            return window.isObstructed() ? "Window has been blocked." : "Window has been unblocked";
+        }
     };
 
     /**
