@@ -8,6 +8,10 @@ import org.tinylog.Logger;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeListener;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
@@ -15,11 +19,11 @@ import java.awt.event.MouseListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.EnumMap;
 import java.util.Set;
 
 import static java.awt.BorderLayout.EAST;
 import static java.awt.BorderLayout.WEST;
-
 
 /**
  * The dashboard represents the user interface. It is through the dashboard that the user can interact with the
@@ -29,6 +33,17 @@ import static java.awt.BorderLayout.WEST;
  * @author Émilie Martin
  */
 public class Dashboard extends JFrame {
+
+    // TODO comment this
+    public void clearRoom(String location) {
+        layout.clearRoom(location);
+    }
+
+    public enum MessageType {
+        NORMAL,
+        WARNING,
+        ERROR
+    }
 
     // Pre-determined size parameters
     static final int WINDOW_WIDTH = 0x600;
@@ -41,12 +56,18 @@ public class Dashboard extends JFrame {
     static final int CONTENT_HEIGHT = WINDOW_HEIGHT - CONSOLE_HEIGHT;
     static final int CONTENT_PADDING = 0x20;
     static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm a");
+    private static final EnumMap<MessageType, Color> MESSAGE_COLORS = new EnumMap<>(MessageType.class);
+
+    static {
+        MESSAGE_COLORS.put(MessageType.WARNING, Color.YELLOW);
+        MESSAGE_COLORS.put(MessageType.ERROR, Color.RED);
+    }
 
     ParameterPanel parameters = new ParameterPanel();
     ParameterEditor editor = new ParameterEditor();
     ActionPanel actions = new ActionPanel();
     HouseLayoutPanel layout = new HouseLayoutPanel();
-    JTextArea console = new JTextArea("Welcome to Smart Home Simulator!\n\n> ", CONSOLE_HEIGHT, CONSOLE_WIDTH);
+    JTextPane console = new JTextPane();
     ProfileViewer profileViewer = new ProfileViewer();
 
     /**
@@ -58,9 +79,10 @@ public class Dashboard extends JFrame {
         super("Smart Home Simulator");
 
         // Top-level containers for window content.
+        JPanel content = new JPanel(new GridLayout(2, 1));
+        JPanel top = new JPanel(new GridLayout(1, 2));
         JTabbedPane parameterPane = new JTabbedPane();
         JTabbedPane contentPane = new JTabbedPane();
-        JPanel content = new JPanel();
 
         // Set window display behavior.
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -82,10 +104,10 @@ public class Dashboard extends JFrame {
         contentPane.setPreferredSize(new Dimension(CONTENT_PANE_WIDTH, WINDOW_HEIGHT));
 
         // Add elements to content panel.
-        content.setLayout(new BorderLayout());
-        content.add(actions, WEST);
-        content.add(layout, EAST);
-        content.add(new JScrollPane(console), BorderLayout.SOUTH);
+        top.add(actions);
+        top.add(layout);
+        content.add(top);
+        content.add(new JScrollPane(console));
 
         // Set content display behavior.
         actions.setPreferredSize(new Dimension(CONTENT_WIDTH - CONTENT_PADDING, CONTENT_HEIGHT));
@@ -98,6 +120,7 @@ public class Dashboard extends JFrame {
         console.setEditable(false);
         console.setCaretPosition(console.getDocument().getLength());
         console.getCaret().setVisible(true);
+        sendToConsole("Welcome to Smart Home Simulator!\n", MessageType.NORMAL, true);
     }
 
     /**
@@ -280,12 +303,23 @@ public class Dashboard extends JFrame {
      *
      * @param message The specified message
      */
-    public void sendToConsole(String message) {
-        console.append(message + "\n> ");
-        console.setCaretPosition(console.getDocument().getLength());
-
-        // Send message to log file as well
+    public void sendToConsole(String message, MessageType type, boolean newLine) {
+        int len = console.getDocument().getLength();
+        Color orig = console.getForeground();
+        console.setEditable(true);
+        console.setCaretPosition(len);
+        console.setCharacterAttributes(attributesOf(type, orig), false);
+        console.replaceSelection(message);
+        console.setCharacterAttributes(attributesOf(MessageType.NORMAL, orig), false);
+        if (newLine) {
+            console.replaceSelection("\n> ");
+        }
         Logger.info(message);
+    }
+
+    private static AttributeSet attributesOf(MessageType type, Color original) {
+        return StyleContext.getDefaultStyleContext().addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground,
+                MESSAGE_COLORS.getOrDefault(type, original));
     }
 
     int inputLoc; // TODO move this and make private
@@ -298,7 +332,7 @@ public class Dashboard extends JFrame {
             }
             console.setEditable(false);
         } else {
-            console.append(prompt + " ");
+            sendToConsole(prompt + " ", MessageType.WARNING, false);
             console.addKeyListener(listener);
             console.setEditable(true);
             console.grabFocus();
@@ -317,6 +351,24 @@ public class Dashboard extends JFrame {
     // TODO comment this
     public void updateRoom(String location, Room room) {
         layout.updateRoom(location, room);
+    }
+
+    // TODO comment this
+    public void addSimulationListener(ActionListener listener) {
+        parameters.on.addActionListener(listener);
+    }
+
+    public void toggleOnButton() {
+        switch (parameters.on.getText()) {
+            case "On":
+                parameters.on.setText("Off");
+                break;
+            case "Off":
+                parameters.on.setText("On");
+                break;
+            default:
+                throw new AssertionError();
+        }
     }
 
 }
