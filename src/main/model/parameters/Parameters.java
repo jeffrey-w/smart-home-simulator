@@ -2,7 +2,6 @@ package main.model.parameters;
 
 import main.model.elements.Room;
 import main.model.parameters.permissions.Permission;
-import main.util.ProfileManager;
 
 import java.time.Instant;
 import java.util.*;
