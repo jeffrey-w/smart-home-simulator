@@ -23,8 +23,8 @@ import java.util.*;
  * @author Jeff Wilgus
  */
 public class Controller {
-
     private static final JSONFilter JSON_FILTER = new JSONFilter();
+
     private static final Set<String> CANCEL_KEYWORDS = new HashSet<>();
     private static final Map<String, ActionListener> SUBROUTINES = new HashMap<>();
 
@@ -69,12 +69,70 @@ public class Controller {
         dashboard.drawHouse(house);
     }
 
+    private void startAwayModeCountdown() {
+        final boolean[] cancel = {false, false};
+        Timer timer = new Timer(parameters.getAwayDelay(), e -> {
+            dashboard.addConsoleListener(null, null);
+            if (cancel[0]) {
+                sendToConsole("Crisis averted!", Dashboard.MessageType.WARNING);
+            } else {
+                sendToConsole((cancel[1] ? "" : "\n") + "Intruder detected, the authorities have been alerted!",
+                        Dashboard.MessageType.WARNING);
+            }
+        });
+        dashboard.addConsoleListener(new KeyAdapter() {
+
+            @Override
+            public void keyPressed(final KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    if (CANCEL_KEYWORDS.contains(dashboard.getLastConsoleMessage())) {
+                        cancel[0] = true;
+                        timer.setInitialDelay(0);
+                        timer.restart();
+                    }
+                    cancel[1] = true;
+                }
+            }
+
+        }, "Potential break in, do you want to disable the alarm [y/N]?");
+        timer.setRepeats(false);
+        timer.start();
+    }
+
+    private boolean canAct() {
+        return !(parameters.getPermission() == null || parameters.getLocation() == null);
+    }
+
+    private Manipulable[] getItems(String type) {
+        Room location = house.getRoom(parameters.getLocation());
+        switch (type) {
+            case "Doors":
+                return location.getDoors();
+            case "Lights":
+                return location.getLights();
+            case "Windows":
+                return location.getWindows();
+            default:
+                throw new AssertionError(); // Defensive measure; this should never happen.
+        }
+    }
+
+    private void sendToConsole(String message, Dashboard.MessageType type) {
+        dashboard.sendToConsole(message, type, true);
+    }
+    private void redrawHouse() {
+        for (String location : house.getLocations()) {
+            dashboard.updateRoom(location, house.getRoom(location));
+        }
+        dashboard.redrawHouse();
+    }
     /*
      * Below are various event handlers that transform input from the user into data that can be manipulated by the data
      * model of a simulation
      */
-
     class SimulationListener implements ActionListener {
+
+
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -82,15 +140,17 @@ public class Controller {
                 parameters.setOn(((JToggleButton) e.getSource()).isSelected());
                 dashboard.toggleOnButton();
                 dashboard.showStates(parameters.isOn());
-                dashboard.redrawHouse();
+                redrawHouse();
+                sendToConsole("Simulation has " + (parameters.isOn() ? "begun." : "ended."),
+                        Dashboard.MessageType.NORMAL);
             } else {
-                dashboard.sendToConsole("Please load a house to start the simulation.", Dashboard.MessageType.ERROR, true);
+                sendToConsole("Please load a house to start the simulation.", Dashboard.MessageType.ERROR);
             }
         }
-
     }
-
     class LoadHouseListener implements ActionListener {
+
+
 
         @Override
         public void actionPerformed(final ActionEvent e) {
@@ -105,10 +165,10 @@ public class Controller {
                 dashboard.drawHouse(house);
             }
         }
-
     }
-
     class ManageProfilesListener implements ActionListener {
+
+
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -119,10 +179,10 @@ public class Controller {
             viewer.setLocationRelativeTo(dashboard);
             viewer.setVisible(true);
         }
-
     }
-
     class EditProfileListener implements ActionListener {
+
+
 
         @Override
         public void actionPerformed(final ActionEvent e) {
@@ -147,26 +207,25 @@ public class Controller {
                             parameters.addActor(name, permission);
                             if (location != null) { // Assume that house is non-null since location field is enabled.
                                 house.addPerson(name, permission, location);
-                                dashboard.sendToConsole(name + " entered " + location + ".",
-                                        Dashboard.MessageType.NORMAL, true);
+                                sendToConsole(name + " has entered the " + location + ".", Dashboard.MessageType.NORMAL);
                                 if (parameters.isOn()) {
                                     dashboard.updateRoom(location, house.getRoom(location));
                                     if (parameters.getAwayMode()) {
                                         startAwayModeCountdown();
                                     }
                                 }
-                                updateHouseIfOn(location);
                             } else {
                                 if (house != null && house.removePerson(name)) {
-                                    dashboard.sendToConsole(name + " exited the house.", Dashboard.MessageType.NORMAL, true);
+                                    sendToConsole(name + " has exited the house.", Dashboard.MessageType.NORMAL);
                                 }
                             }
+                            redrawHouse();
                             if (!viewer.containsProfile(name)) {
                                 viewer.addProfile(name);
                             }
                             editor.dispose();
                         } catch (Exception exception) {
-                            dashboard.sendToConsole(exception.getMessage(), Dashboard.MessageType.ERROR, true);
+                            sendToConsole(exception.getMessage(), Dashboard.MessageType.ERROR);
                         }
                     });
                     editor.pack();
@@ -178,7 +237,8 @@ public class Controller {
                     parameters.removeActor(viewer.getSelectedValue());
                     if (house != null) {
                         house.removePerson(viewer.getSelectedValue());
-                        updateHouseIfOn(house.locationOf(viewer.getSelectedValue()));
+                        redrawHouse();
+                        sendToConsole(viewer.getSelectedValue() + " has exited the house.", Dashboard.MessageType.NORMAL);
                     }
                     viewer.removeProfile(viewer.getSelectedValue());
                     break;
@@ -187,10 +247,10 @@ public class Controller {
                     throw new AssertionError(); // Defensive measure; this should never happen.
             }
         }
-
     }
-
     class PermissionListener implements ActionListener {
+
+
 
         @Override
         public void actionPerformed(final ActionEvent e) {
@@ -208,9 +268,7 @@ public class Controller {
                 }
             }
         }
-
     }
-
     class LocationListener implements ActionListener {
 
         @Override
@@ -220,28 +278,19 @@ public class Controller {
             dashboard.setLocation(location);
             try {
                 house.addPerson("user", parameters.getPermission(), location);
-                dashboard.sendToConsole("You have entered " + location + ".", Dashboard.MessageType.NORMAL, true);
+                sendToConsole("You have entered the " + location + ".", Dashboard.MessageType.NORMAL);
             } catch (NoSuchElementException exception) {
-                dashboard.sendToConsole("You have removed yourself from the house.", Dashboard.MessageType.NORMAL, true);
+                sendToConsole("You have exited the house.", Dashboard.MessageType.NORMAL);
             } catch (Exception exception) {
-                dashboard.sendToConsole(exception.getMessage(), Dashboard.MessageType.ERROR, true);
+                exception.printStackTrace();
+                sendToConsole(exception.getMessage(), Dashboard.MessageType.ERROR);
             }
-            updateHouseIfOn(location);
+            redrawHouse();
         }
-
     }
-
-    private void updateHouseIfOn(String location) {
-        if (parameters.isOn()) {
-            dashboard.updateRoom(location, house.getRoom(location));
-            if (parameters.getAwayMode()) {
-                startAwayModeCountdown();
-            }
-        }
-        dashboard.redrawHouse();
-    }
-
     class TemperatureListener implements ChangeListener {
+
+
 
         @Override
         public void stateChanged(final ChangeEvent e) {
@@ -249,10 +298,10 @@ public class Controller {
             parameters.setTemperature(temperature);
             dashboard.setTemperature(String.valueOf(temperature));
         }
-
     }
-
     class DateListener implements ChangeListener {
+
+
 
         @Override
         public void stateChanged(final ChangeEvent e) {
@@ -260,10 +309,9 @@ public class Controller {
             parameters.setDate(date);
             dashboard.setDate(date);
         }
-
     }
-
     class ActionSelectionListener extends MouseAdapter {
+
 
         @Override
         public void mouseClicked(final MouseEvent e) {
@@ -278,12 +326,12 @@ public class Controller {
                         ItemChooser chooser = ItemChooser.of(getItems(actionPanel.getSelectedItem()));
                         chooser.addActionListener(f -> {
                             try {
-                                dashboard.sendToConsole(chooser.getSelectedItem().manipulate(
+                                sendToConsole(chooser.getSelectedItem().manipulate(
                                         parameters.getPermission().authorize(actionPanel.getSelectedAction())),
-                                        Dashboard.MessageType.NORMAL, true);
-                                updateHouseIfOn(parameters.getLocation());
+                                        Dashboard.MessageType.NORMAL);
+                                redrawHouse();
                             } catch (IllegalArgumentException exception) {
-                                dashboard.sendToConsole(exception.getMessage(), Dashboard.MessageType.ERROR, true);
+                                sendToConsole(exception.getMessage(), Dashboard.MessageType.ERROR);
                             }
                             chooser.dispose();
                         });
@@ -296,59 +344,11 @@ public class Controller {
                     if (house == null) {
                         message += " You must first load a house to select a location.";
                     }
-                    dashboard.sendToConsole(message, Dashboard.MessageType.ERROR, true);
+                    sendToConsole(message, Dashboard.MessageType.ERROR);
                 }
             }
         }
-    }
 
-    private boolean canAct() {
-        return !(parameters.getPermission() == null || parameters.getLocation() == null);
-    }
-
-    private Manipulable[] getItems(String type) {
-        Room location = house.getRoom(parameters.getLocation());
-        switch (type) {
-            case "Doors":
-                return location.getDoors();
-            case "Lights":
-                return location.getLights();
-            case "Windows":
-                return location.getWindows();
-            default:
-                throw new AssertionError(); // Defensive measure; this should never happen.
-        }
-    }
-
-    private void startAwayModeCountdown() {
-        final boolean[] cancel = {false, false};
-        Timer timer = new Timer(parameters.getAwayDelay(), e -> {
-            dashboard.addConsoleListener(null, null);
-            if (cancel[0]) {
-                dashboard.sendToConsole("Crisis averted!", Dashboard.MessageType.WARNING, true);
-            } else {
-                dashboard.sendToConsole(
-                        (cancel[1] ? "" : "\n") + "Intruder detected, the authorities have been alerted!",
-                        Dashboard.MessageType.WARNING, true);
-            }
-        });
-        dashboard.addConsoleListener(new KeyAdapter() {
-
-            @Override
-            public void keyPressed(final KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    if (CANCEL_KEYWORDS.contains(dashboard.getLastConsoleMessage())) {
-                        cancel[0] = true;
-                        timer.setInitialDelay(0);
-                        timer.restart();
-                    }
-                    cancel[1] = true;
-                }
-            }
-
-        }, "Potential break in, do you want to disable the alarm [y/N]?");
-        timer.setRepeats(false);
-        timer.start();
     }
 
 }
