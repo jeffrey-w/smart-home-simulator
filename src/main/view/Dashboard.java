@@ -207,11 +207,6 @@ public class Dashboard extends JFrame {
         profileViewer.addManageProfileListener(listener);
     }
 
-    // TODO comment this
-    public void addAwayModeListener(ActionListener listener) {
-        editor.setAwayMode.addActionListener(listener);
-    }
-
     /**
      * Registers an event handler for setting a users' {@code Permission} level.
      *
@@ -293,7 +288,7 @@ public class Dashboard extends JFrame {
         Logger.info(message);
     }
 
-    int inputLoc;
+    int inputLoc; // TODO move this and make private
 
     // TODO comment this
     public void addConsoleListener(KeyListener listener, String prompt) {
@@ -323,4 +318,5 @@ public class Dashboard extends JFrame {
     public void updateRoom(String location, Room room) {
         layout.updateRoom(location, room);
     }
+
 }
