@@ -15,6 +15,16 @@ import java.util.Map;
  */
 public class HouseLayoutPanel extends JPanel {
 
+    // TODO comment this
+    public void clearRoom(String location) {
+        int[] states = rooms.get(location).states;
+        for (int i = 0; i < NUMBER_OF_STATES; i++) {
+            states[i] = 0;
+        }
+        revalidate();
+        repaint();
+    }
+
     private static class RoomInfo {
 
         Point coordinates;
