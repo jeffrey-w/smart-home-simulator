@@ -48,5 +48,5 @@ public class Yard extends Place {
         // empty for now
         return "no operations done";
     }
-    
+
 }
