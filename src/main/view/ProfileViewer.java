@@ -69,36 +69,64 @@ public class ProfileViewer extends JFrame {
         });
     }
 
-    // TODO add comments
-
+    /**
+     * Populate system profiles with given profiles
+     *
+     * @param names The list of profiles to populate the system with
+     */
     public void populateList(Set<String> names) {
         for (String name : names) {
             profiles.addElement(name);
         }
     }
 
+    /**
+     * Clears the list of profiles currently registered by the system.
+     */
     public void clear() {
         profiles.clear();
     }
 
-    public void addEditProfileListener(ActionListener listener) {
+    /**
+     * Add profile management action listeners to allow the simulation user to add, edit or remove profiles.
+     *
+     * @param listener The specified event handler
+     */
+    public void addManageProfileListener(ActionListener listener) {
         add.addActionListener(listener);
         edit.addActionListener(listener);
         remove.addActionListener(listener);
     }
 
+    /**
+     * @param name The profile we are verifying
+     * @return {@code true} if the specified profile exists in the system
+     */
     public boolean containsProfile(String name) {
         return profiles.contains(name);
     }
 
+    /**
+     * Add a given profile to the simulation system.
+     *
+     * @param name The name of the profile to be added
+     */
     public void addProfile(String name) {
         profiles.addElement(name);
     }
 
+    /**
+     * @return The selected Profile value
+     */
     public String getSelectedValue() {
         return list.getSelectedValue();
     }
 
+    /**
+     * Remove a given profile from the simulation system.
+     *
+     * @param name The name of the profile to be removed
+     */
     public void removeProfile(String name) {
         profiles.removeElement(name);
     }

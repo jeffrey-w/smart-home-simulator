@@ -192,12 +192,17 @@ public class Dashboard extends JFrame {
      *
      * @param listener The specified event handler
      */
-    public void addManageProfilesListener(ActionListener listener) {
+    public void addEditProfilesListener(ActionListener listener) {
         editor.manageProfiles.addActionListener(listener);
     }
 
-    public void addEditProfileListener(ActionListener listener) {
-        profileViewer.addEditProfileListener(listener);
+    /**
+     * Registers an event handler for managing simulation profiles.
+     *
+     * @param listener The specified event handler
+     */
+    public void addManageProfilesListener(ActionListener listener) {
+        profileViewer.addManageProfileListener(listener);
     }
 
     /**
