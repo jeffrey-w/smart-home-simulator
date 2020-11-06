@@ -32,6 +32,7 @@ public class Parameters {
     private Date date;
     private int temperature;
     private boolean on;
+    private AwayMode awayMode;
 
     /**
      * Constructs a new {@code Parameters} object.
@@ -43,6 +44,7 @@ public class Parameters {
         date = Date.from(Instant.now());
         temperature = DEFAULT_TEMPERATURE;
         on = false;
+        awayMode = new AwayMode();
     }
 
     /**
@@ -182,6 +184,7 @@ public class Parameters {
     }
 
     /**
+
      * Sets the current actors of the simulation to that specified.
      * Used when loading the list of actors from a file
      *
@@ -193,4 +196,36 @@ public class Parameters {
             this.actors.put(validateName(item.getKey()), item.getValue());
         }
     }
+
+     * @return The AwayMode state: {@code true} if on, else {@code false}
+     */
+    public boolean getAwayMode() {
+        return awayMode.getAwayMode();
+    }
+
+    /**
+     * Set AwayMode to specified value.
+     *
+     * @param on The new AwayMode state
+     */
+    public void setAwayMode(boolean on) {
+        awayMode.setAwayMode(on);
+    }
+
+    /**
+     * @return The AwayMode delay (in seconds)
+     */
+    public int getAwayDelay() {
+        return awayMode.getAwayModeDelay();
+    }
+
+    /**
+     * Set AwayMode delay to specified value.
+     *
+     * @param delay The new AwayMode delay
+     */
+    public void setAwayDelay(int delay) {
+        awayMode.setAwayModeDelay(delay);
+    }
+
 }

@@ -2,6 +2,7 @@ package main.model.elements;
 
 import java.util.Arrays;
 import java.util.Objects;
+import main.model.parameters.permissions.Action;
 
 /**
  * A {@code Room} is comprised of many {@code House} elements, such as {@code Door}s, {@code Light}s, and {@code
@@ -34,6 +35,49 @@ public class Room extends Place {
         this.doors = Objects.requireNonNull(doors); // TODO consider making defensive copies in a future release
         this.lights = Objects.requireNonNull(lights);
         this.windows = Objects.requireNonNull(windows);
+    }
+
+    /**
+     * runs a routine if there is a person added to the "Room'
+     *
+     * @return message depending on context
+     */
+    public String addRoutine(){
+        // turn on the lights if there is someone in the room and if light is set to autoMode
+        for (Light light : this.lights) {
+            if (light.isAutoMode()) {
+                if(light.isOn() == false){ // only turn on light if it was off
+                    String msg = light.manipulate(Action.TOGGLE_LIGHT);
+                    return msg;
+                }
+            }
+        }
+
+        // if there is no operations done
+        return "no operations done";
+    }
+
+    /**
+     * runs a routine if there is a person removed from the "Room'
+     *
+     * @return message depending on context
+     */
+    public String removeRoutine() {
+        // turn off the lights if there is no one in the room
+        if (this.getNumPeople() == 0) {
+            // turn on the lights if there is someone in the room and if light is set to autoMode
+            for (Light light : this.lights) {
+                if (light.isAutoMode()) {
+                    if (light.isOn() == true) { // only turn on light if it was on
+                        String msg = light.manipulate(Action.TOGGLE_LIGHT);
+                        return msg;
+                    }
+                }
+            }
+        }
+
+        // if there is no operations done
+        return "no operations done";
     }
 
     /**

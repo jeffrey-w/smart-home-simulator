@@ -132,7 +132,7 @@ public class House implements Iterable<Room> {
      * @return The names of the {@code Room}s in this {@code House}
      */
     public Set<String> getLocations() {
-        return Set.copyOf(rooms.keySet());
+        return Collections.unmodifiableSet(rooms.keySet());
     }
 
     /**

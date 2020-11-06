@@ -26,8 +26,7 @@ class Avatar extends JPanel {
      */
     Avatar(File file) {
         try {
-            avatar = scale(ImageIO
-                    .read(Objects.requireNonNullElseGet(file, () -> new File("assets/default-avatar.png"))));
+            avatar = scale(ImageIO.read(file != null ? file : new File("assets/default-avatar.png")));
         } catch (IOException e) {
             e.printStackTrace();
         }

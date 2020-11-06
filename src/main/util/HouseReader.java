@@ -92,18 +92,19 @@ public class HouseReader extends JPanel {
         return house;
     }
 
-    /*
+    /**
      * This function parses through the house layout, builds and returns a Door[]
      *
      * @param doorObj The Door object contained within the house layout. Of the following form:
-     *      {
-     *          "present": Boolean[](4) >> each element of the array represents a wall (N-E-S-W)
-     *      }
-     * The position of the Boolean in either array represents the same door. As in:
-     *      {
-     *          "present": [true, false, false, true]
-     *      }
-     * Wherein the North and West walls have doors.
+     *                {
+     *                    "present": Boolean[](4) >> each element of the array represents a wall (N-E-S-W)
+     *                }
+     *                The position of the Boolean in either array represents the same door. As in:
+     *                {
+     *                    "present": [true, false, false, true]
+     *                }
+     *                Wherein, here, the North and West walls have {@code Door}s.
+     *
      * @return A Door[] encompassing all doors found in a room
      */
     private Door[] parseDoors(JSONObject doorObj) {
@@ -121,18 +122,19 @@ public class HouseReader extends JPanel {
         return doors;
     }
 
-    /*
+    /**
      * This function parses through the house layout, builds and returns a Light[]
      *
      * @param lightObj The Light object contained within the house layout. Of the following form:
-     *      {
-     *          "present": Boolean[](4) >> each element of the array represents a wall (N-E-S-W)
-     *      }
-     * The position of the Boolean in either array represents the same light. As in:
-     *      {
-     *          "present": [true, false, false, true]
-     *      }
-     * Wherein the North and West walls have Lights.
+     *                {
+     *                    "present": Boolean[](4) >> each element of the array represents a wall (N-E-S-W)
+     *                }
+     *                The position of the Boolean in either array represents the same light. As in:
+     *                {
+     *                    "present": [true, false, false, true]
+     *                }
+     *                Wherein, here, the North and West walls have {@code Light}s.
+     *
      * @return A Light[] encompassing all doors found in a room
      */
     private Light[] parseLights(JSONObject lightObj) {
@@ -150,18 +152,19 @@ public class HouseReader extends JPanel {
         return lights;
     }
 
-    /*
+    /**
      * This function parses through the house layout, builds and returns a Window[]
      *
      * @param windowObj The Window object contained within the house layout. Of the following form:
-     *      {
-     *          "present": Boolean[](4) >> each element of the array represents a wall (N-E-S-W)
-     *      }
-     * The position of the Boolean in either array represents the same Window. As in:
-     *      {
-     *          "present": [true, false, false, true]
-     *      }
-     * Wherein the North and West walls have Windows.
+     *                  {
+     *                      "present": Boolean[](4) >> each element of the array represents a wall (N-E-S-W)
+     *                  }
+     *                  The position of the Boolean in either array represents the same Window. As in:
+     *                  {
+     *                      "present": [true, false, false, true]
+     *                  }
+     *                  Wherein, here, the North and West walls have {@code Window}s.
+     *
      * @return A Window[] encompassing all doors found in a room
      */
     private Window[] parseWindows(JSONObject windowObj) {

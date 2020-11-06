@@ -59,8 +59,8 @@ public class Controller {
         dashboard.setTemperature(String.valueOf(parameters.getTemperature()));
         dashboard.setDate(parameters.getDate());
         dashboard.addLoadHouseListener(new LoadHouseListener());
-        dashboard.addManageProfilesListener(new ManageProfilesListener());
-        dashboard.addEditProfileListener(new EditProfileListener());
+        dashboard.addEditProfilesListener(new ManageProfilesListener());
+        dashboard.addManageProfilesListener(new EditProfileListener());
         dashboard.addPermissionListener(new PermissionListener());
         dashboard.addTemperatureListener(new TemperatureListener());
         dashboard.addDateListener(new DateListener());
@@ -125,7 +125,7 @@ public class Controller {
                     editor.addActionListener(f -> {
                         String name = editor.getRole();
                         Permission permission = editor.getSelectedPermission();
-                        String location = editor.getSelectionLocation();
+                        String location = editor.getSelectedLocation();
                         try {
                             parameters.addActor(name, permission);
                             if (location != null) { // Assume that house is non-null since location field is enabled.

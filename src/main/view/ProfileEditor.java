@@ -71,8 +71,11 @@ public class ProfileEditor extends JFrame {
         location.setEnabled(enableLocation);
     }
 
-    // TODO add comments
-
+    /**
+     *  Populate dropdown with given locations
+     *
+     * @param locations Set of locations to add
+     */
     public void addLocations(Set<String> locations) {
         this.location.addItem(null);
         for (String location : locations) {
@@ -80,26 +83,50 @@ public class ProfileEditor extends JFrame {
         }
     }
 
+    /**
+     * Registers the specified event listener to for saving changes in a simulation profile.
+     *
+     * @param listener The specified event handler
+     */
     public void addActionListener(ActionListener listener) {
         ok.addActionListener(listener);
     }
 
+    /**
+     * @return The profile role
+     */
     public String getRole() {
         return role.getText();
     }
 
+    /**
+     * @return The selected permission
+     */
     public Permission getSelectedPermission() {
         return (Permission) permission.getSelectedItem();
     }
 
-    public String getSelectionLocation() {
+    /**
+     * @return The selected location
+     */
+    public String getSelectedLocation() {
         return (String) location.getSelectedItem();
     }
 
+    /**
+     * Sets the location of a user to that specified.
+     *
+     * @param location The given location
+     */
     public void selectLocation(String location) {
         this.location.setSelectedItem(location);
     }
 
+    /**
+     * Sets the permission level of a user to that specified.
+     *
+     * @param permission The given permission level
+     */
     public void setPermission(Permission permission) {
         this.permission.setSelectedItem(permission);
     }

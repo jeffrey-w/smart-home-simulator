@@ -8,7 +8,7 @@ package main.model.elements;
  * @author Philippe Vo
  */
 
-public class Door {
+public class Door extends AbstractManipulable {
 
     // If not provided by the user, the system uses these default values.
     private static final boolean DEFAULT_OPEN_VALUE = false;
@@ -84,4 +84,5 @@ public class Door {
         result = prime * result + Boolean.hashCode(locked);
         return result;
     }
+
 }

@@ -17,6 +17,8 @@ import java.util.Set;
 import static java.awt.BorderLayout.EAST;
 import static java.awt.BorderLayout.WEST;
 
+import org.tinylog.Logger;
+
 /**
  * The dashboard represents the user interface. It is through the dashboard that the user can interact with the
  * simulation.
@@ -190,12 +192,17 @@ public class Dashboard extends JFrame {
      *
      * @param listener The specified event handler
      */
-    public void addManageProfilesListener(ActionListener listener) {
+    public void addEditProfilesListener(ActionListener listener) {
         editor.manageProfiles.addActionListener(listener);
     }
 
-    public void addEditProfileListener(ActionListener listener) {
-        profileViewer.addEditProfileListener(listener);
+    /**
+     * Registers an event handler for managing simulation profiles.
+     *
+     * @param listener The specified event handler
+     */
+    public void addManageProfilesListener(ActionListener listener) {
+        profileViewer.addManageProfileListener(listener);
     }
 
     /**
@@ -274,6 +281,9 @@ public class Dashboard extends JFrame {
     public void sendToConsole(String message) {
         console.append(message + "\n> ");
         console.setCaretPosition(console.getDocument().getLength());
+
+        // Send message to log file as well
+        Logger.info(message);
     }
 
 }

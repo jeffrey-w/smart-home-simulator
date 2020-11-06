@@ -22,4 +22,24 @@ public class Yard extends Place {
         }
         return yard;
     }
+
+    /**
+     * runs a routine if there is a person removed from the "Yard'
+     *
+     * @return message depending on context
+     */
+    public String addRoutine(){
+        // empty for now
+        return "no operations done";
+    }
+
+    /**
+     * runs a routine if there is a person removed from the "Yard'
+     *
+     * @return message depending on context
+     */
+    public String removeRoutine(){
+        // empty for now
+        return "no operations done";
+    }
 }
