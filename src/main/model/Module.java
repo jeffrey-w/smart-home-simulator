@@ -10,11 +10,11 @@ import static main.util.NameValidator.validateName;
 public final class Module {
 
     public static final Module SHC = (new ModuleBuilder())
-            .addCommandFor("Doors", Action.OPEN_DOOR)
-            .addCommandFor("Doors", Action.LOCK_DOOR)
-            .addCommandFor("Lights", Action.TURN_ON_LIGHT)
-            .addCommandFor("Windows", Action.OPEN_WINDOW)
-            .addCommandFor("Windows", Action.BLOCK_WINDOW)
+            .addCommandFor("Doors", Action.TOGGLE_DOOR)
+            .addCommandFor("Doors", Action.TOGGLE_LOCK_DOOR)
+            .addCommandFor("Lights", Action.TOGGLE_LIGHT)
+            .addCommandFor("Windows", Action.TOGGLE_WINDOW)
+            .addCommandFor("Windows", Action.TOGGLE_BLOCK_WINDOW)
             .addName("SHC")
             .build();
 
