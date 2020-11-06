@@ -37,8 +37,14 @@ import static java.awt.BorderLayout.WEST;
 public class Dashboard extends JFrame {
 
     // TODO comment this
-    public void clearRoom(String location) {
-        layout.clearRoom(location);
+    public void redrawHouse() {
+        layout.revalidate();
+        layout.repaint();
+    }
+
+    // TODO comment this
+    public void showStates(boolean flag) {
+        layout.showStates = flag;
     }
 
     public enum MessageType {
@@ -52,11 +58,6 @@ public class Dashboard extends JFrame {
     static final int WINDOW_HEIGHT = 0x300;
     static final int PARAMETER_PANE_WIDTH = WINDOW_WIDTH >>> 2; // x >>> y == x / 2^y
     static final int CONTENT_PANE_WIDTH = WINDOW_WIDTH - PARAMETER_PANE_WIDTH;
-    static final int CONTENT_WIDTH = CONTENT_PANE_WIDTH >>> 1; // Computers like bitwise operators!
-    static final int CONSOLE_WIDTH = CONTENT_WIDTH / 0x10;
-    static final int CONSOLE_HEIGHT = (WINDOW_HEIGHT / 3) / 0x10;
-    static final int CONTENT_HEIGHT = WINDOW_HEIGHT - CONSOLE_HEIGHT;
-    static final int CONTENT_PADDING = 0x20;
     static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm a");
     private static final EnumMap<MessageType, Color> MESSAGE_COLORS = new EnumMap<>(MessageType.class);
 
@@ -112,11 +113,9 @@ public class Dashboard extends JFrame {
         content.add(new JScrollPane(console));
 
         // Set content display behavior.
-        actions.setPreferredSize(new Dimension(CONTENT_WIDTH - CONTENT_PADDING, CONTENT_HEIGHT));
         actions.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
         actions.addModule(Module.SHC);
         actions.addModule(Module.SHP);
-        layout.setPreferredSize(new Dimension(CONTENT_WIDTH, CONTENT_HEIGHT));
         layout.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 
         // Set console display behavior.
