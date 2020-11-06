@@ -58,8 +58,7 @@ public enum Action {
                 return "Please close this door first.";
             } else {
                 door.setLocked(!door.isLocked());
-                String message = door.isLocked() ? "Door has been locked." :  "Door has been unlocked";
-                return message;
+                return door.isLocked() ? "Door has been locked." :  "Door has been unlocked";
             }
         }
 
@@ -85,14 +84,12 @@ public enum Action {
         @Override
         public String doAction(Manipulable manipulable) {
             Door door = (Door) manipulable;
-            boolean requestedState = !door.isOpen();
-            if(requestedState == true && door.isLocked()){
+            if(!door.isOpen() && door.isLocked()){
                 return "Please unlock this door first.";
             }
             else{
                 door.setOpen(!door.isOpen());
-                String message = door.isOpen() ? "Door has been opened." :  "Door has been closed";
-                return message;
+                return door.isOpen() ? "Door has been opened." :  "Door has been closed";
             }
         }
 
@@ -121,8 +118,7 @@ public enum Action {
             }
             else{
                 window.setOpen(!window.isOpen());
-                String message = window.isOpen() ? "Window has been opened." :  "Window has been closed";
-                return message;
+                return window.isOpen() ? "Window has been opened." :  "Window has been closed";
             }
         }
 
@@ -153,8 +149,7 @@ public enum Action {
         public String doAction(Manipulable manipulable) {
             Light light = (Light) manipulable;
             light.setOn(!light.isOn());
-            String message = light.isOn() ? "Light has been opened." :  "Light has been closed";
-            return message;
+            return light.isOn() ? "Light has been opened." :  "Light has been closed";
             }
     },
 
@@ -177,8 +172,7 @@ public enum Action {
         public String doAction(Manipulable manipulable) {
                 Window window = (Window) manipulable;
                 window.setObstructed(!window.isObstructed());
-                String message = window.isObstructed() ? "Window has been blocked." :  "Window has been unblocked";
-                return message;
+            return window.isObstructed() ? "Window has been blocked." :  "Window has been unblocked";
                 }
     };
 
