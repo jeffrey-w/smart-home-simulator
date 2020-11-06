@@ -47,7 +47,7 @@ public class Room extends Place {
     public String addRoutine(){
         // turn on the lights if there is someone in the room and if light is set to autoMode
         for (Light light : this.lights) {
-            if (light.isAutoMode()) {
+            if (light != null && light.isAutoMode()) {
                 if(!light.isOn()){ // only turn on light if it was off
                     return light.manipulate(Action.TOGGLE_LIGHT);
                 }
@@ -69,7 +69,7 @@ public class Room extends Place {
         if (this.getNumPeople() == 0) {
             // turn on the lights if there is someone in the room and if light is set to autoMode
             for (Light light : this.lights) {
-                if (light.isAutoMode()) {
+                if (light != null && light.isAutoMode()) {
                     if (light.isOn()) { // only turn on light if it was on
                         return light.manipulate(Action.TOGGLE_LIGHT);
                     }
