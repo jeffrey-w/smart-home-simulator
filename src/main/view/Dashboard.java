@@ -1,6 +1,7 @@
 package main.view;
 
 import main.model.elements.House;
+import main.model.elements.Room;
 import main.model.parameters.permissions.Permission;
 import org.tinylog.Logger;
 
@@ -318,4 +319,8 @@ public class Dashboard extends JFrame {
         return message.toUpperCase();
     }
 
+    // TODO comment this
+    public void updateRoom(String location, Room room) {
+        layout.updateRoom(location, room);
+    }
 }

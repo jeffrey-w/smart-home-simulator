@@ -72,5 +72,9 @@ public abstract class Place {
     // runs a routine if there is a person added to the "Place'
     public abstract String removeRoutine();
 
+    // TODO comment this
+    public int getNumberOfPeople() {
+        return people.size();
+    }
 
 }
