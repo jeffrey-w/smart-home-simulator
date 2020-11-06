@@ -81,12 +81,8 @@ public class Controller {
             if (house != null) {
                 parameters.setOn(((JToggleButton) e.getSource()).isSelected());
                 dashboard.toggleOnButton();
-                for (String room : house.getLocations()) {
-                    updateHouseIfOn(room, false);
-                }
-                if (parameters.isOn() && parameters.getAwayMode()) {
-                    startAwayModeCountdown();
-                }
+                dashboard.showStates(parameters.isOn());
+                dashboard.redrawHouse();
             } else {
                 dashboard.sendToConsole("Please load a house to start the simulation.", Dashboard.MessageType.ERROR, true);
             }
@@ -159,7 +155,7 @@ public class Controller {
                                         startAwayModeCountdown();
                                     }
                                 }
-                                updateHouseIfOn(location, true);
+                                updateHouseIfOn(location);
                             } else {
                                 if (house != null && house.removePerson(name)) {
                                     dashboard.sendToConsole(name + " exited the house.", Dashboard.MessageType.NORMAL, true);
@@ -182,7 +178,7 @@ public class Controller {
                     parameters.removeActor(viewer.getSelectedValue());
                     if (house != null) {
                         house.removePerson(viewer.getSelectedValue());
-                        updateHouseIfOn(house.locationOf(viewer.getSelectedValue()), false);
+                        updateHouseIfOn(house.locationOf(viewer.getSelectedValue()));
                     }
                     viewer.removeProfile(viewer.getSelectedValue());
                     break;
@@ -230,21 +226,19 @@ public class Controller {
             } catch (Exception exception) {
                 dashboard.sendToConsole(exception.getMessage(), Dashboard.MessageType.ERROR, true);
             }
-            updateHouseIfOn(location, true);
+            updateHouseIfOn(location);
         }
 
     }
 
-    private void updateHouseIfOn(String location, boolean initiateAwayMode) {
+    private void updateHouseIfOn(String location) {
         if (parameters.isOn()) {
             dashboard.updateRoom(location, house.getRoom(location));
             if (parameters.getAwayMode()) {
                 startAwayModeCountdown();
             }
         }
-        else {
-            dashboard.clearRoom(location);
-        }
+        dashboard.redrawHouse();
     }
 
     class TemperatureListener implements ChangeListener {
@@ -287,7 +281,7 @@ public class Controller {
                                 dashboard.sendToConsole(chooser.getSelectedItem().manipulate(
                                         parameters.getPermission().authorize(actionPanel.getSelectedAction())),
                                         Dashboard.MessageType.NORMAL, true);
-                                updateHouseIfOn(parameters.getLocation(), false);
+                                updateHouseIfOn(parameters.getLocation());
                             } catch (IllegalArgumentException exception) {
                                 dashboard.sendToConsole(exception.getMessage(), Dashboard.MessageType.ERROR, true);
                             }

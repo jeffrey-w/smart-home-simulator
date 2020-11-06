@@ -1,5 +1,7 @@
 package main.model.elements;
 
+import main.model.parameters.permissions.Action;
+
 /**
  * The {@code Door} class represents a door object that the user can interact with. A user can lock and unlock doors as
  * they please.

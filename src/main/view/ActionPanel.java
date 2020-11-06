@@ -1,12 +1,11 @@
 package main.view;
 
+import main.model.Module;
 import main.model.parameters.permissions.Action;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
-import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * The {@code ActionPanel} class provides the UI elements to choose a type of item and the action to perform on it
@@ -14,42 +13,14 @@ import java.util.Map;
  *
  * @author Jeff Wilgus
  */
-public class ActionPanel extends JPanel {
+public class ActionPanel extends JTabbedPane {
 
-    private static final int NUM_ROWS = 2;
-    private static final Map<String, Action[]> ACTIONS = new HashMap<>();
+    List<JList<Action>> actions = new LinkedList<>();
 
-    static {
-        ACTIONS.put("Windows", new Action[] {Action.TOGGLE_WINDOW, Action.TOGGLE_BLOCK_WINDOW});
-    }
-
-    DefaultListModel<Action> actionsModel = new DefaultListModel<>();
-    JList<String> items = new JList<>(ACTIONS.keySet().toArray(new String[0]));
-    JList<Action> actions = new JList<>(actionsModel);
-
-    /**
-     * Constructs a new {@code ActionPanel} object.
-     */
-    public ActionPanel() {
-        JScrollPane itemPane = new JScrollPane(items);
-        JScrollPane actionPane = new JScrollPane(actions);
-        setLayout(new GridLayout(NUM_ROWS, 1));
-        itemPane.setBorder(new TitledBorder(BorderFactory.createEmptyBorder(), "Items"));
-        actionPane.setBorder(new TitledBorder(BorderFactory.createEmptyBorder(), "Actions"));
-        add(itemPane);
-        add(actionPane);
-        items.addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                if (items.getSelectedIndex() == -1) {
-                    actionsModel.removeAllElements();
-                } else {
-                    actionsModel.removeAllElements();
-                    for (Action action : ACTIONS.get(items.getSelectedValue())) {
-                        actionsModel.addElement(action);
-                    }
-                }
-            }
-        });
+    public void addModule(Module module) {
+        ModuleView view = new ModuleView(module);
+        actions.add(view.actions);
+        addTab(module.getName(), view);
     }
 
     /**
@@ -58,7 +29,7 @@ public class ActionPanel extends JPanel {
      * @return The selected {@code House} item
      */
     public String getSelectedItem() {
-        return items.getSelectedValue();
+        return ((ModuleView)getSelectedComponent()).items.getSelectedValue();
     }
 
     /**
@@ -67,7 +38,7 @@ public class ActionPanel extends JPanel {
      * @return The selected {@code Action}
      */
     public Action getSelectedAction() {
-        return actions.getSelectedValue();
+        return ((ModuleView)getSelectedComponent()).actions.getSelectedValue();
     }
 
 }
