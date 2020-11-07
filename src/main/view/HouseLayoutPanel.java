@@ -39,6 +39,15 @@ public class HouseLayoutPanel extends JPanel {
     private static final int STATE_DIM = 0x10;
     private static final String NULL_HOUSE_MESSAGE = "No house loaded.";
 
+    private static final String[] STATE_LEGEND = {
+            "Open Doors",
+            "Locked Doors",
+            "Lights On",
+            "Open Windows",
+            "Blocked Windows",
+            "People Present"
+    };
+
     private static final Color[] STATE_COLORS = {
             Color.BLUE,
             Color.RED,
@@ -47,6 +56,7 @@ public class HouseLayoutPanel extends JPanel {
             Color.GRAY,
             Color.PINK
     };
+
     int x, y;
     int drawn = 0;
     boolean showStates = false;
@@ -90,6 +100,9 @@ public class HouseLayoutPanel extends JPanel {
             for (int i = 0; i < NUMBER_OF_STATES; i++) {
                 updateState(room, info, i);
             }
+            return; // TODO
+        } else if (location.equals("outside")) {
+            return; // TODO
         }
         throw new NoSuchElementException("That location does not exist");
     }
@@ -129,7 +142,7 @@ public class HouseLayoutPanel extends JPanel {
         } else {
             for (Map.Entry<String, RoomInfo> entry : rooms.entrySet()) {
                 int x = entry.getValue().coordinates.x, y = entry.getValue().coordinates.y;
-                int stateIndex = 0, offset = OFFSET;
+                int stateIndex = 0, stateOffset = OFFSET, legendOffset = OFFSET;
                 String location = entry.getKey();
                 g.drawRect(x, y, ROOM_DIM, ROOM_DIM);
                 g.drawString(location, x + (ROOM_DIM - g.getFontMetrics().stringWidth(location) >>> 1),
@@ -137,11 +150,14 @@ public class HouseLayoutPanel extends JPanel {
                 if (showStates) {
                     Color color = g.getColor();
                     for (int state : entry.getValue().states) {
+                        g.setColor(STATE_COLORS[stateIndex]);
                         if (state > 0) {
-                            g.setColor(STATE_COLORS[stateIndex]);
-                            g.fillOval(x + offset, y + OFFSET, STATE_DIM, STATE_DIM);
-                            offset += OFFSET + STATE_DIM;
+                            g.fillOval(x + stateOffset, y + OFFSET, STATE_DIM, STATE_DIM);
+                            stateOffset += OFFSET + STATE_DIM;
                         }
+                        g.fillOval(OFFSET, legendOffset, STATE_DIM, STATE_DIM);
+                        g.drawString(STATE_LEGEND[stateIndex], OFFSET + STATE_DIM, legendOffset + (STATE_DIM));
+                        legendOffset += OFFSET + STATE_DIM;
                         stateIndex++;
                     }
                     g.setColor(color);
