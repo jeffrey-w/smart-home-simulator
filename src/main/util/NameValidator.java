@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
  */
 public class NameValidator {
 
-    private static final Pattern NAME_PATTERN = Pattern.compile("^\\w+$");
+    private static final Pattern NAME_PATTERN = Pattern.compile("^[\\w,\\s]+$"); // TODO fix comments
 
     /**
      * Determines whether or not the specified {@code name} is valid insofar as it is a non-empty string comprised of

@@ -1,7 +1,7 @@
 package main.view;
 
 import main.model.Module;
-import main.model.parameters.permissions.Action;
+import main.model.Action;
 
 import javax.swing.*;
 import java.util.LinkedList;

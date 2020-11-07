@@ -1,7 +1,5 @@
 package main.model.elements;
 
-import main.model.parameters.permissions.Action;
-
 /**
  * The {@code Window} class represents the Window object, which the user can interact with. A user can choose to
  * obstruct windows as they please.

@@ -1,6 +1,6 @@
 package main.view;
 
-import main.model.elements.Manipulable;
+import main.model.Manipulable;
 import main.view.viewtils.ManipulableRenderer;
 
 import javax.swing.*;

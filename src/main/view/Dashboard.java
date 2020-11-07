@@ -1,7 +1,7 @@
 package main.view;
 
 import main.model.Module;
-import main.model.parameters.permissions.Action;
+import main.model.Action;
 import main.model.elements.House;
 import main.model.elements.Room;
 import main.model.parameters.permissions.Permission;

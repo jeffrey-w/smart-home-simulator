@@ -1,5 +1,7 @@
 package main.model.parameters.permissions;
 
+import main.model.Action;
+
 /**
  * The {@code Permission} interface describes an authorization level that allows for actors to make certain changes to a
  * simulation, and prevents them from making others.

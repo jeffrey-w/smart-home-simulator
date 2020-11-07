@@ -1,6 +1,6 @@
 package main.view;
 
-import main.model.parameters.permissions.Action;
+import main.model.Action;
 import main.model.Module;
 
 import javax.swing.*;

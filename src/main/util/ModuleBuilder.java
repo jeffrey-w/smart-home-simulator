@@ -1,7 +1,7 @@
 package main.util;
 
 import main.model.Module;
-import main.model.parameters.permissions.Action;
+import main.model.Action;
 
 import java.util.LinkedList;
 import java.util.List;
