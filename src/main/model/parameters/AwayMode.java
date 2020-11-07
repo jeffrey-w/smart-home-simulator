@@ -1,5 +1,7 @@
 package main.model.parameters;
 
+import main.model.elements.AbstractManipulable;
+
 /**
  * The AwayMode is activated by the user when they leave the simulated house and no other user is in the house.
  * It allows the remote user to be alerted, should anyone suspicious be detected around or in the house.
@@ -7,10 +9,10 @@ package main.model.parameters;
  *
  * @author Émilie Martin
  */
-public class AwayMode {
+public class AwayMode extends AbstractManipulable {
 
     private static boolean AWAY_MODE_ON = false;
-    private static int AWAY_MODE_DELAY = 300; // in seconds
+    private static int AWAY_MODE_DELAY = 10_000; // in seconds
 
     private boolean on;
     private int delay;
