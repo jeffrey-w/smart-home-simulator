@@ -2,6 +2,7 @@ package main.view;
 
 import main.model.elements.House;
 import main.model.elements.Room;
+import main.model.elements.Yard;
 
 import javax.swing.*;
 import java.awt.*;
@@ -70,7 +71,7 @@ public class HouseLayoutPanel extends JPanel {
     public void drawHouse(House house) {
         rooms.clear();
         if (house != null) {
-            x = getWidth() >>> house.size() - 1;
+            x = getWidth() >>> house.size() - 2;
             y = getHeight() >>> house.size() - 1;
             house.tour((location, room) -> {
                 rooms.put(location, new RoomInfo(x, y));
@@ -95,16 +96,13 @@ public class HouseLayoutPanel extends JPanel {
      * @throws NullPointerException If the specified {@code room} is {@code null}
      */
     public void updateRoom(String location, Room room) {
-        if (rooms.containsKey(location)) {
-            RoomInfo info = rooms.get(location);
-            for (int i = 0; i < NUMBER_OF_STATES; i++) {
-                updateState(room, info, i);
-            }
-            return; // TODO
-        } else if (location.equals("outside")) {
-            return; // TODO
+        if (!rooms.containsKey(location)) {
+            throw new NoSuchElementException("That location does not exist");
         }
-        throw new NoSuchElementException("That location does not exist");
+        RoomInfo info = rooms.get(location);
+        for (int i = 0; i < NUMBER_OF_STATES; i++) {
+            updateState(room, info, i);
+        }
     }
 
     private void updateState(Room room, RoomInfo info, int state) {
@@ -159,6 +157,9 @@ public class HouseLayoutPanel extends JPanel {
                         g.drawString(STATE_LEGEND[stateIndex], OFFSET + STATE_DIM, legendOffset + (STATE_DIM));
                         legendOffset += OFFSET + STATE_DIM;
                         stateIndex++;
+                    }
+                    if (Yard.getInstance().getNumberOfPeople() > 0) {
+                        g.fillOval(getWidth() - OFFSET - STATE_DIM, OFFSET, STATE_DIM, STATE_DIM);
                     }
                     g.setColor(color);
                 }
