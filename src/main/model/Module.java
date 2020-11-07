@@ -1,6 +1,5 @@
 package main.model;
 
-import main.model.parameters.permissions.Action;
 import main.util.ModuleBuilder;
 
 import java.util.*;
@@ -13,13 +12,14 @@ public final class Module {
             .addCommandFor("Doors", Action.TOGGLE_DOOR)
             .addCommandFor("Doors", Action.TOGGLE_LOCK_DOOR)
             .addCommandFor("Lights", Action.TOGGLE_LIGHT)
+            .addCommandFor("Lights", Action.TOGGLE_AUTO_LIGHT)
             .addCommandFor("Windows", Action.TOGGLE_WINDOW)
             .addCommandFor("Windows", Action.TOGGLE_BLOCK_WINDOW)
             .addName("SHC")
             .build();
 
     public static final Module SHP = (new ModuleBuilder())
-            //.addCommandFor("Away Mode", Action.SET_AWAY_MODE) TODO
+            .addCommandFor("Away Mode", Action.SET_AWAY_MODE) // TODO pretty print
             //.addCommandFor("Lights", Action.SET_AWAY_MODE_LIGHTS)
             .addName("SHP")
             .build();
