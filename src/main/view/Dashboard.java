@@ -314,6 +314,7 @@ public class Dashboard extends JFrame {
         for (String location : locations) {
             editor.location.addItem(location);
         }
+        editor.location.addItem("outside");
         editor.location.setEnabled(true);
     }
 

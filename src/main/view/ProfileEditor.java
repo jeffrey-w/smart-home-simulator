@@ -81,6 +81,7 @@ public class ProfileEditor extends JFrame {
         for (String location : locations) {
             this.location.addItem(location);
         }
+        location.addItem("outside");
     }
 
     /**
