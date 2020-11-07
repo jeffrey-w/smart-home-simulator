@@ -169,9 +169,8 @@ public class Controller {
         @Override
         public void actionPerformed(final ActionEvent e) {
             String actionCommand = e.getActionCommand();
-            ProfileViewer viewer = dashboard.getProfileViewer();
             switch (actionCommand) {
-                case "Add": {
+                case "Load": {
                     JFileChooser chooser = new JFileChooser();
                     chooser.setFileFilter(TEXT_FILTER);
                     if (chooser.showOpenDialog(dashboard) == JFileChooser.APPROVE_OPTION) {
@@ -184,7 +183,7 @@ public class Controller {
                     }
                     break;
                 }
-                case "Edit": {
+                case "Save": {
 
                     JFileChooser chooser = new JFileChooser();
                     chooser.setDialogTitle("Specify a file to save");
