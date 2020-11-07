@@ -14,11 +14,11 @@ class WindowTest {
         Window window = new Window(true, true);
 
         // Window should return that it is blocked since it was initialized as obstructed
-        assertTrue(window.isObstructed());
+        assertTrue(window.isBlocked());
 
         // Window should return that it is not blocked
-        window.setObstructed(false);
-        assertFalse(window.isObstructed());
+        window.setBlocked(false);
+        assertFalse(window.isBlocked());
     }
 
 }
