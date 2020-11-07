@@ -1,7 +1,5 @@
 package main.model.elements;
 
-import main.model.parameters.permissions.Action;
-
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -15,7 +13,7 @@ import java.util.Objects;
  * @see Light
  * @see Window
  */
-public class Room extends Place {
+public class Room extends Place { // TODO needs comments
 
     private static final int DEFAULT_ROOM_TEMPERATURE = 25;
 
@@ -36,49 +34,6 @@ public class Room extends Place {
         this.doors = Objects.requireNonNull(doors); // TODO consider making defensive copies in a future release
         this.lights = Objects.requireNonNull(lights);
         this.windows = Objects.requireNonNull(windows);
-    }
-
-    /**
-     * runs a routine if there is a person added to the "Room'
-     *
-     * @return message depending on context
-     */
-    @Override
-    public String addRoutine(){
-        // turn on the lights if there is someone in the room and if light is set to autoMode
-        for (Light light : this.lights) {
-            if (light != null && light.isAutoMode()) {
-                if(!light.isOn()){ // only turn on light if it was off
-                    return light.manipulate(Action.TOGGLE_LIGHT);
-                }
-            }
-        }
-
-        // if there is no operations done
-        return "no operations done";
-    }
-
-    /**
-     * runs a routine if there is a person removed from the "Room'
-     *
-     * @return message depending on context
-     */
-    @Override
-    public String removeRoutine() {
-        // turn off the lights if there is no one in the room
-        if (this.getNumPeople() == 0) {
-            // turn on the lights if there is someone in the room and if light is set to autoMode
-            for (Light light : this.lights) {
-                if (light != null && light.isAutoMode()) {
-                    if (light.isOn()) { // only turn on light if it was on
-                        return light.manipulate(Action.TOGGLE_LIGHT);
-                    }
-                }
-            }
-        }
-
-        // if there is no operations done
-        return "no operations done";
     }
 
     /**
@@ -180,5 +135,17 @@ public class Room extends Place {
             }
         }
         return count;
+    }
+
+    public boolean isOccupied() {
+        return getNumberOfPeople() > 0;
+    }
+
+    public void toggleLights(boolean flag) {
+        for (Light light : lights) {
+            if (light != null) {
+                light.setOn(flag);
+            }
+        }
     }
 }
