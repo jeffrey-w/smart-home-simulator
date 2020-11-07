@@ -114,10 +114,10 @@ public class House implements Iterable<Room> {
     public void addPerson(String name, Permission permission, String location) {
         String previousLocation = people.put(validateName(name), location);
         if (previousLocation != null) {
-            if (location.equals("outside")) {
+            if (previousLocation.equals("outside")) {
                 Yard.getInstance().removePerson(name);
             } else {
-                rooms.get(locationOf(name)).room.removePerson(name);
+                rooms.get(previousLocation).room.removePerson(name);
             }
         }
         if (location.equals("outside")) {
