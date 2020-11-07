@@ -1,10 +1,10 @@
 package main.controller;
 
-import main.model.elements.House;
+import main.model.Action;
 import main.model.Manipulable;
+import main.model.elements.House;
 import main.model.elements.Room;
 import main.model.parameters.Parameters;
-import main.model.Action;
 import main.model.parameters.permissions.Permission;
 import main.util.HouseReader;
 import main.util.JSONFilter;
