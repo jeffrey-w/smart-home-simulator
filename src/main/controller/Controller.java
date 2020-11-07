@@ -7,6 +7,8 @@ import main.model.parameters.Parameters;
 import main.model.parameters.permissions.Permission;
 import main.util.HouseReader;
 import main.util.JSONFilter;
+import main.util.ProfileManager;
+import main.util.TextFilter;
 import main.view.*;
 
 import javax.swing.*;
@@ -16,6 +18,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.Date;
 import java.util.NoSuchElementException;
 
@@ -28,6 +31,7 @@ import java.util.NoSuchElementException;
 public class Controller {
 
     private static final JSONFilter JSON_FILTER = new JSONFilter();
+    private static final TextFilter TEXT_FILTER = new TextFilter();
 
     // This is the entry point into the program
     public static void main(String[] args) {
@@ -93,7 +97,7 @@ public class Controller {
         public void actionPerformed(ActionEvent e) {
             ProfileViewer viewer = dashboard.getProfileViewer();
             viewer.clear();
-            viewer.populateList(parameters.getActors());
+            viewer.populateList(parameters.getActorsIdentifier());
             viewer.pack();
             viewer.setLocationRelativeTo(dashboard);
             viewer.setVisible(true);
@@ -151,6 +155,50 @@ public class Controller {
                         house.removePerson(viewer.getSelectedValue());
                     }
                     viewer.removeProfile(viewer.getSelectedValue());
+                    break;
+                }
+                default:
+                    throw new AssertionError(); // Defensive measure; this should never happen.
+            }
+        }
+
+    }
+
+    class PersistProfileListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            String actionCommand = e.getActionCommand();
+            switch (actionCommand) {
+                case "Load": {
+                    JFileChooser chooser = new JFileChooser();
+                    chooser.setFileFilter(TEXT_FILTER);
+                    if (chooser.showOpenDialog(dashboard) == JFileChooser.APPROVE_OPTION) {
+                        try {
+                            parameters.setActors(ProfileManager.loadProfiles(chooser.getSelectedFile()));
+                            //TODO update profile list
+                        } catch (Exception exception) {
+                            dashboard.sendToConsole(exception.getMessage());
+                        }
+                    }
+                    break;
+                }
+                case "Save": {
+
+                    JFileChooser chooser = new JFileChooser();
+                    chooser.setDialogTitle("Specify a file to save");
+                    //disable the all files option
+                    chooser.setAcceptAllFileFilterUsed(false);
+                    chooser.setCurrentDirectory(new java.io.File("."));
+
+                    if (chooser.showSaveDialog(dashboard) == JFileChooser.APPROVE_OPTION) {
+                        try {
+                            //TODO warn about overwriting
+                            ProfileManager.saveProfiles(parameters.getActors(), chooser.getSelectedFile());
+                        } catch (Exception exception) {
+                            dashboard.sendToConsole(exception.getMessage());
+                        }
+                    }
                     break;
                 }
                 default:

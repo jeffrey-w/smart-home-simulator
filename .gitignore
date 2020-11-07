@@ -82,6 +82,7 @@ nb-configuration.xml
 ## OS X
 ##############################
 .DS_Store
+/assets/profiles.txt
 
 ##############################
 ## Log
