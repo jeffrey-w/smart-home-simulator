@@ -17,24 +17,6 @@ import static main.util.NameValidator.validateName;
  */
 public class House implements Iterable<Room> {
 
-    // TODO comment this
-    public boolean hasObstructedWindow() {
-        for (Room room : this) {
-            if (room.getNumberOfWindowsBlocked() > 0) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public int getNumberOfPeople() {
-        int count = 0;
-        for (Room room : this) {
-            count += room.getNumberOfPeople();
-        }
-        return count;
-    }
-
     private static class Node {
 
         Room room;
@@ -196,6 +178,32 @@ public class House implements Iterable<Room> {
             return people.get(person);
         }
         throw new NoSuchElementException("No person by that name exists in this house.");
+    }
+
+    /**
+     * Provides the number of people in this {@code House}.
+     * @return The number of people in this {@code House}
+     */
+    public int getNumberOfPeople() {
+        int count = 0;
+        for (Room room : this) {
+            count += room.getNumberOfPeople();
+        }
+        return count;
+    }
+
+    /**
+     * Determines whether or not any {@code Window} in this {@code House} is obstructed.
+     *
+     * @return {@code true} if any {@code Window} in this {@code House} is obstructed
+     */
+    public boolean hasObstructedWindow() {
+        for (Room room : this) {
+            if (room.getNumberOfWindowsBlocked() > 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

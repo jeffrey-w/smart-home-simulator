@@ -20,7 +20,9 @@ public class Yard extends Place {
         if (yard == null) {
             synchronized (Yard.class) {
                 if (yard == null) {
-                    yard = new Yard();
+                    synchronized (Yard.class) {
+                        yard = new Yard();
+                    }
                 }
             }
         }

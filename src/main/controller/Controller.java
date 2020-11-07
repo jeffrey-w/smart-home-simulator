@@ -87,7 +87,7 @@ public class Controller {
                 redrawHouse();
                 sendToConsole("Simulation has " + (parameters.isOn() ? "begun." : "ended."),
                         Dashboard.MessageType.NORMAL);
-                if (parameters.isOn() && parameters.getAwayMode()) {
+                if (parameters.isOn() && parameters.isAwayMode()) {
                     startAwayModeCountdown();
                 }
             } else {
@@ -155,7 +155,7 @@ public class Controller {
                                         Dashboard.MessageType.NORMAL);
                                 toggleAutoLight();
                                 redrawHouse();
-                                if (parameters.isOn() && parameters.getAwayMode()) {
+                                if (parameters.isOn() && parameters.isAwayMode()) {
                                     startAwayModeCountdown();
                                 }
                             } else {
@@ -224,7 +224,7 @@ public class Controller {
             try {
                 house.addPerson("user", parameters.getPermission(), location);
                 sendToConsole("You have entered the " + location + ".", Dashboard.MessageType.NORMAL);
-                if (parameters.isOn() && parameters.getAwayMode()) {
+                if (parameters.isOn() && parameters.isAwayMode()) {
                     startAwayModeCountdown();
                 }
             } catch (NoSuchElementException exception) {
@@ -265,7 +265,7 @@ public class Controller {
             if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() > 1) {
                 ActionPanel actionPanel = dashboard.getActions();
                 if (actionPanel.getSelectedItem().equals("Away_Mode")) {
-                    performActionOn(parameters.getAwayModeObject(), actionPanel.getSelectedAction());
+                    performActionOn(parameters.getAwayMode(), actionPanel.getSelectedAction());
                 } else if (canAct()) {
                     ItemChooser chooser = ItemChooser.of(getItems(actionPanel.getSelectedItem()));
                     chooser.addActionListener(f -> {

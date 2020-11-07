@@ -34,7 +34,7 @@ public class Parameters {
     private int temperature;
     private boolean on;
     private boolean autoLight;
-    private AwayMode awayMode;
+    private final AwayMode awayMode;
 
     /**
      * Constructs a new {@code Parameters} object.
@@ -178,15 +178,18 @@ public class Parameters {
         return actors.get(actor);
     }
 
-    // TODO comment this
-    public Manipulable getAwayModeObject() { // TODO rename this
+    /**
+     *
+     * @return The {@code AwayMode} of this {@code Parameters}
+     */
+    public Manipulable getAwayMode() {
         return awayMode;
     }
 
     /**
      * @return The AwayMode state: {@code true} if on, else {@code false}
      */
-    public boolean getAwayMode() {
+    public boolean isAwayMode() {
         return awayMode.getAwayMode();
     }
 
@@ -215,12 +218,19 @@ public class Parameters {
         awayMode.setAwayModeDelay(delay);
     }
 
-    // TODO comment this
+    /**
+     *
+     * @return {@code true} if auto light mode is turned on
+     */
     public boolean isAutoLight() {
         return autoLight;
     }
 
-    // TODO comment this
+    /**
+     * Sets the auto light mode status of these {@code Parameters} to that specified.
+     *
+     * @param autoLight The specified auto light mode status
+     */
     public void setAutoLight(boolean autoLight) {
         this.autoLight = autoLight;
     }

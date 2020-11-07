@@ -15,7 +15,6 @@ import main.model.parameters.permissions.Permission;
  * @author Philippe Vo
  * @see Permission
  */
-// FIXME: Maybe it would be better to have the logic of FIXME cont. : "not being able to open a window because its blocked inside window.setOpen() itself?
 public enum Action {
 
     CHANGE_TEMPERATURE {
@@ -112,7 +111,7 @@ public enum Action {
         @Override
         public String doAction(Manipulable manipulable, Parameters parameters, House house) {
             Window window = (Window) manipulable;
-            if (window.isObstructed()) {
+            if (window.isBlocked()) {
                 return "Please unblock this window first.";
             } else {
                 window.setOpen(!window.isOpen());
@@ -193,8 +192,8 @@ public enum Action {
         @Override
         public String doAction(Manipulable manipulable, Parameters parameters, House house) {
             Window window = (Window) manipulable;
-            window.setObstructed(!window.isObstructed());
-            return window.isObstructed() ? "Window has been blocked." : "Window has been unblocked";
+            window.setBlocked(!window.isBlocked());
+            return window.isBlocked() ? "Window has been blocked." : "Window has been unblocked";
         }
 
     },
@@ -212,14 +211,14 @@ public enum Action {
 
         @Override
         public String doAction(Manipulable manipulable, Parameters parameters, House house) {
-            if (house.hasObstructedWindow() && !parameters.getAwayMode()) {
+            if (house.hasObstructedWindow() && !parameters.isAwayMode()) {
                 return "There are blocked windows in the house. Please unblock them before setting away mode.";
             }
-            if (house.getNumberOfPeople() > 0 && !parameters.getAwayMode()) {
+            if (house.getNumberOfPeople() > 0 && !parameters.isAwayMode()) {
                 return "Away mode can only be set when no one is home";
             }
-            parameters.setAwayMode(!parameters.getAwayMode());
-            return parameters.getAwayMode() ? "Away mode has been turned on" : "Away mode has been turned off";
+            parameters.setAwayMode(!parameters.isAwayMode());
+            return parameters.isAwayMode() ? "Away mode has been turned on" : "Away mode has been turned off";
         }
 
         @Override

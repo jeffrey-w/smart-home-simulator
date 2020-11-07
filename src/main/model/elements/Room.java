@@ -13,8 +13,7 @@ import java.util.Objects;
  * @see Light
  * @see Window
  */
-public class Room extends Place { // TODO needs comments
-
+public class Room extends Place {
     private static final int DEFAULT_ROOM_TEMPERATURE = 25;
 
     private int temperature;
@@ -66,6 +65,94 @@ public class Room extends Place { // TODO needs comments
         this.temperature = temperature;
     }
 
+    /**
+     * @return The number of open {@code Door}s in this {@code Room}
+     */
+    public int getNumberOfOpenDoors() {
+        int count = 0;
+        for (Door door : doors) {
+            if (door != null && door.isOpen()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * @return The number of locked {@code Door}s in this {@code Room}
+     */
+    public int getNumberOfLockedDoors() {
+        int count = 0;
+        for (Door door : doors) {
+            if (door != null && door.isLocked()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * @return The number of {@code Light}s in this {@code Room} that are on
+     */
+    public int getNumberOfLightsOn() {
+        int count = 0;
+        for (Light light : lights) {
+            if (light != null && light.isOn()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * @return The number of open {@code Window}s in this {@code Room}
+     */
+    public int getNumberOfWindowsOpen() {
+        int count = 0;
+        for (Window window : windows) {
+            if (window != null && window.isOpen()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * @return The number of blocked {@code Window}s in this {@code Room}
+     */
+    public int getNumberOfWindowsBlocked() {
+        int count = 0;
+        for (Window window : windows) {
+            if (window != null && window.isBlocked()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Determines whether or not this {@code Room} has any people in it.
+     *
+     * @return {@code true} if any people are in this {@code Room}
+     */
+    public boolean isOccupied() {
+        return getNumberOfPeople() > 0;
+    }
+
+    /**
+     * Turns on or off all of the {@code Light}s in this {@code Room} depending on the specified {@code flag}.
+     *
+     * @param flag If {@code true} all {@code Light}s in this {@code Room} shall be turned on, otherwise they will be
+     * turned off
+     */
+    public void toggleLights(boolean flag) {
+        for (Light light : lights) {
+            if (light != null) {
+                light.setOn(flag);
+            }
+        }
+    }
+
     @Override
     public boolean equals(final Object obj) {
         if (!(obj instanceof Room)) {
@@ -87,65 +174,4 @@ public class Room extends Place { // TODO needs comments
         return result;
     }
 
-    public int getNumberOfOpenDoors() {
-        int count = 0;
-        for (Door door : doors) {
-            if (door != null && door.isOpen()) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    public int getNumberOfLockedDoors() {
-        int count = 0;
-        for (Door door : doors) {
-            if (door != null && door.isLocked()) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    public int getNumberOfLightsOn() {
-        int count = 0;
-        for (Light light : lights) {
-            if (light != null && light.isOn()) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    public int getNumberOfWindowsOpen() {
-        int count = 0;
-        for (Window window : windows) {
-            if (window != null &&  window.isOpen()) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    public int getNumberOfWindowsBlocked() {
-        int count = 0;
-        for (Window window : windows) {
-            if (window != null && window.isObstructed()) { // TODO rename blocked to obstructed or vice versa
-                count++;
-            }
-        }
-        return count;
-    }
-
-    public boolean isOccupied() {
-        return getNumberOfPeople() > 0;
-    }
-
-    public void toggleLights(boolean flag) {
-        for (Light light : lights) {
-            if (light != null) {
-                light.setOn(flag);
-            }
-        }
-    }
 }

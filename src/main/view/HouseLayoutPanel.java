@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 /**
  * The {@code HouseLayoutPanel} class provides the UI elements for visualizing a {@code House}.
@@ -23,7 +24,6 @@ public class HouseLayoutPanel extends JPanel {
         RoomInfo(int x, int y) {
             coordinates = new Point(x, y);
         }
-
 
     }
 
@@ -75,12 +75,23 @@ public class HouseLayoutPanel extends JPanel {
         repaint();
     }
 
-    // TODO comment this
+    /**
+     * Updates the {@code Room} at the specified {@code location} on this {@code HouseLayoutPanel} with the status of
+     * the specified {@code room}.
+     *
+     * @param location The specified location
+     * @param room The specified {@code Room}
+     * @throws NoSuchElementException If the specified {@code location} does not exist on this {@code HouseLayoutPanel}
+     * @throws NullPointerException If the specified {@code room} is {@code null}
+     */
     public void updateRoom(String location, Room room) {
-        RoomInfo info = rooms.get(location); // TODO validate location
-        for (int i = 0; i < NUMBER_OF_STATES; i++) {
-            updateState(room, info, i);
+        if (rooms.containsKey(location)) {
+            RoomInfo info = rooms.get(location);
+            for (int i = 0; i < NUMBER_OF_STATES; i++) {
+                updateState(room, info, i);
+            }
         }
+        throw new NoSuchElementException("That location does not exist");
     }
 
     private void updateState(Room room, RoomInfo info, int state) {

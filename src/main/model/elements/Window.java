@@ -14,7 +14,7 @@ public class Window extends AbstractManipulable {
     private static final boolean DEFAULT_OBSTRUCTED_VALUE = false;
 
     private boolean open;
-    private boolean obstructed;
+    private boolean blocked;
 
     /**
      * Constructs a {@code Window} with a {@value DEFAULT_OPEN_VALUE} open state and a {@value DEFAULT_OBSTRUCTED_VALUE}
@@ -25,14 +25,14 @@ public class Window extends AbstractManipulable {
     }
 
     /**
-     * Constructs a {@code Window} with the specified {@code open} and {@code obstructed} state.
+     * Constructs a {@code Window} with the specified {@code open} and {@code blocked} state.
      *
      * @param open The specified open state
-     * @param obstructed The specified obstructed state
+     * @param blocked The specified blocked state
      */
-    public Window(boolean open, boolean obstructed) {
+    public Window(boolean open, boolean blocked) {
         setOpen(open);
-        setObstructed(obstructed);
+        setBlocked(blocked);
     }
 
     /**
@@ -43,10 +43,10 @@ public class Window extends AbstractManipulable {
     }
 
     /**
-     * @return The obstructed state of this {@code Window}
+     * @return The blocked state of this {@code Window}
      */
-    public boolean isObstructed() {
-        return obstructed;
+    public boolean isBlocked() {
+        return blocked;
     }
 
     /**
@@ -59,21 +59,21 @@ public class Window extends AbstractManipulable {
     }
 
     /**
-     * Sets the {@code obstructed} state of this {@code Window} to that specified.
+     * Sets the {@code blocked} state of this {@code Window} to that specified.
      *
-     * @param obstructed The specified obstructed state
+     * @param blocked The specified obstructed state
      */
-    public void setObstructed(boolean obstructed) {
-        this.obstructed = obstructed;
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(Object obj) {
         if (!(obj instanceof Window)) {
             return false;
         }
         Window window = (Window) obj;
-        return open == window.open && obstructed == window.obstructed;
+        return open == window.open && blocked == window.blocked;
     }
 
     @Override
@@ -81,7 +81,7 @@ public class Window extends AbstractManipulable {
         int prime = 31;
         int result = 1;
         result = prime * result + Boolean.hashCode(open);
-        result = prime * result + Boolean.hashCode(obstructed);
+        result = prime * result + Boolean.hashCode(blocked);
         return result;
     }
 

@@ -50,13 +50,9 @@ public abstract class Place {
     }
 
     /**
-     * @return number of people inside the place.
+     *
+     * @return The number of people in this {@code Place}
      */
-    public int getNumPeople(){
-        return this.people.size();
-    }
-
-    // TODO comment this
     public int getNumberOfPeople() {
         return people.size();
     }
