@@ -1,5 +1,6 @@
 package main.model.parameters;
 
+import main.model.Manipulable;
 import main.model.elements.Room;
 import main.model.parameters.permissions.Permission;
 
@@ -32,6 +33,7 @@ public class Parameters {
     private Date date;
     private int temperature;
     private boolean on;
+    private boolean autoLight;
     private AwayMode awayMode;
 
     /**
@@ -176,6 +178,11 @@ public class Parameters {
         return actors.get(actor);
     }
 
+    // TODO comment this
+    public Manipulable getAwayModeObject() { // TODO rename this
+        return awayMode;
+    }
+
     /**
      * @return The AwayMode state: {@code true} if on, else {@code false}
      */
@@ -206,6 +213,16 @@ public class Parameters {
      */
     public void setAwayDelay(int delay) {
         awayMode.setAwayModeDelay(delay);
+    }
+
+    // TODO comment this
+    public boolean isAutoLight() {
+        return autoLight;
+    }
+
+    // TODO comment this
+    public void setAutoLight(boolean autoLight) {
+        this.autoLight = autoLight;
     }
 
 }
