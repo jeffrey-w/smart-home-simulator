@@ -197,6 +197,7 @@ public class Parameters {
         }
     }
 
+    /**
      * @return The AwayMode state: {@code true} if on, else {@code false}
      */
     public boolean getAwayMode() {
