@@ -107,7 +107,7 @@ public class House implements Iterable<Room> {
      * @param permission The specified {@code Permission}
      * @param location The specified location
      * @throws IllegalArgumentException If the specified {@code name} is not a non-empty string of word
-     *         characters (i.e. [a-z, A-Z, 0-9, _])
+     *         characters (i.e. [a-z, A-Z, 0-9, _, ])
      * @throws NoSuchElementException If the specified {@code location} does not exist in this {@code House}
      * @throws NullPointerException If the specified {@code permission} is {@code null}
      */
@@ -115,7 +115,11 @@ public class House implements Iterable<Room> {
         if (people.containsKey(name)) {
             rooms.get(locationOf(name)).room.removePerson(name);
         }
-        validateLocation(location).room.addPerson(name, permission);
+        if (location.equals("outside")) {
+            Yard.getInstance().addPerson(validateName(name), permission);
+        } else {
+            validateLocation(location).room.addPerson(validateName(name), permission);
+        }
         people.put(name, location);
     }
 
