@@ -37,9 +37,6 @@ public abstract class Place {
      */
     public void addPerson(String name, Permission permission) {
         people.put(validateName(name), Objects.requireNonNull(permission, "Please select a permission level."));
-
-        // run routine
-        addRoutine();
     }
 
     /**
@@ -49,12 +46,7 @@ public abstract class Place {
      * @return {@code true} if the specified {@code person} was removed from this {@code Place}.
      */
     public boolean removePerson(String person) {
-        boolean state = people.remove(person) != null;
-
-        // run routine
-        removeRoutine();
-
-        return state;
+        return people.remove(person) != null;
     }
 
     /**
@@ -63,12 +55,6 @@ public abstract class Place {
     public int getNumPeople(){
         return this.people.size();
     }
-
-    // runs a routine if there is a person added to the "Place'
-    public abstract String addRoutine(); // TODO rethink this
-
-    // runs a routine if there is a person added to the "Place'
-    public abstract String removeRoutine(); // TODO rethink this
 
     // TODO comment this
     public int getNumberOfPeople() {
