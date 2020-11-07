@@ -17,6 +17,24 @@ import static main.util.NameValidator.validateName;
  */
 public class House implements Iterable<Room> {
 
+    // TODO comment this
+    public boolean hasObstructedWindow() {
+        for (Room room : this) {
+            if (room.getNumberOfWindowsBlocked() > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public int getNumberOfPeople() {
+        int count = 0;
+        for (Room room : this) {
+            count += room.getNumberOfPeople();
+        }
+        return count;
+    }
+
     private static class Node {
 
         Room room;
