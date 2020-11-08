@@ -13,7 +13,7 @@ public abstract class AbstractPermission implements Permission {
     @Override
     public Action authorize(Action action) {
         if (!allowed().contains(Objects.requireNonNull(action))) {
-            throw new IllegalArgumentException("You do not have permission to perform that action.");
+            throw new IllegalArgumentException("This action is not permissible with the level of permission you currently have.");
         }
         return action;
     }
@@ -22,6 +22,28 @@ public abstract class AbstractPermission implements Permission {
      * @return The set of {@code Action}s that this {@code Permission} level is allowed to perform
      */
     public abstract Set<Action> allowed();
+
+    /**
+     * Allows a user to increase the number of actionable permissions they have.
+     *
+     * @param action The action to be added to their permissions
+     */
+    public void addPermission(Action action) {
+        if(!allowed().contains(action)) {
+            allowed().add(action);
+        }
+    }
+
+    /**
+     * Allows a user to decrease the number of actionable permissions they have.
+     *
+     * @param action The action to be removed from their permissions
+     */
+    public void removePermission(Action action) {
+        if(allowed().contains(action)) {
+            allowed().remove(action);
+        }
+    }
 
     @Override
     public boolean equals(final Object obj) {
