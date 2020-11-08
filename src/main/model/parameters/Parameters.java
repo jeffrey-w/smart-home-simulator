@@ -44,6 +44,7 @@ public class Parameters {
     private final AwayMode awayMode;
     private LocalTime awayLightStart;
     private LocalTime awayLightEnd;
+    private double clockSpeed;
 
     /**
      * Constructs a new {@code Parameters} object.
@@ -58,6 +59,7 @@ public class Parameters {
         awayMode = new AwayMode();
         awayLightStart = DEFAULT_AWAY_LIGHT_START;
         awayLightEnd = DEFAULT_AWAY_LIGHT_END;
+        clockSpeed = 1;
     }
 
     /**
@@ -282,6 +284,18 @@ public class Parameters {
      */
     public void setAwayLightEnd(LocalTime end) {
         awayLightEnd = Objects.requireNonNull(end);
+    }
+
+    /**
+     * Sets this {@code Parameters}' {@code clockSpeed} to the value specified.
+     * @param clockSpeed The specified value
+     * @throws IllegalArgumentException If the specified {@code clockSpeed} is less than or equal to zero
+     */
+    public void setClockSpeed(double clockSpeed) {
+        if (Double.compare(clockSpeed, 0) <= 0) {
+            throw new IllegalArgumentException("Please specify a positive clockSpeed");
+        }
+        this.clockSpeed = clockSpeed;
     }
 
 }
