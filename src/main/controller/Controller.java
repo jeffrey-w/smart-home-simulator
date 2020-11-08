@@ -19,11 +19,6 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.event.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.IOException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
@@ -78,6 +73,7 @@ public class Controller {
         dashboard.addPermissionListener(new PermissionListener());
         dashboard.addTemperatureListener(new TemperatureListener());
         dashboard.addDateListener(new DateListener());
+        dashboard.addEditClockSpeedListener(new EditClockSpeedListener());
         dashboard.addActionSelectionListener(new ActionSelectionListener());
         dashboard.drawHouse(house);
     }
@@ -314,14 +310,26 @@ public class Controller {
 
     }
 
-    static final Object[] AWAY_MODE_DELAYS = new Integer[] {
+    class EditClockSpeedListener implements ActionListener { // TODO exception handling
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            double input = Double.parseDouble(JOptionPane
+                    .showInputDialog(dashboard, "Enter a positive clock speed.", 1));
+            parameters.setClockSpeed(input);
+            sendToConsole("Clock speed updated to " + input + ".", Dashboard.MessageType.NORMAL);
+        }
+
+    }
+
+    private static final Object[] AWAY_MODE_DELAYS = new Integer[] {
             5, 6, 7, 8, 9, 10
     }; // TODO move this
 
     class ActionSelectionListener extends MouseAdapter {
 
         @Override
-        public void mouseClicked(final MouseEvent e) {
+        public void mouseClicked(MouseEvent e) {
             if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() > 1) {
                 ActionPanel actionPanel = dashboard.getActions();
                 if (actionPanel.getSelectedItem().equals("Away Mode")) {
@@ -330,9 +338,10 @@ public class Controller {
                         ValueManipulable<Integer> valueManipulable = new ValueManipulable<Integer>((Integer) JOptionPane
                                 .showInputDialog(dashboard, "Enter an away mode delay.", "Away Mode Delay",
                                         JOptionPane.PLAIN_MESSAGE, null,
-                                        AWAY_MODE_DELAYS, AWAY_MODE_DELAYS[5])); // TODO handle cancel
+                                        AWAY_MODE_DELAYS, AWAY_MODE_DELAYS[5])
+                                * 1_000); // TODO handle cancel; use constant for multiplier
                         performActionOn(valueManipulable, Action.SET_AWAY_MODE_DELAY);
-                    } else if (actionPanel.getSelectedAction().equals(Action.SET_AWAY_MODE_LIGHTS)){
+                    } else if (actionPanel.getSelectedAction().equals(Action.SET_AWAY_MODE_LIGHTS)) {
                         AwayLightChooser chooser = AwayLightChooser.of(house.getLocations());
                         chooser.addActionListener(f -> {
                             MultiValueManipulable multiValueManipulable = new MultiValueManipulable();
