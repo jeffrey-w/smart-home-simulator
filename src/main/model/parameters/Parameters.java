@@ -5,6 +5,7 @@ import main.model.elements.Room;
 import main.model.parameters.permissions.Permission;
 
 import java.time.Instant;
+import java.time.LocalTime;
 import java.util.*;
 
 import static main.util.NameValidator.validateName;
@@ -27,6 +28,12 @@ public class Parameters {
     public static final int MIN_TEMPERATURE = -100;
     public static final int MAX_TEMPERATURE = 100;
 
+    /**
+     * The default values for away light beginning and end.
+     */
+    public static final LocalTime DEFAULT_AWAY_LIGHT_START = LocalTime.of(18, 0);
+    public static final LocalTime DEFAULT_AWAY_LIGHT_END = LocalTime.of(0, 0);
+
     private Permission permission;
     private final Map<String, Permission> actors;
     private String location;
@@ -35,6 +42,8 @@ public class Parameters {
     private boolean on;
     private boolean autoLight;
     private final AwayMode awayMode;
+    private LocalTime awayLightStart;
+    private LocalTime awayLightEnd;
 
     /**
      * Constructs a new {@code Parameters} object.
@@ -47,6 +56,8 @@ public class Parameters {
         temperature = DEFAULT_TEMPERATURE;
         on = false;
         awayMode = new AwayMode();
+        awayLightStart = DEFAULT_AWAY_LIGHT_START;
+        awayLightEnd = DEFAULT_AWAY_LIGHT_END;
     }
 
     /**
@@ -233,6 +244,24 @@ public class Parameters {
      */
     public void setAutoLight(boolean autoLight) {
         this.autoLight = autoLight;
+    }
+
+    /**
+     * Sets the {@code start} of away light mode to the time specified
+     * @param start the specified start of away light mode
+     * @throws NullPointerException if the specified {@code start} is {@code null}
+     */
+    public void setAwayLightStart(LocalTime start) {
+        awayLightStart = Objects.requireNonNull(start);
+    }
+
+    /**
+     * Sets the {@code end} of away light mode to the time specified
+     * @param end the specified end of away light mode
+     * @throws NullPointerException if the specified {@code end} is {@code null}
+     */
+    public void setAwayLightEnd(LocalTime end) {
+        awayLightEnd = Objects.requireNonNull(end);
     }
 
 }
