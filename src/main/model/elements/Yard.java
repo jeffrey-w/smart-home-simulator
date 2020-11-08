@@ -11,6 +11,8 @@ public class Yard extends Place {
     // Singleton object
     private static volatile Yard yard;
 
+    private Light light = new Light();
+
     /**
      * Get the {@code Yard} of a {@code House}
      *
@@ -27,6 +29,14 @@ public class Yard extends Place {
             }
         }
         return yard;
+    }
+
+    /**
+     * Turns this {@code Yard}'s {@code Light} on of off depending on the specified {@code on} value.
+     * @param on the specified on value
+     */
+    public void setLightOn(boolean on) {
+        light.setOn(on);
     }
 
 }
