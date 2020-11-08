@@ -2,8 +2,11 @@ package main.controller;
 
 import main.model.Action;
 import main.model.Manipulable;
+import main.model.MultiValueManipulable;
+import main.model.ValueManipulable;
 import main.model.elements.House;
 import main.model.elements.Room;
+import main.model.elements.Yard;
 import main.model.parameters.Parameters;
 import main.model.parameters.permissions.Permission;
 import main.util.HouseReader;
@@ -87,7 +90,7 @@ public class Controller {
                 redrawHouse();
                 sendToConsole("Simulation has " + (parameters.isOn() ? "begun." : "ended."),
                         Dashboard.MessageType.NORMAL);
-                if (parameters.isOn() && parameters.isAwayMode()) {
+                if (parameters.isOn() && parameters.isAwayMode() && house.isOccupied()) {
                     startAwayModeCountdown();
                 }
             } else {
@@ -259,23 +262,59 @@ public class Controller {
 
     }
 
+    static final Object[] AWAY_MODE_DELAYS = new Integer[] {
+            5, 6, 7, 8, 9, 10
+    }; // TODO move this
+
     class ActionSelectionListener extends MouseAdapter {
+
         @Override
         public void mouseClicked(final MouseEvent e) {
             if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() > 1) {
                 ActionPanel actionPanel = dashboard.getActions();
-                if (actionPanel.getSelectedItem().equals("Away_Mode")) {
-                    performActionOn(parameters.getAwayMode(), actionPanel.getSelectedAction());
+                if (actionPanel.getSelectedItem().equals("Away Mode")) {
+                    if (actionPanel.getSelectedAction().equals(Action.SET_AWAY_MODE_DELAY)) {
+                        System.out.println("I'm here");
+                        ValueManipulable<Integer> valueManipulable = new ValueManipulable<Integer>((Integer) JOptionPane
+                                .showInputDialog(dashboard, "Enter an away mode delay.", "Away Mode Delay",
+                                        JOptionPane.PLAIN_MESSAGE, null,
+                                        AWAY_MODE_DELAYS, AWAY_MODE_DELAYS[5])); // TODO handle cancel
+                        performActionOn(valueManipulable, Action.SET_AWAY_MODE_DELAY);
+                    } else if (actionPanel.getSelectedAction().equals(Action.SET_AWAY_MODE_LIGHTS)){
+                        AwayLightChooser chooser = AwayLightChooser.of(house.getLocations());
+                        chooser.addActionListener(f -> {
+                            MultiValueManipulable multiValueManipulable = new MultiValueManipulable();
+                            multiValueManipulable.addValue(chooser.getSelectedLocations());
+                            multiValueManipulable.addValue(chooser.getStart());
+                            multiValueManipulable.addValue(chooser.getEnd());
+                            performActionOn(multiValueManipulable, Action.SET_AWAY_MODE_LIGHTS);
+                            chooser.dispose();
+                        });
+                        chooser.pack();
+                        chooser.setLocationRelativeTo(dashboard);
+                        chooser.setVisible(true);
+                    } else {
+                        performActionOn(parameters.getAwayMode(), actionPanel.getSelectedAction());
+                    }
                 } else if (canAct()) {
-                    ItemChooser chooser = ItemChooser.of(getItems(actionPanel.getSelectedItem()));
-                    chooser.addActionListener(f -> {
-                        performActionOn(chooser.getSelectedItem(), actionPanel.getSelectedAction());
-                        redrawHouse();
-                        chooser.dispose();
-                    });
-                    chooser.pack();
-                    chooser.setLocationRelativeTo(dashboard);
-                    chooser.setVisible(true);
+                    if (actionPanel.getSelectedAction().equals(Action.TOGGLE_AUTO_LIGHT)) {
+                        try {
+                            sendToConsole(parameters.getPermission().authorize(Action.TOGGLE_AUTO_LIGHT)
+                                    .doAction(null, parameters, house), Dashboard.MessageType.NORMAL);
+                        } catch (Exception exception) {
+                            sendToConsole(exception.getMessage(), Dashboard.MessageType.ERROR);
+                        }
+                    } else {
+                        ItemChooser chooser = ItemChooser.of(getItems(actionPanel.getSelectedItem()));
+                        chooser.addActionListener(f -> {
+                            performActionOn(chooser.getSelectedItem(), actionPanel.getSelectedAction());
+                            redrawHouse();
+                            chooser.dispose();
+                        });
+                        chooser.pack();
+                        chooser.setLocationRelativeTo(dashboard);
+                        chooser.setVisible(true);
+                    }
                 } else {
                     String message = "Please select a permission and location to choose an action.";
                     if (house == null) {
@@ -312,6 +351,8 @@ public class Controller {
                     Dashboard.MessageType.NORMAL);
         } catch (IllegalArgumentException e) {
             sendToConsole(e.getMessage(), Dashboard.MessageType.ERROR);
+        } catch (NullPointerException e) {
+            sendToConsole("Please select a permission level first.", Dashboard.MessageType.ERROR);
         }
     }
 
@@ -319,6 +360,9 @@ public class Controller {
         if (parameters.isAutoLight()) {
             for (Room room : house) {
                 room.toggleLights(room.isOccupied());
+            }
+            if (Yard.getInstance().isOccupied()) {
+                Yard.getInstance().setLightOn(true);
             }
         }
     }
