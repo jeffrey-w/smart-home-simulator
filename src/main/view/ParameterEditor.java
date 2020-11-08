@@ -49,6 +49,7 @@ public class ParameterEditor extends JPanel {
 
     JButton loadHouse = new JButton("Load House");
     JButton manageProfiles = new JButton("Manage Profiles");
+    JButton editClockSpeed = new JButton("Edit Clock Speed");
     JComboBox<Permission> permission = permissionJComboBox();
     JComboBox<String> location = new JComboBox<>();
     JSpinner temperature = new JSpinner(TEMP_MODEL);
@@ -67,7 +68,8 @@ public class ParameterEditor extends JPanel {
 
         // Add containers to panel.
         add(buttons, BorderLayout.NORTH);
-        add(fields, BorderLayout.SOUTH);
+        add(fields);
+        add(editClockSpeed, BorderLayout.SOUTH);
 
         // Add buttons to button panel.
         buttons.add(loadHouse);
