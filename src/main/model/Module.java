@@ -32,7 +32,8 @@ public final class Module {
      */
     public static final Module SHP = (new ModuleBuilder())
             .addCommandFor("Away Mode", Action.SET_AWAY_MODE)
-            //.addCommandFor("Lights", Action.SET_AWAY_MODE_LIGHTS)
+            .addCommandFor("Away Mode", Action.SET_AWAY_MODE_DELAY)
+            .addCommandFor("Away Mode", Action.SET_AWAY_MODE_LIGHTS)
             .addName("SHP")
             .build();
 
