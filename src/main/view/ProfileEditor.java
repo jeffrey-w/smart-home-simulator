@@ -1,5 +1,6 @@
 package main.view;
 
+import main.model.elements.House;
 import main.model.parameters.permissions.Permission;
 import main.view.viewtils.SpringUtilities;
 
@@ -81,7 +82,7 @@ public class ProfileEditor extends JFrame {
         for (String location : locations) {
             this.location.addItem(location);
         }
-        location.addItem("outside");
+        location.addItem(House.EXTERIOR_NAME);
     }
 
     /**
