@@ -1,11 +1,11 @@
 package main.model;
 
-import main.model.elements.Door;
-import main.model.elements.House;
-import main.model.elements.Light;
-import main.model.elements.Window;
+import main.model.elements.*;
 import main.model.parameters.Parameters;
 import main.model.parameters.permissions.Permission;
+
+import java.time.LocalTime;
+import java.util.Set;
 
 /**
  * An {@code Action} describes an attempt on the part of an actor to change a simulation, which requires {@code
@@ -217,6 +217,7 @@ public enum Action {
             if (house.getNumberOfPeople() > 0 && !parameters.isAwayMode()) {
                 return "Away mode can only be set when no one is home";
             }
+            house.closeOpenables();
             parameters.setAwayMode(!parameters.isAwayMode());
             return parameters.isAwayMode() ? "Away mode has been turned on" : "Away mode has been turned off";
         }
@@ -224,6 +225,59 @@ public enum Action {
         @Override
         public String toString() {
             return "Turn Away Mode On/Off";
+        }
+    },
+
+    SET_AWAY_MODE_LIGHTS {
+        @Override
+        public boolean isChildPermissible() {
+            return false;
+        }
+
+        @Override
+        public boolean isGuestPermissible() {
+            return false;
+        }
+
+        @Override
+        public String doAction(Manipulable manipulable, Parameters parameters, House house) {
+            MultiValueManipulable multiValueManipulable = (MultiValueManipulable) manipulable;
+            @SuppressWarnings("unchecked") // We catch ClassCastExceptions upstream
+            Set<String> locations = (Set<String>)multiValueManipulable.getValueAt(0).getValue();
+            for (String location : house.getLocations()) {
+                house.getRoom(location).setAwayLight(locations.contains(location));
+            }
+            parameters.setAwayLightStart((LocalTime) multiValueManipulable.getValueAt(1).getValue());
+            parameters.setAwayLightEnd((LocalTime) multiValueManipulable.getValueAt(2).getValue());
+            return "Away light interval updated";
+        }
+
+        @Override
+        public String toString() {
+            return "Set Away Mode Lights";
+        }
+    },
+    SET_AWAY_MODE_DELAY {
+        @Override
+        public boolean isChildPermissible() {
+            return false;
+        }
+
+        @Override
+        public boolean isGuestPermissible() {
+            return false;
+        }
+
+        @Override
+        public String doAction(Manipulable manipulable, Parameters parameters, House house) {
+            ValueManipulable<Integer> valueManipulable = (ValueManipulable<Integer>) manipulable; // TODO type safety
+            parameters.setAwayDelay(valueManipulable.getValue());
+            return "Away mode delay set for " + valueManipulable.getValue() + " seconds.";
+        }
+
+        @Override
+        public String toString() {
+            return "Set Away Mode Delay";
         }
     };
 
