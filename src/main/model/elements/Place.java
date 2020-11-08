@@ -57,4 +57,12 @@ public abstract class Place {
         return people.size();
     }
 
+    /**
+     * Determines whether or not this {@code Place} has any people in it.
+     *
+     * @return {@code true} if any people are in this {@code Place}
+     */
+    public boolean isOccupied() {
+        return getNumberOfPeople() > 0;
+    }
 }
