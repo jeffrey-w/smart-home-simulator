@@ -253,7 +253,7 @@ public class Dashboard extends JFrame {
     }
 
     /**
-     * Registers an event handler for setting a simulations' temperature.
+     * Registers an event handler for setting a simulation's temperature.
      *
      * @param listener The specified event handler
      */
@@ -262,12 +262,21 @@ public class Dashboard extends JFrame {
     }
 
     /**
-     * Registers an event handler for setting a simulations' {@code Date}.
+     * Registers an event handler for setting a simulation's {@code Date}.
      *
      * @param listener The specified event handler
      */
     public void addDateListener(ChangeListener listener) {
         editor.date.addChangeListener(listener);
+    }
+
+    /**
+     * Registers an event handler for changing a simulation's clock speed.
+     *
+     * @param listener The specified event handler
+     */
+    public void addEditClockSpeedListener(ActionListener listener) {
+        editor.editClockSpeed.addActionListener(listener);
     }
 
     /**
