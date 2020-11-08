@@ -17,6 +17,7 @@ public class Room extends Place {
     private static final int DEFAULT_ROOM_TEMPERATURE = 25;
 
     private int temperature;
+    private boolean awayLight;
     private final Door[] doors;
     private final Light[] lights;
     private final Window[] windows;
@@ -131,15 +132,6 @@ public class Room extends Place {
     }
 
     /**
-     * Determines whether or not this {@code Room} has any people in it.
-     *
-     * @return {@code true} if any people are in this {@code Room}
-     */
-    public boolean isOccupied() {
-        return getNumberOfPeople() > 0;
-    }
-
-    /**
      * Turns on or off all of the {@code Light}s in this {@code Room} depending on the specified {@code flag}.
      *
      * @param flag If {@code true} all {@code Light}s in this {@code Room} shall be turned on, otherwise they will be
@@ -172,6 +164,15 @@ public class Room extends Place {
         result = prime * result + Arrays.hashCode(lights);
         result = prime * result + Arrays.hashCode(windows);
         return result;
+    }
+
+    /**
+     * Sets this {@code Room}'s away light status to the specified {@code flag}.
+     *
+     * @param flag If {@code true} this {@code Room} will be lit during {@code AwayMode}
+     */
+    public void setAwayLight(boolean flag) {
+        awayLight = flag;
     }
 
 }
