@@ -29,7 +29,7 @@ class ParameterTest {
         assertThrows(IllegalArgumentException.class, () -> parameters.addActor("invalid role", TEST_PERMISSION));
         assertThrows(NullPointerException.class, () -> parameters.addActor(TEST_ROLE, null));
         parameters.addActor(TEST_ROLE, TEST_PERMISSION);
-        assertFalse(parameters.getActors().isEmpty());
+        assertFalse(parameters.getActorsIdentifier().isEmpty());
     }
 
     @Test
@@ -38,14 +38,14 @@ class ParameterTest {
         parameters.addActor(TEST_ROLE, action -> {
             return action;
         });
-        assertEquals(parameters.getActors().size(), 1);
+        assertEquals(parameters.getActorsIdentifier().size(), 1);
     }
 
     @Test
     void testRemoveProfile() {
         parameters.addActor(TEST_ROLE, TEST_PERMISSION);
         parameters.removeActor(TEST_ROLE);
-        assertTrue(parameters.getActors().isEmpty());
+        assertTrue(parameters.getActorsIdentifier().isEmpty());
     }
 
     @Test
