@@ -5,6 +5,7 @@ import main.model.elements.Manipulable;
 import main.model.elements.Room;
 import main.model.parameters.Parameters;
 import main.model.parameters.permissions.Permission;
+import main.model.tools.Clock;
 import main.util.HouseReader;
 import main.util.JSONFilter;
 import main.util.ProfileManager;
@@ -32,6 +33,8 @@ public class Controller {
 
     private static final JSONFilter JSON_FILTER = new JSONFilter();
     private static final TextFilter TEXT_FILTER = new TextFilter();
+
+
 
     // This is the entry point into the program
     public static void main(String[] args) {
@@ -66,6 +69,9 @@ public class Controller {
         dashboard.addDateListener(new DateListener());
         dashboard.addActionSelectionListener(new ActionSelectionListener());
         dashboard.drawHouse(house);
+
+        // start clock update
+        startClockDisplayUpdate();
     }
 
     /*
@@ -318,4 +324,14 @@ public class Controller {
         }
     }
 
+    public void startClockDisplayUpdate() {
+        ActionListener updateClockListener = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            dashboard.setTime(parameters.getClockTime());
+            }
+        };
+
+        javax.swing.Timer timerClock = new javax.swing.Timer(1000, updateClockListener);
+        timerClock.start();
+    }
 }

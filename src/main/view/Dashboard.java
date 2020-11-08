@@ -38,7 +38,7 @@ public class Dashboard extends JFrame {
     static final int CONSOLE_HEIGHT = (WINDOW_HEIGHT / 3) / 0x10;
     static final int CONTENT_HEIGHT = WINDOW_HEIGHT - CONSOLE_HEIGHT;
     static final int CONTENT_PADDING = 0x20;
-    static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm a");
+    static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd"); // NOTE: removed the time here so that we can implement that independently
 
     ParameterPanel parameters = new ParameterPanel();
     ParameterEditor editor = new ParameterEditor();
@@ -134,6 +134,21 @@ public class Dashboard extends JFrame {
      */
     public void setDate(Date date) {
         parameters.setDate(DATE_FORMAT.format(date));
+    }
+
+    /**
+     * Sets the {@code time}
+     *
+     * @param time The specified time
+     * @throws NullPointerException If the specified {@code time} is {@code null}
+     */
+    public void setTime(int[] time) {
+        String h = Integer.toString(time[0]);
+        String m = Integer.toString(time[1]);
+        String s = Integer.toString(time[2]);
+        String timeStr = ("" + h + ":" + m + ":" + s);
+
+        parameters.setTime(timeStr);
     }
 
     /**

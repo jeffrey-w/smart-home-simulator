@@ -2,7 +2,10 @@ package main.model.parameters;
 
 import main.model.elements.Room;
 import main.model.parameters.permissions.Permission;
+import main.model.tools.Clock;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.time.Instant;
 import java.util.*;
 
@@ -33,6 +36,11 @@ public class Parameters {
     private int temperature;
     private boolean on;
     private AwayMode awayMode;
+    private int[] clockTime;
+    private int clockTimeMultiplier;
+
+    // starting the clock
+    private static final Clock clock = new Clock();
 
     /**
      * Constructs a new {@code Parameters} object.
@@ -45,16 +53,22 @@ public class Parameters {
         temperature = DEFAULT_TEMPERATURE;
         on = false;
         awayMode = new AwayMode();
+
+        // setting the time and time multiplier
+        startUpdateClock(); // start the listener to update time given the clock time
+        clockTimeMultiplier = 1;
+        clock.setMultiplier(clockTimeMultiplier);
+        clockTime = clock.getClockTime();
     }
 
     /**
      * Adds a new actor to the simulation with the specified {@code name} and {@code permission}.
      *
-     * @param name A unique identifier
+     * @param name       A unique identifier
      * @param permission The {@code Permission} level of the newly added actor
      * @throws IllegalArgumentException If the specified {@code name} is not a non-empty string of word characters (i.e.
-     * [a-z, A-Z, 0-9, _])
-     * @throws NullPointerException If the specified {@code permission} is {@code null}
+     *                                  [a-z, A-Z, 0-9, _])
+     * @throws NullPointerException     If the specified {@code permission} is {@code null}
      */
     public void addActor(String name, Permission permission) {
         actors.put(validateName(name), Objects.requireNonNull(permission, "Please select a permission level."));
@@ -133,7 +147,7 @@ public class Parameters {
      *
      * @param location The specified location
      * @throws IllegalArgumentException If the specified {@code location} is not a non-empty string of word characters
-     * (i.e. [a-z, A-Z, 0-9, _])
+     *                                  (i.e. [a-z, A-Z, 0-9, _])
      */
     public void setLocation(String location) {
         this.location = location == null ? null : validateName(location);
@@ -154,7 +168,7 @@ public class Parameters {
      *
      * @param temperature The specified temperature
      * @throws IllegalArgumentException If the specified {@code temperature} is above {@value #MAX_TEMPERATURE} or below
-     * {@value #MIN_TEMPERATURE}
+     *                                  {@value #MIN_TEMPERATURE}
      */
     public void setTemperature(int temperature) {
         if (temperature < MIN_TEMPERATURE || temperature > MAX_TEMPERATURE) {
@@ -184,7 +198,6 @@ public class Parameters {
     }
 
     /**
-
      * Sets the current actors of the simulation to that specified.
      * Used when loading the list of actors from a file
      *
@@ -229,4 +242,33 @@ public class Parameters {
         awayMode.setAwayModeDelay(delay);
     }
 
-}
+    /**
+     * @return The time
+     */
+    public int[] getClockTime() {
+        return clockTime;
+    }
+
+    /**
+     * Set time multiplier
+     *
+     * @param clockTimeMultiplier is the time we want to multiply by
+     */
+    public void setClockTimeMultiplier(int clockTimeMultiplier) {
+        this.clockTimeMultiplier = clockTimeMultiplier;
+        clock.setMultiplier(this.clockTimeMultiplier);
+    }
+
+    // start the clock time listener (basically there is 2 threads, one for the clock and one to retreive the time from that clock)
+    public void startUpdateClock() {
+        ActionListener updateClockListener = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                clockTime = clock.getClockTime();
+            }
+        };
+
+        javax.swing.Timer timerClock = new javax.swing.Timer(1000, updateClockListener);
+        timerClock.start();
+        }
+    }
+
