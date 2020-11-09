@@ -247,6 +247,9 @@ public class House implements Iterable<Room> {
      * House}
      */
     public void closeOpenables() {
+        if (hasObstructedWindow()) {
+            throw new IllegalStateException("At least one window in this house is blocked");
+        }
         for (Room room : this) {
             for (Door door : room.getDoors()) {
                 if (door != null) {
