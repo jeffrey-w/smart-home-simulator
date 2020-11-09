@@ -54,7 +54,8 @@ public enum Action {
         @Override
         public String doAction(Manipulable manipulable) {
             Door door = (Door) manipulable;
-            if (door.isOpen()) {
+            boolean requestedState = !door.isLocked();
+            if (requestedState == true && door.isOpen()) {
                 return "Please close this door first.";
             } else {
                 door.setLocked(!door.isLocked());

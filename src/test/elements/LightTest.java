@@ -1,45 +1,41 @@
 package elements;
 
-import main.model.elements.Door;
-import main.model.parameters.Parameters;
+import main.model.elements.Light;
 import main.model.parameters.permissions.Action;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class DoorTest {
+class LightTest {
 
-    Door door;
+    Light light;
 
     @BeforeEach
     void setup() {
-        door = new Door(false, false);
+        light = new Light(false);
     }
 
     @Test
     void testManipulate(){
-        /*
-        opened | locked
-        0,0 = true
-        0,1 = true
-        1,0 = true
-        1,1 = false
-         */
-        // opened | locked = 0,0 = true
-        assertTrue(!(door.isOpen() && door.isLocked()));
+       // turn on the light
+        light.manipulate(Action.TOGGLE_LIGHT);
+        assertTrue(light.isOn());
 
-        // opened | locked = 0,1 = true
-        door.manipulate(Action.TOGGLE_DOOR);
-        assertTrue(!(door.isOpen() && door.isLocked()));
+        // turn off the light
+        light.manipulate(Action.TOGGLE_LIGHT);
+        assertFalse(light.isOn());
+    }
 
-        // opened | locked = 0,1 = true
-        door.manipulate(Action.TOGGLE_DOOR);
-        door.manipulate(Action.TOGGLE_LOCK_DOOR);
-        assertTrue(!(door.isOpen() && door.isLocked()));
+    @Test
+    void testAutoMode(){
+        // turn on the light auto mode
+        light.setAutoMode(true);
+        assertTrue(light.isAutoMode());
 
-        // opened | locked = 1,1 = true
-        door.manipulate(Action.TOGGLE_DOOR);
-        assertFalse(door.isOpen()); // the door should still be closed since we cannot open a locked door
+        // turn off the light auto mode
+        light.setAutoMode(false);
+        assertFalse(light.isAutoMode());
     }
 }
