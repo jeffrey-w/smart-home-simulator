@@ -28,6 +28,7 @@ import java.util.NoSuchElementException;
  * manipulate those objects. It serves as the entry point into the program.
  *
  * @author Jeff Wilgus
+ * @author Émilie Martin
  */
 public class Controller {
 

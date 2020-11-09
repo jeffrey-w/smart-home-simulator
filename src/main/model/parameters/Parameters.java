@@ -14,6 +14,7 @@ import static main.util.NameValidator.validateName;
  * number and {@code Permission}s of other actors, the {@code Room} they occupy, and the current temperature and date.
  *
  * @author Jeff Wilgus
+ * @author Émilie Martin
  * @see Permission
  * @see Room
  */
@@ -50,6 +51,9 @@ public class Parameters {
         fillPermissionMap();
     }
 
+    /**
+     * Populates the Permission HashMap with all permission types.
+     */
     private void fillPermissionMap() {
         permissions.put("Parent", new ParentPermission());
         permissions.put("Child", new ChildPermission());
@@ -57,6 +61,10 @@ public class Parameters {
         permissions.put("Stranger", new StrangerPermission());
     }
 
+    /**
+     * @param type The specified permission type
+     * @return The permission of the specified type
+     */
     public Permission getPermissionOf(String type) {
         return(permissions.get(type));
     }

@@ -144,6 +144,9 @@ public class Dashboard extends JFrame {
         return (Permission) editor.permission.getSelectedItem();
     }
 
+    /**
+     * @return The {@code PermissionEditor} panel that lets the user change its permissible actions.
+     */
     public PermissionEditor getPermissionEditor() {
         return permissionEditor;
     }
@@ -219,6 +222,10 @@ public class Dashboard extends JFrame {
         editor.permission.addActionListener(listener);
     }
 
+    /**
+     * Registers an event handler for editing a the permissible actions given by the user's {@code Permission} level.
+     * @param editPermissionsListener
+     */
     public void addEditPermissionListener(ActionListener editPermissionsListener) {
         editor.editPermissions.addActionListener(editPermissionsListener);
     }
