@@ -1,6 +1,6 @@
 package main.model.parameters;
 
-import main.model.elements.AbstractManipulable;
+import main.model.AbstractManipulable;
 
 /**
  * The AwayMode is activated by the user when they leave the simulated house and no other user is in the house.

@@ -1,5 +1,7 @@
 package main.model.elements;
 
+import main.model.AbstractManipulable;
+
 /**
  * The {@code Light} class represents a light object, which the user can interact with. A user can choose to turn on/off
  * lights as they please.

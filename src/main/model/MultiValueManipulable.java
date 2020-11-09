@@ -1,6 +1,5 @@
 package main.model;
 
-import main.model.elements.AbstractManipulable;
 import main.model.parameters.Parameters;
 
 import java.util.LinkedList;

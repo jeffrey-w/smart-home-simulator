@@ -1,8 +1,7 @@
-package main.model.elements;
+package main.model;
 
-import main.model.Manipulable;
+import main.model.elements.House;
 import main.model.parameters.Parameters;
-import main.model.Action;
 
 /**
  * The {@code AbstractManipulable} class provides a minimal implementation of the {@code Manipulable} interface.
