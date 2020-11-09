@@ -4,6 +4,7 @@ import main.model.elements.House;
 import main.model.elements.Manipulable;
 import main.model.elements.Room;
 import main.model.parameters.Parameters;
+import main.model.parameters.permissions.Action;
 import main.model.parameters.permissions.Permission;
 import main.util.HouseReader;
 import main.util.JSONFilter;
@@ -14,11 +15,11 @@ import main.view.*;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 import java.util.Date;
 import java.util.NoSuchElementException;
 
@@ -62,6 +63,7 @@ public class Controller {
         dashboard.addEditProfilesListener(new ManageProfilesListener());
         dashboard.addManageProfilesListener(new EditProfileListener());
         dashboard.addPermissionListener(new PermissionListener());
+        dashboard.addEditPermissionListener(new EditPermissionsListener());
         dashboard.addTemperatureListener(new TemperatureListener());
         dashboard.addDateListener(new DateListener());
         dashboard.addActionSelectionListener(new ActionSelectionListener());
@@ -187,7 +189,8 @@ public class Controller {
 
                     JFileChooser chooser = new JFileChooser();
                     chooser.setDialogTitle("Specify a file to save");
-                    //disable the all files option
+
+                    // Disable the all files option
                     chooser.setAcceptAllFileFilterUsed(false);
                     chooser.setCurrentDirectory(new java.io.File("."));
 
@@ -225,6 +228,35 @@ public class Controller {
                     dashboard.setLocation((String) null);
                 }
             }
+        }
+
+    }
+
+    class EditPermissionsListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            PermissionEditor editor = dashboard.getPermissionEditor();
+            editor.addTableModelListener(f -> {
+                DefaultTableModel table = (DefaultTableModel) f.getSource();
+                for(int i=0; i<table.getRowCount(); i++) {
+                    Action action = (Action) table.getValueAt(i, 0);
+
+                    for(int j=1; j<table.getColumnCount(); j++) {
+                        Boolean value = (Boolean) table.getValueAt(i, j);
+
+                        if(value) { // If checkbox is selected
+                            parameters.getPermissionOf(table.getColumnName(j)).addPermission(action);
+                        } else {
+                            parameters.getPermissionOf(table.getColumnName(j)).removePermission(action);
+                        }
+                    }
+                }
+            });
+
+            editor.setLocationRelativeTo(dashboard);
+            editor.pack();
+            editor.setVisible(true);
         }
 
     }

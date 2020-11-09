@@ -46,6 +46,7 @@ public class Dashboard extends JFrame {
     HouseLayoutPanel layout = new HouseLayoutPanel();
     JTextArea console = new JTextArea("Welcome to Smart Home Simulator!\n\n> ", CONSOLE_HEIGHT, CONSOLE_WIDTH);
     ProfileViewer profileViewer = new ProfileViewer();
+    PermissionEditor permissionEditor = new PermissionEditor();
 
     /**
      * Creates the dashboard, which is to contain the {@code ParameterPanel}, a console, the {@code HouseLayout}. This
@@ -143,6 +144,10 @@ public class Dashboard extends JFrame {
         return (Permission) editor.permission.getSelectedItem();
     }
 
+    public PermissionEditor getPermissionEditor() {
+        return permissionEditor;
+    }
+
     /**
      * @return The location the user has selected for themselves
      */
@@ -212,6 +217,10 @@ public class Dashboard extends JFrame {
      */
     public void addPermissionListener(ActionListener listener) {
         editor.permission.addActionListener(listener);
+    }
+
+    public void addEditPermissionListener(ActionListener editPermissionsListener) {
+        editor.editPermissions.addActionListener(editPermissionsListener);
     }
 
     /**
@@ -285,5 +294,4 @@ public class Dashboard extends JFrame {
         // Send message to log file as well
         Logger.info(message);
     }
-
 }

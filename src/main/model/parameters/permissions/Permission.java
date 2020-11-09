@@ -20,4 +20,8 @@ public interface Permission {
      */
     Action authorize(Action action);
 
+    public void addPermission(Action action);
+
+    public void removePermission(Action action);
+
 }

@@ -1,7 +1,7 @@
 package main.model.parameters;
 
 import main.model.elements.Room;
-import main.model.parameters.permissions.Permission;
+import main.model.parameters.permissions.*;
 
 import java.time.Instant;
 import java.util.*;
@@ -33,6 +33,7 @@ public class Parameters {
     private int temperature;
     private boolean on;
     private AwayMode awayMode;
+    private Map<String, Permission> permissions;
 
     /**
      * Constructs a new {@code Parameters} object.
@@ -45,6 +46,19 @@ public class Parameters {
         temperature = DEFAULT_TEMPERATURE;
         on = false;
         awayMode = new AwayMode();
+        permissions = new HashMap<>();
+        fillPermissionMap();
+    }
+
+    private void fillPermissionMap() {
+        permissions.put("Parent", new ParentPermission());
+        permissions.put("Child", new ChildPermission());
+        permissions.put("Guest", new GuestPermission());
+        permissions.put("Stranger", new StrangerPermission());
+    }
+
+    public Permission getPermissionOf(String type) {
+        return(permissions.get(type));
     }
 
     /**

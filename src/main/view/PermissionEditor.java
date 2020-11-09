@@ -1,15 +1,18 @@
 package main.view;
 
 import javax.swing.*;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionListener;
+
 import main.model.parameters.permissions.Action;
+import main.model.parameters.permissions.*;
 
 public class PermissionEditor extends JFrame {
     private static final int DIM_X = 0x150;
     private static final int DIM_Y = 0x100;
 
+    //private Object[] columnNames = {"Action", new ParentPermission(), new ChildPermission(), new GuestPermission(), new StrangerPermission()};
     private String[] columnNames = {"Action", "Parent", "Child", "Guest", "Stranger"};
 
     Boolean[] TempChangePermissions = Action.CHANGE_TEMPERATURE.getPermissions();
@@ -21,35 +24,47 @@ public class PermissionEditor extends JFrame {
 
     Object[][] permissions = {
             {
-                Action.CHANGE_TEMPERATURE.toString(),
+                Action.CHANGE_TEMPERATURE,
                     TempChangePermissions[0], TempChangePermissions[1],
                     TempChangePermissions[2], TempChangePermissions[3]
             },
             {
-                Action.TOGGLE_LOCK_DOOR.toString(),
+                Action.TOGGLE_LOCK_DOOR,
                     DoorLockTogglePermissions[0], DoorLockTogglePermissions[1],
                     DoorLockTogglePermissions[2], DoorLockTogglePermissions[3]
             },
             {
-                Action.TOGGLE_DOOR.toString(),
+                Action.TOGGLE_DOOR,
                     DoorTogglePermissions[0], DoorTogglePermissions[1],
                     DoorTogglePermissions[2], DoorTogglePermissions[3]
             },
             {
-                Action.TOGGLE_BLOCK_WINDOW.toString(),
+                Action.TOGGLE_BLOCK_WINDOW,
                     WindowBlockTogglePermissions[0], WindowBlockTogglePermissions[1],
                     WindowBlockTogglePermissions[2], WindowBlockTogglePermissions[3]
             },
             {
-                Action.TOGGLE_WINDOW.toString(),
+                Action.TOGGLE_WINDOW,
                     WindowTogglePermissions[0], WindowTogglePermissions[1],
                     WindowTogglePermissions[2], WindowTogglePermissions[3]
             },
             {
-                Action.TOGGLE_LIGHT.toString(),
+                Action.TOGGLE_LIGHT,
                     LightTogglePermissions[0], LightTogglePermissions[1],
                     LightTogglePermissions[2], LightTogglePermissions[3]
             }
+    };
+
+    DefaultTableModel model = new DefaultTableModel(permissions, columnNames);
+    JTable table = new JTable(model) {
+        @Override
+        public Class getColumnClass(int col) {
+            if (col == 0) {
+                return Action.class;
+            } else {
+                return Boolean.class; // Generate JTable checkboxes
+            }
+        }
     };
 
     public PermissionEditor() {
@@ -58,35 +73,13 @@ public class PermissionEditor extends JFrame {
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(DIM_X, DIM_Y));
         setResizable(false);
-    }
 
-    public void addActionListener(ActionListener listener) {
-        this.addActionListener(listener);
-    }
-
-    public PermissionEditor display() {
-        PermissionEditor editor = new PermissionEditor();
-
-        DefaultTableModel model = new DefaultTableModel(permissions, columnNames);
-        JTable table = new JTable(model) {
-            @Override
-            public Class getColumnClass(int col) {
-                if (col ==0) {
-                    return String.class;
-                } else {
-                    return Boolean.class;
-                }
-            }
-        };
-
-        editor.add(table.getTableHeader(), BorderLayout.PAGE_START);
-        editor.add(table, BorderLayout.CENTER);
-        table.setVisible(true);
+        add(table.getTableHeader(), BorderLayout.PAGE_START);
+        add(table, BorderLayout.CENTER);
         table.setFillsViewportHeight(true);
+    }
 
-        editor.pack();
-        editor.setVisible(true);
-
-        return editor;
+    public void addTableModelListener(TableModelListener listener) {
+        model.addTableModelListener(listener);
     }
 }

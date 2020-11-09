@@ -57,12 +57,13 @@ public class ParameterEditor extends JPanel {
 
     JButton loadHouse = new JButton("Load House");
     JButton manageProfiles = new JButton("Manage Profiles");
+    JButton editPermissions = new JButton("Edit permissions");
+
     JComboBox<Permission> permission = permissionJComboBox();
     JComboBox<String> location = new JComboBox<>();
     JSpinner temperature = new JSpinner(TEMP_MODEL);
     JSpinner date = new JSpinner(DATE_MODEL);
 
-    PermissionEditor editor = new PermissionEditor();
 
     /**
      * Constructs a new {@code ParameterEditor} object.
@@ -72,9 +73,6 @@ public class ParameterEditor extends JPanel {
         JPanel buttons = new JPanel(new SpringLayout());
         JPanel permissions = new JPanel(new SpringLayout());
         JPanel fields = new JPanel(new SpringLayout());
-
-        JButton editPermissions = new JButton("Edit permissions");
-        editPermissions.addActionListener(new EditPermissionsListener());
 
         // Set panel display behavior.
         setLayout(new BorderLayout());
@@ -119,15 +117,6 @@ public class ParameterEditor extends JPanel {
 
         // Selecting a location is disabled by default.
         location.setEnabled(false);
-    }
-
-    class EditPermissionsListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-            editor.display();
-        }
-
     }
 
 }
