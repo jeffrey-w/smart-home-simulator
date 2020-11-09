@@ -99,6 +99,7 @@ public class Controller {
                 }
             } else {
                 sendToConsole("Please load a house to start the simulation.", Dashboard.MessageType.ERROR);
+                ((JToggleButton) e.getSource()).setSelected(false);
             }
         }
 
@@ -334,12 +335,10 @@ public class Controller {
                 ActionPanel actionPanel = dashboard.getActions();
                 if (actionPanel.getSelectedItem().equals("Away Mode")) {
                     if (actionPanel.getSelectedAction().equals(Action.SET_AWAY_MODE_DELAY)) {
-                        System.out.println("I'm here");
                         ValueManipulable<Integer> valueManipulable = new ValueManipulable<Integer>((Integer) JOptionPane
                                 .showInputDialog(dashboard, "Enter an away mode delay.", "Away Mode Delay",
                                         JOptionPane.PLAIN_MESSAGE, null,
-                                        AWAY_MODE_DELAYS, AWAY_MODE_DELAYS[5])
-                                * 1_000); // TODO handle cancel; use constant for multiplier
+                                        AWAY_MODE_DELAYS, AWAY_MODE_DELAYS[5]));
                         performActionOn(valueManipulable, Action.SET_AWAY_MODE_DELAY);
                     } else if (actionPanel.getSelectedAction().equals(Action.SET_AWAY_MODE_LIGHTS)) {
                         AwayLightChooser chooser = AwayLightChooser.of(house.getLocations());
@@ -356,12 +355,15 @@ public class Controller {
                         chooser.setVisible(true);
                     } else {
                         performActionOn(parameters.getAwayMode(), actionPanel.getSelectedAction());
+                        redrawHouse();
                     }
                 } else if (canAct()) {
                     if (actionPanel.getSelectedAction().equals(Action.TOGGLE_AUTO_LIGHT)) {
                         try {
                             sendToConsole(parameters.getPermission().authorize(Action.TOGGLE_AUTO_LIGHT)
                                     .doAction(null, parameters, house), Dashboard.MessageType.NORMAL);
+                            toggleAutoLight();
+                            redrawHouse();
                         } catch (Exception exception) {
                             sendToConsole(exception.getMessage(), Dashboard.MessageType.ERROR);
                         }
