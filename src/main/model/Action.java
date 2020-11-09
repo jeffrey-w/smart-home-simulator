@@ -270,8 +270,9 @@ public enum Action {
 
         @Override
         public String doAction(Manipulable manipulable, Parameters parameters, House house) {
-            ValueManipulable<Integer> valueManipulable = (ValueManipulable<Integer>) manipulable; // TODO type safety
-            parameters.setAwayDelay(valueManipulable.getValue());
+            @SuppressWarnings("unchecked")
+            ValueManipulable<Integer> valueManipulable = (ValueManipulable<Integer>) manipulable;
+            parameters.setAwayDelay(valueManipulable.getValue() * 1_000); // TODO use constant
             return "Away mode delay set for " + valueManipulable.getValue() + " seconds.";
         }
 
