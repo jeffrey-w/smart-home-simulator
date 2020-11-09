@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ParameterTest {
 
+    private static final double PI = 3.14;
     private static final String TEST_ROLE = "Test";
     private static final Permission TEST_PERMISSION = action -> {
         return action;
@@ -91,6 +92,35 @@ class ParameterTest {
         // valid temperature test
         parameters.setTemperature(temp);
         assertEquals(parameters.getTemperature(), 50);
+    }
+
+    @Test
+    void testSetClockSpeed() {
+        assertThrows(IllegalArgumentException.class, () -> parameters.setClockSpeed(-1));
+        assertEquals(1, parameters.getClockSpeed());
+        parameters.setClockSpeed(PI);
+        assertEquals(PI, parameters.getClockSpeed());
+    }
+
+    @Test
+    void testSetAutoLight() {
+        assertFalse(parameters.isAutoLight());
+        parameters.setAutoLight(true);
+        assertTrue(parameters.isAutoLight());
+    }
+
+    @Test
+    void testSetAwayMode() {
+        assertFalse(parameters.isAwayMode());
+        parameters.setAwayMode(true);
+        assertTrue(parameters.isAwayMode());
+    }
+
+    @Test
+    void testSetAwayDelay() {
+        assertEquals(10_000, parameters.getAwayDelay());
+        parameters.setAwayDelay(1000);
+        assertEquals(1000, parameters.getAwayDelay());
     }
 
 }
