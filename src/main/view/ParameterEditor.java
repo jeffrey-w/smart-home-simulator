@@ -6,6 +6,8 @@ import main.view.viewtils.SpringUtilities;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
@@ -22,9 +24,15 @@ public class ParameterEditor extends JPanel {
     private static final int BUTTON_OFFSET = 0x20;
     private static final int BUTTON_X_PADDING = 0x20;
     private static final int BUTTON_Y_PADDING = 0x20;
-    private static final int FIELD_ROWS = 4;
+
+    private static final int PERMISSION_ROWS = 2;
+    private static final int PERMISSION_COLUMNS = 2;
+    private static final int PERMISSION_X_PADDING = 0x15;
+    private static final int PERMISSION_Y_PADDING = 0x15;
+
+    private static final int FIELD_ROWS = 3;
     private static final int FIELD_COLUMNS = 2;
-    private static final int FIELD_Y_PADDING = 0x80;
+    private static final int FIELD_Y_PADDING = 0x60;
 
     private static final Permission[] PERMISSIONS = new Permission[] {
             null,
@@ -54,19 +62,26 @@ public class ParameterEditor extends JPanel {
     JSpinner temperature = new JSpinner(TEMP_MODEL);
     JSpinner date = new JSpinner(DATE_MODEL);
 
+    PermissionEditor editor = new PermissionEditor();
+
     /**
      * Constructs a new {@code ParameterEditor} object.
      */
     ParameterEditor() {
         // Containers for buttons and fields respectively.
         JPanel buttons = new JPanel(new SpringLayout());
+        JPanel permissions = new JPanel(new SpringLayout());
         JPanel fields = new JPanel(new SpringLayout());
+
+        JButton editPermissions = new JButton("Edit permissions");
+        editPermissions.addActionListener(new EditPermissionsListener());
 
         // Set panel display behavior.
         setLayout(new BorderLayout());
 
         // Add containers to panel.
         add(buttons, BorderLayout.NORTH);
+        add(permissions);
         add(fields, BorderLayout.SOUTH);
 
         // Add buttons to button panel.
@@ -74,12 +89,24 @@ public class ParameterEditor extends JPanel {
         buttons.add(manageProfiles);
 
         // Set button panel display behavior
-        SpringUtilities
-                .makeGrid(buttons, 1, BUTTON_COLUMNS, BUTTON_OFFSET, BUTTON_OFFSET, BUTTON_X_PADDING, BUTTON_Y_PADDING);
+        SpringUtilities.makeGrid(
+                buttons, 1, BUTTON_COLUMNS,
+                BUTTON_OFFSET, BUTTON_OFFSET, BUTTON_X_PADDING, BUTTON_Y_PADDING
+        );
+
+        // Add fields to permission panel.
+        permissions.add(labelFactory("Permission"));
+        permissions.add(permission);
+        permissions.add(labelFactory("Edit"));
+        permissions.add(editPermissions);
+
+        // Set permissions panel display behavior
+        SpringUtilities.makeGrid(
+                permissions, PERMISSION_ROWS, PERMISSION_COLUMNS,
+                BUTTON_OFFSET, BUTTON_OFFSET, PERMISSION_X_PADDING,PERMISSION_Y_PADDING
+        );
 
         // Add fields to field panel.
-        fields.add(labelFactory("Permission"));
-        fields.add(permission);
         fields.add(labelFactory("Location"));
         fields.add(location);
         fields.add(labelFactory("Temperature"));
@@ -92,6 +119,15 @@ public class ParameterEditor extends JPanel {
 
         // Selecting a location is disabled by default.
         location.setEnabled(false);
+    }
+
+    class EditPermissionsListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            editor.display();
+        }
+
     }
 
 }

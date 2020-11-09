@@ -202,6 +202,19 @@ public enum Action {
      */
     public abstract String doAction(Manipulable manipulable);
 
+    /**
+     * @return The list of all permission levels of this action in the following order:
+     *          {
+     *              Parent permission,
+     *              Child permission,
+     *              Guest permission,
+     *              Stranger permission
+     *          }
+     */
+    public Boolean[] getPermissions() {
+        return new Boolean[]{true, this.isChildPermissible(), this.isGuestPermissible(), false};
+    }
+
     @Override
     public abstract String toString();
 
