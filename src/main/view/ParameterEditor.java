@@ -18,6 +18,7 @@ import java.util.Date;
  */
 public class ParameterEditor extends JPanel {
 
+    private static final int BUTTON_ROWS = 2;
     private static final int BUTTON_COLUMNS = 2;
     private static final int BUTTON_OFFSET = 0x10;
     private static final int BUTTON_X_PADDING = 0x40;
@@ -63,6 +64,8 @@ public class ParameterEditor extends JPanel {
 
     JButton loadHouse = new JButton("Load House");
     JButton manageProfiles = new JButton("Manage Profiles");
+    JButton editPermissions = new JButton("Edit Permissions");
+    JButton savePermissions = new JButton("Save Permissions");
     JComboBox<Permission> permission = permissionJComboBox();
     JComboBox<String> location = new JComboBox<>();
     JSpinner temperature = new JSpinner(TEMP_MODEL);
@@ -90,10 +93,13 @@ public class ParameterEditor extends JPanel {
         // Add buttons to button panel.
         buttons.add(loadHouse);
         buttons.add(manageProfiles);
+        buttons.add(editPermissions);
+        buttons.add(savePermissions);
 
         // Set button panel display behavior
         SpringUtilities
-                .makeGrid(buttons, 1, BUTTON_COLUMNS, BUTTON_OFFSET, BUTTON_OFFSET, BUTTON_X_PADDING, BUTTON_Y_PADDING);
+                .makeGrid(buttons, BUTTON_ROWS, BUTTON_COLUMNS, BUTTON_OFFSET, BUTTON_OFFSET, BUTTON_X_PADDING,
+                        BUTTON_Y_PADDING);
 
         // Add fields to field panel.
         fields.add(labelFactory("Permission"));

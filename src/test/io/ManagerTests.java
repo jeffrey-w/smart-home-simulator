@@ -27,7 +27,7 @@ public class ManagerTests {
 
     @Test
     void testSavePermission() {
-        assertDoesNotThrow(() -> PermissionManager.savePermissions(new File("./permissions.txt")));
+        assertDoesNotThrow(() -> PermissionManager.savePermissions(PROFILES, new File("./permissions.txt")));
     }
 
     @Test

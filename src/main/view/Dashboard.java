@@ -34,23 +34,24 @@ import static java.awt.BorderLayout.WEST;
  */
 public class Dashboard extends JFrame {
 
+
+
     /**
      * The category a console message might have.
      */
     public enum MessageType {
         NORMAL,
         WARNING,
-        ERROR
+        ERROR;
     }
-
     // Pre-determined size parameters
+
     static final int WINDOW_WIDTH = 0x600;
     static final int WINDOW_HEIGHT = 0x300;
     static final int PARAMETER_PANE_WIDTH = WINDOW_WIDTH >>> 2; // x >>> y == x / 2^y
     static final int CONTENT_PANE_WIDTH = WINDOW_WIDTH - PARAMETER_PANE_WIDTH;
     static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd"); // NOTE: removed the time here so that we can implement that independently
     private static final EnumMap<MessageType, Color> MESSAGE_COLORS = new EnumMap<>(MessageType.class);
-
 
     static {
         MESSAGE_COLORS.put(MessageType.WARNING, Color.YELLOW);
@@ -59,13 +60,13 @@ public class Dashboard extends JFrame {
 
 
     private int inputLoc;
+
     ParameterPanel parameters = new ParameterPanel();
     ParameterEditor editor = new ParameterEditor();
     ActionPanel actions = new ActionPanel();
     HouseLayoutPanel layout = new HouseLayoutPanel();
     JTextPane console = new JTextPane();
     ProfileViewer profileViewer = new ProfileViewer();
-
     /**
      * Creates the dashboard, which is to contain the {@code ParameterPanel}, a console, the {@code HouseLayout}. This
      * is also the interface on which the simulation will be displayed and interacted with.
@@ -276,6 +277,14 @@ public class Dashboard extends JFrame {
      */
     public void addManageProfilesListener(ActionListener listener) {
         profileViewer.addManageProfileListener(listener);
+    }
+
+    /**
+     *
+     * @param listener
+     */
+    public void addPersistPermissionListener(ActionListener listener) {
+        editor.savePermissions.addActionListener(listener);
     }
 
     /**

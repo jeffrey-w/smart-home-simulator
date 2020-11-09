@@ -3,7 +3,6 @@ package main.model.parameters.permissions;
 import main.model.Action;
 
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * The {@code AbstractPermission} class provides a minimal implementation of the {@code Permission} interface.
@@ -19,11 +18,6 @@ public abstract class AbstractPermission implements Permission {
         }
         return action;
     }
-
-    /**
-     * @return The set of {@code Action}s that this {@code Permission} level is allowed to perform
-     */
-    public abstract Set<Action> allowed();
 
     @Override
     public boolean equals(final Object obj) {

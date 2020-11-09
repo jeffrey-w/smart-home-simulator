@@ -2,6 +2,8 @@ package main.model.parameters.permissions;
 
 import main.model.Action;
 
+import java.util.Set;
+
 /**
  * The {@code Permission} interface describes an authorization level that allows for actors to make certain changes to a
  * simulation, and prevents them from making others.
@@ -21,5 +23,11 @@ public interface Permission {
      * @throws NullPointerException if {@code action} is {@code null}
      */
     Action authorize(Action action);
+
+    /**
+     * Provides the {@code Action}s that this {@code Permission} level is allowed to perform.
+     * @return The set of this {@code Permission}'s allowed {@code Action}s
+     */
+    Set<Action> allowed();
 
 }

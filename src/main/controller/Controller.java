@@ -9,7 +9,6 @@ import main.model.elements.Room;
 import main.model.elements.Yard;
 import main.model.parameters.Parameters;
 import main.model.parameters.permissions.Permission;
-import main.model.tools.Clock;
 import main.util.HouseReader;
 import main.util.JSONFilter;
 import main.util.ProfileManager;
@@ -70,6 +69,7 @@ public class Controller {
         dashboard.addLoadHouseListener(new LoadHouseListener());
         dashboard.addEditProfilesListener(new ManageProfilesListener());
         dashboard.addManageProfilesListener(new EditProfileListener());
+        dashboard.addPersistPermissionListener(new PersistPermissionListener());
         dashboard.addPermissionListener(new PermissionListener());
         dashboard.addTemperatureListener(new TemperatureListener());
         dashboard.addDateListener(new DateListener());
@@ -207,13 +207,13 @@ public class Controller {
 
     }
 
-    class PersistProfileListener implements ActionListener {
+    class PersistPermissionListener implements ActionListener {
 
         @Override
         public void actionPerformed(final ActionEvent e) {
             String actionCommand = e.getActionCommand();
             switch (actionCommand) {
-                case "Load": {
+                case "Load Permissions": {
                     JFileChooser chooser = new JFileChooser();
                     chooser.setFileFilter(TEXT_FILTER);
                     if (chooser.showOpenDialog(dashboard) == JFileChooser.APPROVE_OPTION) {
@@ -226,7 +226,7 @@ public class Controller {
                     }
                     break;
                 }
-                case "Save": {
+                case "Save Permissions": {
 
                     JFileChooser chooser = new JFileChooser();
                     chooser.setDialogTitle("Specify a file to save");
@@ -237,7 +237,7 @@ public class Controller {
                     if (chooser.showSaveDialog(dashboard) == JFileChooser.APPROVE_OPTION) {
                         try {
                             //TODO warn about overwriting
-                            ProfileManager.saveProfiles(parameters.getActors(), chooser.getSelectedFile());
+                            ProfileManager.saveProfiles(parameters.getPermissions(), chooser.getSelectedFile());
                         } catch (Exception exception) {
                             sendToConsole(exception.getMessage(), Dashboard.MessageType.ERROR);
                         }

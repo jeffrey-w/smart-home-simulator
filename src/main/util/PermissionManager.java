@@ -1,34 +1,24 @@
 package main.util;
 
 import main.model.Action;
-import main.model.parameters.permissions.ChildPermission;
-import main.model.parameters.permissions.GuestPermission;
-import main.model.parameters.permissions.ParentPermission;
-import main.model.parameters.permissions.StrangerPermission;
+import main.model.parameters.permissions.Permission;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 
 public abstract class PermissionManager {
 
-    public static void savePermissions(File file) throws IOException {
+    public static void savePermissions(Map<String, Permission> permissions, File file) throws IOException {
         BufferedWriter out = new BufferedWriter(new FileWriter(file));
-        HashMap<String, Set<Action>> permissions = new HashMap<>();
-        permissions.put("Parent", new ParentPermission().allowed());
-        permissions.put("Child", new ChildPermission().allowed());
-        permissions.put("Guest", new GuestPermission().allowed());
-        permissions.put("Stranger", new StrangerPermission().allowed());
-        for (Map.Entry<String, Set<Action>> item : permissions.entrySet()){
+        for (Map.Entry<String, Permission> item : permissions.entrySet()){
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(item.getKey());
             stringBuilder.append(":");
-            for(Action action : item.getValue()){
+            for(Action action : item.getValue().allowed()){
                 stringBuilder.append(action.toString());
                 stringBuilder.append(",");
             }
