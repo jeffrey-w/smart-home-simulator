@@ -18,7 +18,7 @@ import java.util.Set;
 public abstract class PermissionManager {
 
     public static void savePermissions(File file) throws IOException {
-        BufferedWriter out = new BufferedWriter(new FileWriter(file.getPath()));
+        BufferedWriter out = new BufferedWriter(new FileWriter(file));
         HashMap<String, Set<Action>> permissions = new HashMap<>();
         permissions.put("Parent", new ParentPermission().allowed());
         permissions.put("Child", new ChildPermission().allowed());
