@@ -27,7 +27,7 @@ class ParameterTest {
 
     @Test
     void testAddProfile() {
-        assertThrows(IllegalArgumentException.class, () -> parameters.addActor("invalid role", TEST_PERMISSION));
+        assertThrows(IllegalArgumentException.class, () -> parameters.addActor("~", TEST_PERMISSION));
         assertThrows(NullPointerException.class, () -> parameters.addActor(TEST_ROLE, null));
         parameters.addActor(TEST_ROLE, TEST_PERMISSION);
         assertFalse(parameters.getActorsIdentifier().isEmpty());
@@ -67,7 +67,7 @@ class ParameterTest {
     @Test
     void testSetLocation() {
         assertNull(parameters.getLocation());
-        assertThrows(IllegalArgumentException.class, () -> parameters.setLocation("invalid location"));
+        assertThrows(IllegalArgumentException.class, () -> parameters.setLocation("~"));
         parameters.setLocation("test");
         assertNotNull(parameters.getLocation());
     }
