@@ -298,4 +298,11 @@ public class Parameters {
         this.clockSpeed = clockSpeed;
     }
 
+    /**
+     *
+     * @return This {@code Parameters}' clock speed
+     */
+    public double getClockSpeed() {
+        return clockSpeed;
+    }
 }
