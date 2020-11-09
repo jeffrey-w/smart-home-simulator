@@ -29,6 +29,10 @@ public class Parameters {
     public static final int MIN_TEMPERATURE = -100;
     public static final int MAX_TEMPERATURE = 100;
 
+    public static final int DEFAULT_TIMEX = 1;
+    public static final int MIN_TIMEX = 1;
+    public static final int MAX_TIMEX = 999;
+
     private Permission permission;
     private final Map<String, Permission> actors;
     private String location;
@@ -37,7 +41,6 @@ public class Parameters {
     private boolean on;
     private AwayMode awayMode;
     private int[] clockTime;
-    private int clockTimeMultiplier;
 
     // starting the clock
     private static final Clock clock = new Clock();
@@ -56,8 +59,6 @@ public class Parameters {
 
         // setting the time and time multiplier
         startUpdateClock(); // start the listener to update time given the clock time
-        clockTimeMultiplier = 1;
-        clock.setMultiplier(clockTimeMultiplier);
         clockTime = clock.getClockTime();
     }
 
@@ -255,8 +256,7 @@ public class Parameters {
      * @param clockTimeMultiplier is the time we want to multiply by
      */
     public void setClockTimeMultiplier(int clockTimeMultiplier) {
-        this.clockTimeMultiplier = clockTimeMultiplier;
-        clock.setMultiplier(this.clockTimeMultiplier);
+        clock.setMultiplier(clockTimeMultiplier);
     }
 
     // start the clock time listener (basically there is 2 threads, one for the clock and one to retreive the time from that clock)

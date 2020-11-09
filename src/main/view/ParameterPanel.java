@@ -92,6 +92,5 @@ public class ParameterPanel extends JPanel {
      */
     void setTime(String time) {
         this.time.setText("Time: " + Objects.requireNonNull(time));
-        System.out.println(time);
     }
 }

@@ -19,6 +19,7 @@ public class Clock {
     private int[] clockTime;
     private final long offset;
     private long referenceTime;
+    private long apparentTime;
     private int multiplier;
     private Calendar cal;
 
@@ -42,7 +43,19 @@ public class Clock {
      * @param multiplier the amount of time we want to speed the time
      */
     public void setMultiplier(int multiplier) {
+        // we need to update the reference time to the time before the multiplier gets updated
+        updateReferenceTime(apparentTime);
+
         this.multiplier = multiplier;
+    }
+
+    /**
+     * Sets the {@code referenceTime} num of this {@code Clock} to that specified.
+     *
+     * @param referenceTime the current time to be referenced
+     */
+    public void updateReferenceTime(long referenceTime) {
+        this.referenceTime = referenceTime;
     }
 
     /**
@@ -56,15 +69,14 @@ public class Clock {
     class ClockListener implements ActionListener {
         private long realMillis;
         private long apparentMillis;
-        private long apparentTime;
+
         private int h;
         private int m;
         private int s;
 
         public void actionPerformed(ActionEvent e) {
             realMillis = System.currentTimeMillis() - offset;
-            apparentMillis = realMillis * multiplier; // seconds that can be "sped up"
-
+            apparentMillis = realMillis * multiplier; // for some reason, when this go down, we go back in time ?
             apparentTime = referenceTime + apparentMillis;
 
             cal.setTimeInMillis(apparentTime);

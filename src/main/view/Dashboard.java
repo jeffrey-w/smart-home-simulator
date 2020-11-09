@@ -180,6 +180,13 @@ public class Dashboard extends JFrame {
     }
 
     /**
+     * @return The time speed multiplier the user has set for the simulation {@code House}
+     */
+    public Integer getTimeXInput() {
+        return (Integer) editor.timeX.getValue();
+    }
+
+    /**
      * @return The {@code ProfileViewer} for this {@code Dashboard}
      */
     public ProfileViewer getProfileViewer() {
@@ -254,6 +261,15 @@ public class Dashboard extends JFrame {
      */
     public void addDateListener(ChangeListener listener) {
         editor.date.addChangeListener(listener);
+    }
+
+    /**
+     * Registers an event handler for setting a simulations' {@code Clock}.
+     *
+     * @param listener The specified event handler
+     */
+    public void addTimeXListener(ChangeListener listener) {
+        editor.timeX.addChangeListener(listener);
     }
 
     /**

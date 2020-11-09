@@ -22,7 +22,7 @@ public class ParameterEditor extends JPanel {
     private static final int BUTTON_OFFSET = 0x20;
     private static final int BUTTON_X_PADDING = 0x20;
     private static final int BUTTON_Y_PADDING = 0x20;
-    private static final int FIELD_ROWS = 4;
+    private static final int FIELD_ROWS = 5;
     private static final int FIELD_COLUMNS = 2;
     private static final int FIELD_Y_PADDING = 0x80;
 
@@ -38,6 +38,9 @@ public class ParameterEditor extends JPanel {
                     Parameters.MAX_TEMPERATURE, 1);
     private static final SpinnerDateModel DATE_MODEL =
             new SpinnerDateModel(Date.from(Instant.now()), null, null, Calendar.DAY_OF_YEAR);
+    private static final SpinnerNumberModel TIMEX_MODEL =
+            new SpinnerNumberModel(Parameters.DEFAULT_TIMEX, Parameters.MIN_TIMEX,
+                    Parameters.MAX_TIMEX, 1);
 
     static JComboBox<Permission> permissionJComboBox() {
         return new JComboBox<>(PERMISSIONS);
@@ -53,6 +56,7 @@ public class ParameterEditor extends JPanel {
     JComboBox<String> location = new JComboBox<>();
     JSpinner temperature = new JSpinner(TEMP_MODEL);
     JSpinner date = new JSpinner(DATE_MODEL);
+    JSpinner timeX = new JSpinner(TIMEX_MODEL);
 
     /**
      * Constructs a new {@code ParameterEditor} object.
@@ -86,6 +90,8 @@ public class ParameterEditor extends JPanel {
         fields.add(temperature);
         fields.add(labelFactory("Date"));
         fields.add(date);
+        fields.add(labelFactory("Time Speed Multiplier"));
+        fields.add(timeX);
 
         // Set field panel display behavior
         SpringUtilities.makeCompactGrid(fields, FIELD_ROWS, FIELD_COLUMNS, 1, 1, 1, FIELD_Y_PADDING);

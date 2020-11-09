@@ -67,6 +67,7 @@ public class Controller {
         dashboard.addPermissionListener(new PermissionListener());
         dashboard.addTemperatureListener(new TemperatureListener());
         dashboard.addDateListener(new DateListener());
+        dashboard.addTimeXListener(new TimeXListener());
         dashboard.addActionSelectionListener(new ActionSelectionListener());
         dashboard.drawHouse(house);
 
@@ -333,5 +334,14 @@ public class Controller {
 
         javax.swing.Timer timerClock = new javax.swing.Timer(1000, updateClockListener);
         timerClock.start();
+    }
+
+    class TimeXListener implements ChangeListener {
+
+        @Override
+        public void stateChanged(final ChangeEvent e) {
+            int timeX = dashboard.getTimeXInput();
+            parameters.setClockTimeMultiplier(timeX);
+        }
     }
 }
