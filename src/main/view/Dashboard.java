@@ -48,17 +48,18 @@ public class Dashboard extends JFrame {
     static final int WINDOW_HEIGHT = 0x300;
     static final int PARAMETER_PANE_WIDTH = WINDOW_WIDTH >>> 2; // x >>> y == x / 2^y
     static final int CONTENT_PANE_WIDTH = WINDOW_WIDTH - PARAMETER_PANE_WIDTH;
-    static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm a");
+    static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd"); // NOTE: removed the time here so that we can implement that independently
     private static final EnumMap<MessageType, Color> MESSAGE_COLORS = new EnumMap<>(MessageType.class);
+
 
     static {
         MESSAGE_COLORS.put(MessageType.WARNING, Color.YELLOW);
         MESSAGE_COLORS.put(MessageType.ERROR, Color.RED);
     }
 
-    ParameterPanel parameters = new ParameterPanel();
 
     private int inputLoc;
+    ParameterPanel parameters = new ParameterPanel();
     ParameterEditor editor = new ParameterEditor();
     ActionPanel actions = new ActionPanel();
     HouseLayoutPanel layout = new HouseLayoutPanel();
@@ -157,6 +158,21 @@ public class Dashboard extends JFrame {
     }
 
     /**
+     * Sets the {@code time}
+     *
+     * @param time The specified time
+     * @throws NullPointerException If the specified {@code time} is {@code null}
+     */
+    public void setTime(int[] time) {
+        String h = Integer.toString(time[0]);
+        String m = Integer.toString(time[1]);
+        String s = Integer.toString(time[2]);
+        String timeStr = ("" + h + ":" + m + ":" + s);
+
+        parameters.setTime(timeStr);
+    }
+
+    /**
      * @return The {@code Permission} level the user has selected for themselves
      */
     public Permission getPermissionInput() {
@@ -182,6 +198,34 @@ public class Dashboard extends JFrame {
      */
     public Date getDateInput() {
         return (Date) editor.date.getValue();
+    }
+
+    /**
+     * @return The time speed multiplier the user has set for the simulation {@code House}
+     */
+    public Integer getTimeXInput() {
+        return (Integer) editor.timeX.getValue();
+    }
+
+    /**
+     * @return The time hour the user has set for the simulation {@code House}
+     */
+    public Integer getHourInput() {
+        return (Integer) editor.hour.getValue();
+    }
+
+    /**
+     * @return The time min the user has set for the simulation {@code House}
+     */
+    public Integer getMinInput() {
+        return (Integer) editor.min.getValue();
+    }
+
+    /**
+     * @return The time sec the user has set for the simulation {@code House}
+     */
+    public Integer getSecInput() {
+        return (Integer) editor.sec.getValue();
     }
 
     /**
@@ -271,12 +315,23 @@ public class Dashboard extends JFrame {
     }
 
     /**
-     * Registers an event handler for changing a simulation's clock speed.
+     * Registers an event handler for setting a simulations' {@code Clock}.
      *
      * @param listener The specified event handler
      */
-    public void addEditClockSpeedListener(ActionListener listener) {
-        editor.editClockSpeed.addActionListener(listener);
+    public void addTimeXListener(ChangeListener listener) {
+        editor.timeX.addChangeListener(listener);
+    }
+
+    /**
+     * Registers an event handler for setting a simulations' {@code Clock}.
+     *
+     * @param listener The specified event handler
+     */
+    public void addTimeUpdateListener(ChangeListener listener) {
+        editor.hour.addChangeListener(listener);
+        editor.min.addChangeListener(listener);
+        editor.sec.addChangeListener(listener);
     }
 
     /**

@@ -1,10 +1,12 @@
 package main.model;
 
-import main.model.elements.*;
+import main.model.elements.Door;
+import main.model.elements.House;
+import main.model.elements.Light;
+import main.model.elements.Window;
 import main.model.parameters.Parameters;
 import main.model.parameters.permissions.Permission;
 
-import java.time.LocalTime;
 import java.util.Set;
 
 /**
@@ -247,8 +249,6 @@ public enum Action {
             for (String location : house.getLocations()) {
                 house.getRoom(location).setAwayLight(locations.contains(location));
             }
-            parameters.setAwayLightStart((LocalTime) multiValueManipulable.getValueAt(1).getValue());
-            parameters.setAwayLightEnd((LocalTime) multiValueManipulable.getValueAt(2).getValue());
             return "Away light interval updated";
         }
 

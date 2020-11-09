@@ -95,14 +95,6 @@ class ParameterTest {
     }
 
     @Test
-    void testSetClockSpeed() {
-        assertThrows(IllegalArgumentException.class, () -> parameters.setClockSpeed(-1));
-        assertEquals(1, parameters.getClockSpeed());
-        parameters.setClockSpeed(PI);
-        assertEquals(PI, parameters.getClockSpeed());
-    }
-
-    @Test
     void testSetAutoLight() {
         assertFalse(parameters.isAutoLight());
         parameters.setAutoLight(true);

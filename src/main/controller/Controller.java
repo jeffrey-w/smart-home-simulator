@@ -9,6 +9,7 @@ import main.model.elements.Room;
 import main.model.elements.Yard;
 import main.model.parameters.Parameters;
 import main.model.parameters.permissions.Permission;
+import main.model.tools.Clock;
 import main.util.HouseReader;
 import main.util.JSONFilter;
 import main.util.ProfileManager;
@@ -33,7 +34,6 @@ import java.util.Set;
 public class Controller {
     private static final JSONFilter JSON_FILTER = new JSONFilter();
     private static final TextFilter TEXT_FILTER = new TextFilter();
-
     private static final Set<String> CANCEL_KEYWORDS = new HashSet<>();
 
     static {
@@ -73,9 +73,13 @@ public class Controller {
         dashboard.addPermissionListener(new PermissionListener());
         dashboard.addTemperatureListener(new TemperatureListener());
         dashboard.addDateListener(new DateListener());
-        dashboard.addEditClockSpeedListener(new EditClockSpeedListener());
+        dashboard.addTimeXListener(new TimeXListener());
+        dashboard.addTimeUpdateListener(new TimeUpdateListener());
         dashboard.addActionSelectionListener(new ActionSelectionListener());
         dashboard.drawHouse(house);
+
+        // start clock update
+        startClockDisplayUpdate();
     }
 
     /*
@@ -311,18 +315,6 @@ public class Controller {
 
     }
 
-    class EditClockSpeedListener implements ActionListener { // TODO exception handling
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            double input = Double.parseDouble(JOptionPane
-                    .showInputDialog(dashboard, "Enter a positive clock speed.", 1));
-            parameters.setClockSpeed(input);
-            sendToConsole("Clock speed updated to " + input + ".", Dashboard.MessageType.NORMAL);
-        }
-
-    }
-
     private static final Object[] AWAY_MODE_DELAYS = new Integer[] {
             5, 6, 7, 8, 9, 10
     }; // TODO move this
@@ -469,6 +461,39 @@ public class Controller {
             dashboard.updateRoom(location, house.getRoom(location));
         }
         dashboard.redrawHouse();
+    }
+
+    public void startClockDisplayUpdate() {
+        ActionListener updateClockListener = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            dashboard.setTime(parameters.getClockTime());
+            }
+        };
+
+        javax.swing.Timer timerClock = new javax.swing.Timer(1000, updateClockListener);
+        timerClock.start();
+    }
+
+    class TimeXListener implements ChangeListener {
+
+        @Override
+        public void stateChanged(final ChangeEvent e) {
+            int timeX = dashboard.getTimeXInput();
+            parameters.setClockTimeMultiplier(timeX);
+        }
+    }
+
+    class TimeUpdateListener implements ChangeListener {
+
+        @Override
+        public void stateChanged(final ChangeEvent e) {
+            int h = dashboard.getHourInput();
+            int m = dashboard.getMinInput();
+            int s = dashboard.getSecInput();
+            int[] time = new int[]{h,m,s};
+
+            parameters.setTime(time);
+        }
     }
 
 }

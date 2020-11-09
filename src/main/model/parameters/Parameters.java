@@ -3,7 +3,10 @@ package main.model.parameters;
 import main.model.Manipulable;
 import main.model.elements.Room;
 import main.model.parameters.permissions.Permission;
+import main.model.tools.Clock;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.util.*;
@@ -34,6 +37,22 @@ public class Parameters {
     public static final LocalTime DEFAULT_AWAY_LIGHT_START = LocalTime.of(18, 0);
     public static final LocalTime DEFAULT_AWAY_LIGHT_END = LocalTime.of(0, 0);
 
+    public static final int DEFAULT_TIMEX = 1;
+    public static final int MIN_TIMEX = 1;
+    public static final int MAX_TIMEX = 999;
+
+    public static final int DEFAULT_HOURS = 0;
+    public static final int MIN_HOURS = 0;
+    public static final int MAX_HOURS = 23;
+
+    public static final int DEFAULT_MINS = 0;
+    public static final int MIN_MINS = 0;
+    public static final int MAX_MINS = 59;
+
+    public static final int DEFAULT_SECS = 0;
+    public static final int MIN_SECS = 0;
+    public static final int MAX_SECS = 59;
+
     private Permission permission;
     private final Map<String, Permission> actors;
     private String location;
@@ -41,10 +60,11 @@ public class Parameters {
     private int temperature;
     private boolean on;
     private boolean autoLight;
-    private final AwayMode awayMode;
-    private LocalTime awayLightStart;
-    private LocalTime awayLightEnd;
-    private double clockSpeed;
+    private AwayMode awayMode;
+    private int[] clockTime;
+
+    // starting the clock
+    private static final Clock clock = new Clock();
 
     /**
      * Constructs a new {@code Parameters} object.
@@ -57,9 +77,10 @@ public class Parameters {
         temperature = DEFAULT_TEMPERATURE;
         on = false;
         awayMode = new AwayMode();
-        awayLightStart = DEFAULT_AWAY_LIGHT_START;
-        awayLightEnd = DEFAULT_AWAY_LIGHT_END;
-        clockSpeed = 1;
+
+        // setting the time and time multiplier
+        startUpdateClock(); // start the listener to update time given the clock time
+        clockTime = clock.getClockTime();
     }
 
     /**
@@ -199,6 +220,7 @@ public class Parameters {
     }
 
     /**
+     * <<<<<<< HEAD
      *
      * @return The {@code AwayMode} of this {@code Parameters}
      */
@@ -207,8 +229,8 @@ public class Parameters {
     }
 
     /**
-     * Sets the current actors of the simulation to that specified.
-     * Used when loading the list of actors from a file
+     * ======= >>>>>>> origin/dev2-pv-clock Sets the current actors of the simulation to that specified. Used when
+     * loading the list of actors from a file
      *
      * @param actors The loaded or specified actors of the simulation
      */
@@ -252,7 +274,6 @@ public class Parameters {
     }
 
     /**
-     *
      * @return {@code true} if auto light mode is turned on
      */
     public boolean isAutoLight() {
@@ -269,40 +290,42 @@ public class Parameters {
     }
 
     /**
-     * Sets the {@code start} of away light mode to the time specified
-     * @param start the specified start of away light mode
-     * @throws NullPointerException if the specified {@code start} is {@code null}
+     * @return The time
      */
-    public void setAwayLightStart(LocalTime start) {
-        awayLightStart = Objects.requireNonNull(start);
+    public int[] getClockTime() {
+        return clockTime;
     }
 
     /**
-     * Sets the {@code end} of away light mode to the time specified
-     * @param end the specified end of away light mode
-     * @throws NullPointerException if the specified {@code end} is {@code null}
-     */
-    public void setAwayLightEnd(LocalTime end) {
-        awayLightEnd = Objects.requireNonNull(end);
-    }
-
-    /**
-     * Sets this {@code Parameters}' {@code clockSpeed} to the value specified.
-     * @param clockSpeed The specified value
-     * @throws IllegalArgumentException If the specified {@code clockSpeed} is less than or equal to zero
-     */
-    public void setClockSpeed(double clockSpeed) {
-        if (Double.compare(clockSpeed, 0) <= 0) {
-            throw new IllegalArgumentException("Please specify a positive clockSpeed");
-        }
-        this.clockSpeed = clockSpeed;
-    }
-
-    /**
+     * Set time multiplier
      *
-     * @return This {@code Parameters}' clock speed
+     * @param clockTimeMultiplier is the time we want to multiply by
      */
-    public double getClockSpeed() {
-        return clockSpeed;
+    public void setClockTimeMultiplier(int clockTimeMultiplier) {
+        clock.setMultiplier(clockTimeMultiplier);
     }
+
+    /**
+     * Set time
+     *
+     * @param time is the time we want to set
+     */
+    public void setTime(int[] time) {
+        clock.updateTime(time);
+    }
+
+    // start the clock time listener (basically there is 2 threads, one for the clock and one to retreive the time
+    // from that clock)
+    public void startUpdateClock() {
+        ActionListener updateClockListener = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                clockTime = clock.getClockTime();
+            }
+        };
+
+        javax.swing.Timer timerClock = new javax.swing.Timer(1000, updateClockListener);
+        timerClock.start();
+    }
+
 }
+
