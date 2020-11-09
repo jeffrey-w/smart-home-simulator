@@ -1,8 +1,8 @@
 package main.model.elements;
 
 /**
- * A {@code Yard} is the place that is considered to be outside the house. Placing people outside the house puts them in
- * the yard.
+ * A {@code Yard} is considered as being all the space excluding the contents of the {@code House}.
+ * Placing people outside the {@code House} puts them in the {@code Yard}.
  *
  * @author Ayman Shehri
  */
@@ -14,7 +14,7 @@ public class Yard extends Place {
     /**
      * Get the {@code Yard} of a {@code House}
      *
-     * @return the Yard object
+     * @return The {@code Yard} object
      */
     public static Yard getInstance() {
         if (yard == null) {
@@ -24,22 +24,22 @@ public class Yard extends Place {
     }
 
     /**
-     * runs a routine if there is a person removed from the "Yard'
+     * Runs a routine if there is a person removed from the {@code Yard}
      *
-     * @return message depending on context
+     * @return The contextual message
      */
     public String addRoutine(){
-        // empty for now
-        return "no operations done";
+        // Empty for now
+        return "No operation performed.";
     }
 
     /**
-     * runs a routine if there is a person removed from the "Yard'
+     * Runs a routine if there is a person removed from the {@code Yard}
      *
-     * @return message depending on context
+     * @return The contextual message
      */
     public String removeRoutine(){
-        // empty for now
-        return "no operations done";
+        // Empty for now
+        return "No operation performed.";
     }
 }
