@@ -187,6 +187,27 @@ public class Dashboard extends JFrame {
     }
 
     /**
+     * @return The time hour the user has set for the simulation {@code House}
+     */
+    public Integer getHourInput() {
+        return (Integer) editor.hour.getValue();
+    }
+
+    /**
+     * @return The time min the user has set for the simulation {@code House}
+     */
+    public Integer getMinInput() {
+        return (Integer) editor.min.getValue();
+    }
+
+    /**
+     * @return The time sec the user has set for the simulation {@code House}
+     */
+    public Integer getSecInput() {
+        return (Integer) editor.sec.getValue();
+    }
+
+    /**
      * @return The {@code ProfileViewer} for this {@code Dashboard}
      */
     public ProfileViewer getProfileViewer() {
@@ -270,6 +291,17 @@ public class Dashboard extends JFrame {
      */
     public void addTimeXListener(ChangeListener listener) {
         editor.timeX.addChangeListener(listener);
+    }
+
+    /**
+     * Registers an event handler for setting a simulations' {@code Clock}.
+     *
+     * @param listener The specified event handler
+     */
+    public void addTimeUpdateListener(ChangeListener listener) {
+        editor.hour.addChangeListener(listener);
+        editor.min.addChangeListener(listener);
+        editor.sec.addChangeListener(listener);
     }
 
     /**

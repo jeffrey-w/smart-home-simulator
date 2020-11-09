@@ -33,6 +33,18 @@ public class Parameters {
     public static final int MIN_TIMEX = 1;
     public static final int MAX_TIMEX = 999;
 
+    public static final int DEFAULT_HOURS = 0;
+    public static final int MIN_HOURS = 0;
+    public static final int MAX_HOURS = 23;
+
+    public static final int DEFAULT_MINS = 0;
+    public static final int MIN_MINS = 0;
+    public static final int MAX_MINS = 59;
+
+    public static final int DEFAULT_SECS = 0;
+    public static final int MIN_SECS = 0;
+    public static final int MAX_SECS = 59;
+
     private Permission permission;
     private final Map<String, Permission> actors;
     private String location;
@@ -258,6 +270,13 @@ public class Parameters {
     public void setClockTimeMultiplier(int clockTimeMultiplier) {
         clock.setMultiplier(clockTimeMultiplier);
     }
+
+    /**
+     * Set time
+     *
+     * @param time is the time we want to set
+     */
+    public void setTime(int[] time){clock.updateTime(time);}
 
     // start the clock time listener (basically there is 2 threads, one for the clock and one to retreive the time from that clock)
     public void startUpdateClock() {

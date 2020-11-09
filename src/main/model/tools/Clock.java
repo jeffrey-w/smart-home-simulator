@@ -10,28 +10,24 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * The {@code Clock} class represents a clock object that will be used to keep track of time. It will be running a thread that
- * will continuously be looking at the system clock every 1 second.
+ * will continuously be incrementing clock by 1 (default) every 1 second.
  *
  * @author Philippe Vo
+ *
  */
 public class Clock {
 
     private int[] clockTime;
-    private final long offset;
     private long referenceTime;
-    private long apparentTime;
     private int multiplier;
-    private Calendar cal;
 
     /**
      * Constructs a {@code Clock} that will be used to keep track of time. It will be running a thread that
      * will continously be looking at the system clock every 1 second.
      */
     public Clock(){
-        offset = System.currentTimeMillis();
-        referenceTime = System.currentTimeMillis();
+        referenceTime = 0; // close to 24:00:00 -> 86390 seconds
         multiplier = 1;
-        cal = Calendar.getInstance();
 
         javax.swing.Timer timerClock = new javax.swing.Timer(1000, new Clock.ClockListener());
         timerClock.start();
@@ -43,19 +39,20 @@ public class Clock {
      * @param multiplier the amount of time we want to speed the time
      */
     public void setMultiplier(int multiplier) {
-        // we need to update the reference time to the time before the multiplier gets updated
-        updateReferenceTime(apparentTime);
-
         this.multiplier = multiplier;
     }
 
     /**
      * Sets the {@code referenceTime} num of this {@code Clock} to that specified.
      *
-     * @param referenceTime the current time to be referenced
+     * @param time the current time to be referenced
      */
-    public void updateReferenceTime(long referenceTime) {
-        this.referenceTime = referenceTime;
+    public void updateTime(int[] time) {
+        int h = time[0];
+        int m = time[1];
+        int s = time[2];
+
+        this.referenceTime = (h * 60 * 60) + (m * 60) + s;
     }
 
     /**
@@ -67,25 +64,34 @@ public class Clock {
 
     // this method is called every 1 second by the javax.swing.Timer class timerClock
     class ClockListener implements ActionListener {
-        private long realMillis;
-        private long apparentMillis;
-
-        private int h;
-        private int m;
-        private int s;
-
         public void actionPerformed(ActionEvent e) {
-            realMillis = System.currentTimeMillis() - offset;
-            apparentMillis = realMillis * multiplier; // for some reason, when this go down, we go back in time ?
-            apparentTime = referenceTime + apparentMillis;
+            referenceTime = referenceTime + (1 * multiplier); // increment clock
 
-            cal.setTimeInMillis(apparentTime);
+            clockTime = splitToComponentTimes(referenceTime);
+        }
 
-            h = cal.get(Calendar.HOUR);
-            m = cal.get(Calendar.MINUTE);
-            s = cal.get(Calendar.SECOND);
+        /**
+         * Returns the totalSeconds into h:m:s
+         *
+         * @param totalSeconds the total amount of seconds
+         */
+        public int[] splitToComponentTimes(long totalSeconds)
+        {
+            int hours = (int) totalSeconds / 3600;
+            int remainder = (int) totalSeconds - hours * 3600;
+            int mins = remainder / 60;
+            remainder = remainder - mins * 60;
+            int secs = remainder;
 
-            clockTime = new int[] {h,m,s};
+            if(hours >= 24){ // if past the 24hrs mark -> reset the reference time
+                referenceTime = 0;
+                hours = 0;
+                mins = 0;
+                secs = 0;
+            }
+
+            int[] ints = {hours , mins , secs};
+            return ints;
         }
     }
 }

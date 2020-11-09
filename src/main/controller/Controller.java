@@ -68,6 +68,7 @@ public class Controller {
         dashboard.addTemperatureListener(new TemperatureListener());
         dashboard.addDateListener(new DateListener());
         dashboard.addTimeXListener(new TimeXListener());
+        dashboard.addTimeUpdateListener(new TimeUpdateListener());
         dashboard.addActionSelectionListener(new ActionSelectionListener());
         dashboard.drawHouse(house);
 
@@ -342,6 +343,19 @@ public class Controller {
         public void stateChanged(final ChangeEvent e) {
             int timeX = dashboard.getTimeXInput();
             parameters.setClockTimeMultiplier(timeX);
+        }
+    }
+
+    class TimeUpdateListener implements ChangeListener {
+
+        @Override
+        public void stateChanged(final ChangeEvent e) {
+            int h = dashboard.getHourInput();
+            int m = dashboard.getMinInput();
+            int s = dashboard.getSecInput();
+            int[] time = new int[]{h,m,s};
+
+            parameters.setTime(time);
         }
     }
 }
