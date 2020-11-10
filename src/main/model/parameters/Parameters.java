@@ -1,9 +1,15 @@
 package main.model.parameters;
 
+import main.model.Manipulable;
 import main.model.elements.Room;
 import main.model.parameters.permissions.Permission;
+import main.model.tools.Clock;
+import main.model.parameters.permissions.*;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.time.Instant;
+import java.time.LocalTime;
 import java.util.*;
 
 import static main.util.NameValidator.validateName;
@@ -14,6 +20,7 @@ import static main.util.NameValidator.validateName;
  * number and {@code Permission}s of other actors, the {@code Room} they occupy, and the current temperature and date.
  *
  * @author Jeff Wilgus
+ * @author Émilie Martin
  * @see Permission
  * @see Room
  */
@@ -26,13 +33,43 @@ public class Parameters {
     public static final int MIN_TEMPERATURE = -100;
     public static final int MAX_TEMPERATURE = 100;
 
+    /**
+     * The default values for away light beginning and end.
+     */
+    public static final LocalTime DEFAULT_AWAY_LIGHT_START = LocalTime.of(18, 0);
+    public static final LocalTime DEFAULT_AWAY_LIGHT_END = LocalTime.of(0, 0);
+
+    public static final int DEFAULT_TIMEX = 1;
+    public static final int MIN_TIMEX = 1;
+    public static final int MAX_TIMEX = 999;
+
+    public static final int DEFAULT_HOURS = 0;
+    public static final int MIN_HOURS = 0;
+    public static final int MAX_HOURS = 23;
+
+    public static final int DEFAULT_MINS = 0;
+    public static final int MIN_MINS = 0;
+    public static final int MAX_MINS = 59;
+
+    public static final int DEFAULT_SECS = 0;
+    public static final int MIN_SECS = 0;
+    public static final int MAX_SECS = 59;
+
+    // starting the clock
+    private static final Clock clock = new Clock();
+
     private Permission permission;
     private final Map<String, Permission> actors;
     private String location;
     private Date date;
     private int temperature;
     private boolean on;
+    private boolean autoLight;
     private AwayMode awayMode;
+    private int[] clockTime;
+    private Map<String, Permission> permissions;
+    private LocalTime awayLightStart;
+    private LocalTime awayLightEnd;
 
     /**
      * Constructs a new {@code Parameters} object.
@@ -45,6 +82,31 @@ public class Parameters {
         temperature = DEFAULT_TEMPERATURE;
         on = false;
         awayMode = new AwayMode();
+        // setting the time and time multiplier
+        startUpdateClock(); // start the listener to update time given the clock time
+        clockTime = clock.getClockTime();
+        permissions = new HashMap<>();
+        fillPermissionMap();
+        awayLightStart = DEFAULT_AWAY_LIGHT_START;
+        awayLightEnd = DEFAULT_AWAY_LIGHT_END;
+    }
+
+    /**
+     * Populates the Permission HashMap with all permission types.
+     */
+    private void fillPermissionMap() {
+        permissions.put("Parent", new ParentPermission());
+        permissions.put("Child", new ChildPermission());
+        permissions.put("Guest", new GuestPermission());
+        permissions.put("Stranger", new StrangerPermission());
+    }
+
+    /**
+     * @param type The specified permission type
+     * @return The permission of the specified type
+     */
+    public Permission getPermissionOf(String type) {
+        return(permissions.get(type));
     }
 
     /**
@@ -184,9 +246,16 @@ public class Parameters {
     }
 
     /**
+     *
+     * @return The {@code AwayMode} of this {@code Parameters}
+     */
+    public Manipulable getAwayMode() {
+        return awayMode;
+    }
 
-     * Sets the current actors of the simulation to that specified.
-     * Used when loading the list of actors from a file
+    /**
+     * Sets the current actors of the simulation to that specified. Used when
+     * loading the list of actors from a file
      *
      * @param actors The loaded or specified actors of the simulation
      */
@@ -200,7 +269,7 @@ public class Parameters {
     /**
      * @return The AwayMode state: {@code true} if on, else {@code false}
      */
-    public boolean getAwayMode() {
+    public boolean isAwayMode() {
         return awayMode.getAwayMode();
     }
 
@@ -229,4 +298,95 @@ public class Parameters {
         awayMode.setAwayModeDelay(delay);
     }
 
+    /**
+     * @return {@code true} if auto light mode is turned on
+     */
+    public boolean isAutoLight() {
+        return autoLight;
+    }
+
+    /**
+     * Sets the auto light mode status of these {@code Parameters} to that specified.
+     *
+     * @param autoLight The specified auto light mode status
+     */
+    public void setAutoLight(boolean autoLight) {
+        this.autoLight = autoLight;
+    }
+
+    /**
+     * @return The time
+     */
+    public int[] getClockTime() {
+        return clockTime;
+    }
+
+    /**
+     * Set time multiplier
+     *
+     * @param clockTimeMultiplier is the time we want to multiply by
+     */
+    public void setClockTimeMultiplier(int clockTimeMultiplier) {
+        clock.setMultiplier(clockTimeMultiplier);
+    }
+
+    /**
+     * Set time
+     *
+     * @param time is the time we want to set
+     */
+    public void setTime(int[] time) {
+        clock.updateTime(time);
+    }
+
+    // start the clock time listener (basically there is 2 threads, one for the clock and one to retreive the time
+    // from that clock)
+    public void startUpdateClock() {
+        ActionListener updateClockListener = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                clockTime = clock.getClockTime();
+            }
+        };
+
+        javax.swing.Timer timerClock = new javax.swing.Timer(1000, updateClockListener);
+        timerClock.start();
+    }
+
+    /**
+     *
+     * @return The {@code Permission} levels available to the simulation
+     */
+    public Map<String, Permission> getPermissions() {
+        return permissions;
+    }
+
+    /**
+     * Sets the {@code permission} levels available to the simulation to that specified.
+     *
+     * @param permissions The specified {@code Permission} levels
+     * @throws NullPointerException if the specified {@code permission}s are {@code null}
+     */
+    public void setPermissions(Map<String, Permission> permissions) {
+        this.permissions = Objects.requireNonNull(permissions); // TODO need more validation
+    }
+
+    /**
+     * Sets the {@code start} of away light mode to the time specified
+     * @param start the specified start of away light mode
+     * @throws NullPointerException if the specified {@code start} is {@code null}
+     */
+    public void setAwayLightStart(LocalTime start) {
+        awayLightStart = Objects.requireNonNull(start);
+    }
+
+    /**
+     * Sets the {@code end} of away light mode to the time specified
+     * @param end the specified end of away light mode
+     * @throws NullPointerException if the specified {@code end} is {@code null}
+     */
+    public void setAwayLightEnd(LocalTime end) {
+        awayLightEnd = Objects.requireNonNull(end);
+    }
+
 }
+

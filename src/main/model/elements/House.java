@@ -20,6 +20,7 @@ public class House implements Iterable<Room> {
     private static class Node {
 
         Room room;
+
         Set<String> adjacents;
         boolean visited;
         Node(Room room) {
@@ -36,16 +37,22 @@ public class House implements Iterable<Room> {
             return room.equals(node.room);
         }
 
+
     }
     /**
      * The maximum number of {@code Room}s that another {@code Room} may be adjacent to.
      */
     public static final int MAX_CONNECTIONS = 4;
 
+    /**
+     * The name of the {@code Place} surrounding a {@code House}.
+     */
+    public static final String EXTERIOR_NAME = "yard";
+
     private String root;
+
     private final Map<String, Node> rooms;
     private final Map<String, String> people;
-
     /**
      * Constructs a new {@code House} object with no {@code Room}s.
      */
@@ -60,8 +67,8 @@ public class House implements Iterable<Room> {
      *
      * @param room The specified {@code Room}
      * @param location The specified location
-     * @throws IllegalArgumentException If the specified {@code location} is not a non-empty string of word
-     *         characters (i.e. [a-z, A-Z, 0-9, _])
+     * @throws IllegalArgumentException If the specified {@code location} is not a non-empty string of word characters
+     * (i.e. [a-z, A-Z, 0-9, _])
      */
     public void addRoom(Room room, String location) {
         rooms.putIfAbsent(validateName(location), new Node(room));
@@ -72,9 +79,9 @@ public class House implements Iterable<Room> {
      *
      * @param locationOne The first location
      * @param locationTwo The other location
-     * @throws IllegalArgumentException If the {@code Room} at either of the specified locations is already
-     *         connected to {@value #MAX_CONNECTIONS} other {@code Room}s, or if they both share a connection to another
-     *         {@code Room} already.
+     * @throws IllegalArgumentException If the {@code Room} at either of the specified locations is already connected to
+     * {@value #MAX_CONNECTIONS} other {@code Room}s, or if they both share a connection to another {@code Room}
+     * already.
      * @throws NoSuchElementException If either of the specified locations does not exist in this {@code House}
      */
     public void addConnection(String locationOne, String locationTwo) {
@@ -93,7 +100,8 @@ public class House implements Iterable<Room> {
             for (String adjacentTwo : two.adjacents) {
                 if (adjacentOne.equals(adjacentTwo)) {
                     throw new IllegalArgumentException(
-                            "Rooms that are already connected through another room, cannot be connected to each other.");
+                            "Rooms that are already connected through another room, cannot be connected to each other"
+                                    + ".");
                 }
             }
         }
@@ -106,14 +114,25 @@ public class House implements Iterable<Room> {
      * @param name The specified name
      * @param permission The specified {@code Permission}
      * @param location The specified location
-     * @throws IllegalArgumentException If the specified {@code name} is not a non-empty string of word
-     *         characters (i.e. [a-z, A-Z, 0-9, _])
+     * @throws IllegalArgumentException If the specified {@code name} is not a non-empty string of word characters (i.e.
+     * [a-z, A-Z, 0-9, _, ])
      * @throws NoSuchElementException If the specified {@code location} does not exist in this {@code House}
      * @throws NullPointerException If the specified {@code permission} is {@code null}
      */
     public void addPerson(String name, Permission permission, String location) {
-        validateLocation(location).room.addPerson(name, permission);
-        people.put(name, location);
+        String previousLocation = people.put(validateName(name), location);
+        if (previousLocation != null) {
+            if (previousLocation.equals(EXTERIOR_NAME)) {
+                Yard.getInstance().removePerson(name);
+            } else {
+                rooms.get(previousLocation).room.removePerson(name);
+            }
+        }
+        if (location != null && location.equals(EXTERIOR_NAME)) {
+            Yard.getInstance().addPerson(name, permission);
+        } else {
+            validateLocation(location).room.addPerson(name, permission);
+        }
     }
 
     /**
@@ -175,6 +194,75 @@ public class House implements Iterable<Room> {
             return people.get(person);
         }
         throw new NoSuchElementException("No person by that name exists in this house.");
+    }
+
+    /**
+     * Provides the number of people in this {@code House}.
+     *
+     * @return The number of people in this {@code House}
+     */
+    public int getNumberOfPeople() {
+        int count = 0;
+        for (Room room : this) {
+            count += room.getNumberOfPeople();
+        }
+        return count;
+    }
+
+    /**
+     * Determines whether or not any {@code Window} in this {@code House} is obstructed.
+     *
+     * @return {@code true} if any {@code Window} in this {@code House} is obstructed
+     */
+    public boolean hasObstructedWindow() {
+        for (Room room : this) {
+            if (room.getNumberOfWindowsBlocked() > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Determines whether or not this {@code House} has any people in it.
+     *
+     * @return {@code true} if any people are in this {@code House}
+     */
+    public boolean isOccupied() {
+        if (Yard.getInstance().isOccupied()) {
+            return true;
+        }
+        for (Room room : this) {
+            if (room.isOccupied()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Locks every {@code Door} and closes every {@code Window} in this {@code House}.
+     *
+     * @throws IllegalStateException if there is an open {@code Door} or blocked {@code Window} anywhere in this {@code
+     * House}
+     */
+    public void closeOpenables() {
+        if (hasObstructedWindow()) {
+            throw new IllegalStateException("At least one window in this house is blocked");
+        }
+        for (Room room : this) {
+            for (Door door : room.getDoors()) {
+                if (door != null) {
+                    door.setOpen(false);
+                    door.setLocked(true);
+                }
+            }
+            for (Window window : room.getWindows()) {
+                if (window != null) {
+                    window.setOpen(false);
+                }
+            }
+        }
     }
 
     /**

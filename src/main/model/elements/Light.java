@@ -1,5 +1,7 @@
 package main.model.elements;
 
+import main.model.AbstractManipulable;
+
 /**
  * The {@code Light} class represents a light object, which the user can interact with. A user can choose to turn on/off
  * lights as they please.
@@ -9,10 +11,9 @@ package main.model.elements;
 public class Light extends AbstractManipulable {
 
     // If not provided by the user, the system uses this default value.
-    private static final boolean DEFAULT_ON_VALUE = true;
+    private static final boolean DEFAULT_ON_VALUE = false;
 
     private boolean on;
-    private boolean autoMode;
 
     /**
      * Constructs a {@code Light} object with a {@value DEFAULT_ON_VALUE} state.
@@ -44,19 +45,6 @@ public class Light extends AbstractManipulable {
      */
     public void setOn(boolean state) {
         this.on = state;
-    }
-
-    public boolean isAutoMode() {
-        return autoMode;
-    }
-
-    /**
-     * Sets the {@code autoMode} state of this {@code Light} to that specified.
-     *
-     * @param state The specified on state
-     */
-    public void setAutoMode(boolean state) {
-        this.autoMode = state;
     }
 
     @Override

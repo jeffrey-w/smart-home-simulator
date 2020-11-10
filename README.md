@@ -27,7 +27,15 @@ This project uses [JUnit](https://junit.org/junit5/) as a testing framework for 
 
 JUnit can be added as a Maven dependency. To do so from IntelliJIDEA:
 1. Navigate to `File > Project Structure > Libraries`
-2. Click the add icon and enter `org.junit.jupiter:junit-jupiter:5.4.2` into the search box`
+2. Click the add icon and enter `org.junit.jupiter:junit-jupiter:5.4.2` into the search box.
+3. Confirm your selection and save your changes.
+
+#### tinylog
+This project uses [tinylog](https://tinylog.org/v2/) for loggings.
+
+tinylog can be added as a Maven dependency. To do so from IntelliJIDEA:
+1. Navigate to `File > Project Structure > Libraries`
+2. Click the add icon and enter `org.tinylog:tinylog-impl:2.2.0` into the search box.
 3. Confirm your selection and save your changes.
 
 ---

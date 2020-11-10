@@ -13,13 +13,15 @@ import java.util.Objects;
  */
 public class ParameterPanel extends JPanel {
 
-    private static final int ROWS = 6;
+    private static final int ROWS = 7;
 
     Avatar avatar;
+    JToggleButton on = new JToggleButton("On");
     JLabel permission = new JLabel();
     JLabel location = new JLabel();
     JLabel temperature = new JLabel();
     JLabel date = new JLabel();
+    JLabel time = new JLabel();
 
     /**
      * Constructs a parameter panel with an avatar and editable main.model.parameters
@@ -29,12 +31,13 @@ public class ParameterPanel extends JPanel {
         setLayout(new SpringLayout());
 
         // Add main.model.elements to panel.
-        add(new JToggleButton("On"));
+        add(on);
         add(avatar = new Avatar(null));
         add(permission);
         add(location);
         add(temperature);
         add(date);
+        add(time);
 
         // Set element display behavior.
         SpringUtilities.makeCompactGrid(this, ROWS, 1, 1, 1, 1, 1);
@@ -82,4 +85,13 @@ public class ParameterPanel extends JPanel {
         this.date.setText("Date: " + Objects.requireNonNull(date));
     }
 
+    /**
+     * Setter that allows the user to change the simulation date
+     *
+     * @param time The new time
+     * @throws NullPointerException If the specified {@code date} is {@code null}
+     */
+    void setTime(String time) {
+        this.time.setText("Time: " + Objects.requireNonNull(time));
+    }
 }

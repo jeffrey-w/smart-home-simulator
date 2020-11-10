@@ -1,23 +1,29 @@
 package main.view;
 
+import main.model.Action;
+import main.model.Module;
 import main.model.elements.House;
+import main.model.elements.Room;
 import main.model.parameters.permissions.Permission;
+import org.tinylog.Logger;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeListener;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Set;
+import java.util.*;
 
 import static java.awt.BorderLayout.EAST;
 import static java.awt.BorderLayout.WEST;
-
-import org.tinylog.Logger;
 
 /**
  * The dashboard represents the user interface. It is through the dashboard that the user can interact with the
@@ -28,24 +34,38 @@ import org.tinylog.Logger;
  */
 public class Dashboard extends JFrame {
 
+    /**
+     * The category a console message might have.
+     */
+    public enum MessageType {
+        NORMAL,
+        WARNING,
+        ERROR;
+    }
     // Pre-determined size parameters
+
     static final int WINDOW_WIDTH = 0x600;
     static final int WINDOW_HEIGHT = 0x300;
     static final int PARAMETER_PANE_WIDTH = WINDOW_WIDTH >>> 2; // x >>> y == x / 2^y
     static final int CONTENT_PANE_WIDTH = WINDOW_WIDTH - PARAMETER_PANE_WIDTH;
-    static final int CONTENT_WIDTH = CONTENT_PANE_WIDTH >>> 1; // Computers like bitwise operators!
-    static final int CONSOLE_WIDTH = CONTENT_WIDTH / 0x10;
-    static final int CONSOLE_HEIGHT = (WINDOW_HEIGHT / 3) / 0x10;
-    static final int CONTENT_HEIGHT = WINDOW_HEIGHT - CONSOLE_HEIGHT;
-    static final int CONTENT_PADDING = 0x20;
-    static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm a");
+    static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd");
+            // NOTE: removed the time here so that we can implement that independently
+    private static final EnumMap<MessageType, Color> MESSAGE_COLORS = new EnumMap<>(MessageType.class);
+
+    static {
+        MESSAGE_COLORS.put(MessageType.WARNING, Color.YELLOW);
+        MESSAGE_COLORS.put(MessageType.ERROR, Color.RED);
+    }
+
+    private int inputLoc;
 
     ParameterPanel parameters = new ParameterPanel();
     ParameterEditor editor = new ParameterEditor();
     ActionPanel actions = new ActionPanel();
     HouseLayoutPanel layout = new HouseLayoutPanel();
-    JTextArea console = new JTextArea("Welcome to Smart Home Simulator!\n\n> ", CONSOLE_HEIGHT, CONSOLE_WIDTH);
+    JTextPane console = new JTextPane();
     ProfileViewer profileViewer = new ProfileViewer();
+    PermissionEditor permissionEditor = new PermissionEditor();
 
     /**
      * Creates the dashboard, which is to contain the {@code ParameterPanel}, a console, the {@code HouseLayout}. This
@@ -56,9 +76,10 @@ public class Dashboard extends JFrame {
         super("Smart Home Simulator");
 
         // Top-level containers for window content.
+        JPanel content = new JPanel(new GridLayout(2, 1));
+        JPanel top = new JPanel(new GridLayout(1, 2));
         JTabbedPane parameterPane = new JTabbedPane();
         JTabbedPane contentPane = new JTabbedPane();
-        JPanel content = new JPanel();
 
         // Set window display behavior.
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -80,15 +101,15 @@ public class Dashboard extends JFrame {
         contentPane.setPreferredSize(new Dimension(CONTENT_PANE_WIDTH, WINDOW_HEIGHT));
 
         // Add elements to content panel.
-        content.setLayout(new BorderLayout());
-        content.add(actions, WEST);
-        content.add(layout, EAST);
-        content.add(new JScrollPane(console), BorderLayout.SOUTH);
+        top.add(actions);
+        top.add(layout);
+        content.add(top);
+        content.add(new JScrollPane(console));
 
         // Set content display behavior.
-        actions.setPreferredSize(new Dimension(CONTENT_WIDTH - CONTENT_PADDING, CONTENT_HEIGHT));
         actions.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-        layout.setPreferredSize(new Dimension(CONTENT_WIDTH, CONTENT_HEIGHT));
+        actions.addModule(Module.SHC);
+        actions.addModule(Module.SHP);
         layout.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 
         // Set console display behavior.
@@ -96,6 +117,7 @@ public class Dashboard extends JFrame {
         console.setEditable(false);
         console.setCaretPosition(console.getDocument().getLength());
         console.getCaret().setVisible(true);
+        sendToConsole("Welcome to Smart Home Simulator!\n", MessageType.NORMAL, true);
     }
 
     /**
@@ -137,10 +159,32 @@ public class Dashboard extends JFrame {
     }
 
     /**
+     * Sets the {@code time}
+     *
+     * @param time The specified time
+     * @throws NullPointerException If the specified {@code time} is {@code null}
+     */
+    public void setTime(int[] time) {
+        String h = Integer.toString(time[0]);
+        String m = Integer.toString(time[1]);
+        String s = Integer.toString(time[2]);
+        String timeStr = ("" + h + ":" + m + ":" + s);
+
+        parameters.setTime(timeStr);
+    }
+
+    /**
      * @return The {@code Permission} level the user has selected for themselves
      */
     public Permission getPermissionInput() {
         return (Permission) editor.permission.getSelectedItem();
+    }
+
+    /**
+     * @return The {@code PermissionEditor} panel that lets the user change its permissible actions.
+     */
+    public PermissionEditor getPermissionEditor() {
+        return permissionEditor;
     }
 
     /**
@@ -165,6 +209,34 @@ public class Dashboard extends JFrame {
     }
 
     /**
+     * @return The time speed multiplier the user has set for the simulation {@code House}
+     */
+    public Integer getTimeXInput() {
+        return (Integer) editor.timeX.getValue();
+    }
+
+    /**
+     * @return The time hour the user has set for the simulation {@code House}
+     */
+    public Integer getHourInput() {
+        return (Integer) editor.hour.getValue();
+    }
+
+    /**
+     * @return The time min the user has set for the simulation {@code House}
+     */
+    public Integer getMinInput() {
+        return (Integer) editor.min.getValue();
+    }
+
+    /**
+     * @return The time sec the user has set for the simulation {@code House}
+     */
+    public Integer getSecInput() {
+        return (Integer) editor.sec.getValue();
+    }
+
+    /**
      * @return The {@code ProfileViewer} for this {@code Dashboard}
      */
     public ProfileViewer getProfileViewer() {
@@ -176,6 +248,15 @@ public class Dashboard extends JFrame {
      */
     public ActionPanel getActions() {
         return actions;
+    }
+
+    /**
+     * Registers an event handler for turning the simulation on and off.
+     *
+     * @param listener The specified event handler
+     */
+    public void addSimulationListener(ActionListener listener) {
+        parameters.on.addActionListener(listener);
     }
 
     /**
@@ -206,12 +287,28 @@ public class Dashboard extends JFrame {
     }
 
     /**
+     * @param listener
+     */
+    public void addPersistPermissionListener(ActionListener listener) {
+        editor.persistPermissions.addActionListener(listener);
+    }
+
+    /**
      * Registers an event handler for setting a users' {@code Permission} level.
      *
      * @param listener The specified event handler
      */
     public void addPermissionListener(ActionListener listener) {
         editor.permission.addActionListener(listener);
+    }
+
+    /**
+     * Registers an event handler for editing a the permissible actions given by the user's {@code Permission} level.
+     *
+     * @param editPermissionsListener
+     */
+    public void addEditPermissionListener(ActionListener editPermissionsListener) {
+        editor.editPermissions.addActionListener(editPermissionsListener);
     }
 
     /**
@@ -224,7 +321,7 @@ public class Dashboard extends JFrame {
     }
 
     /**
-     * Registers an event handler for setting a simulations' temperature.
+     * Registers an event handler for setting a simulation's temperature.
      *
      * @param listener The specified event handler
      */
@@ -233,7 +330,7 @@ public class Dashboard extends JFrame {
     }
 
     /**
-     * Registers an event handler for setting a simulations' {@code Date}.
+     * Registers an event handler for setting a simulation's {@code Date}.
      *
      * @param listener The specified event handler
      */
@@ -242,12 +339,56 @@ public class Dashboard extends JFrame {
     }
 
     /**
+     * Registers an event handler for setting a simulations' {@code Clock}.
+     *
+     * @param listener The specified event handler
+     */
+    public void addTimeXListener(ChangeListener listener) {
+        editor.timeX.addChangeListener(listener);
+    }
+
+    /**
+     * Registers an event handler for setting a simulations' {@code Clock}.
+     *
+     * @param listener The specified event handler
+     */
+    public void addTimeUpdateListener(ChangeListener listener) {
+        editor.hour.addChangeListener(listener);
+        editor.min.addChangeListener(listener);
+        editor.sec.addChangeListener(listener);
+    }
+
+    /**
      * Registers an event handler for selecting an {@code Action} to perform on a {@code Manipulable}
      *
      * @param listener the specified event handler
      */
     public void addActionSelectionListener(MouseListener listener) {
-        actions.actions.addMouseListener(listener);
+        for (JList<Action> actionList : actions.actions) {
+            actionList.addMouseListener(listener);
+        }
+    }
+
+    /**
+     * Registers an event handler for user input to this {@code Dashboard}'s console.
+     *
+     * @param listener The specified handler
+     * @param prompt A message to write to the console that describes the expected user input
+     * @throws NullPointerException If the specified {@code prompt} is {@code null}
+     */
+    public void addConsoleListener(KeyListener listener, String prompt) {
+        if (listener == null) {
+            for (KeyListener l : console.getKeyListeners()) {
+                console.removeKeyListener(l);
+            }
+            console.setEditable(false);
+        } else {
+            sendToConsole(Objects.requireNonNull(prompt) + " ", MessageType.WARNING, false);
+            console.addKeyListener(listener);
+            console.setEditable(true);
+            console.grabFocus();
+            inputLoc = console.getDocument().getLength();
+        }
     }
 
     /**
@@ -261,6 +402,7 @@ public class Dashboard extends JFrame {
         for (String location : locations) {
             editor.location.addItem(location);
         }
+        editor.location.addItem(House.EXTERIOR_NAME);
         editor.location.setEnabled(true);
     }
 
@@ -278,12 +420,109 @@ public class Dashboard extends JFrame {
      *
      * @param message The specified message
      */
-    public void sendToConsole(String message) {
-        console.append(message + "\n> ");
-        console.setCaretPosition(console.getDocument().getLength());
-
-        // Send message to log file as well
+    public void sendToConsole(String message, MessageType type, boolean newLine) {
+        int len = console.getDocument().getLength();
+        Color orig = console.getForeground();
+        console.setEditable(true);
+        console.setCaretPosition(len);
+        console.setCharacterAttributes(attributesOf(type, orig), false);
+        console.replaceSelection(message);
+        console.setCharacterAttributes(attributesOf(MessageType.NORMAL, orig), false);
+        if (newLine) {
+            console.replaceSelection("\n> ");
+        }
         Logger.info(message);
+    }
+
+    private static AttributeSet attributesOf(MessageType type, Color original) {
+        return StyleContext.getDefaultStyleContext().addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground,
+                MESSAGE_COLORS.getOrDefault(type, original));
+    }
+
+    /**
+     * Provides the last message written to this {@code Dashboard}'s console.
+     *
+     * @return The last input to this {@code Dashboard}'s console
+     */
+    public String getLastConsoleMessage() {
+        String message;
+        message = console.getText();
+        message = message.substring(inputLoc);
+        return message.toUpperCase();
+    }
+
+    /**
+     * Updates the {@code Room} at the specified {@code location} on this {@code Dashboard} with the status of the
+     * specified {@code room}.
+     *
+     * @param location The specified location
+     * @param room The specified {@code Room}
+     * @throws NoSuchElementException If the specified {@code location} does not exist on this {@code Dashboard}
+     * @throws NullPointerException If the specified {@code room} is {@code null}
+     */
+    public void updateRoom(String location, Room room) {
+        layout.updateRoom(location, room);
+    }
+
+    /**
+     * Updates the text of this {@code Dashboard}'s on/off button depending on whether or not a simulation is currently
+     * running.
+     */
+    public void toggleOnButton() {
+        switch (parameters.on.getText()) {
+            case "On":
+                parameters.on.setText("Off");
+                break;
+            case "Off":
+                parameters.on.setText("On");
+                break;
+            default:
+                throw new AssertionError();
+        }
+    }
+
+    /**
+     * Switches the function of the Save/Load Permissions button between the save and load functionality.
+     */
+    public void togglePermissionButton() {
+        switch (editor.persistPermissions.getText()) {
+            case "Save Permissions":
+                editor.persistPermissions.setText("Load Permissions");
+                editor.persistPermissions.setActionCommand("Load Permissions");
+                break;
+            case "Load Permissions":
+                editor.persistPermissions.setText("Save Permissions");
+                editor.persistPermissions.setActionCommand("Save Permissions");
+                break;
+            default:
+                throw new AssertionError();
+        }
+    }
+
+    /**
+     * @return {@code true} if this {@code Dashboard} allows users to load {@code Permission}s
+     */
+    public boolean canLoadPermissions() {
+        return editor.persistPermissions.getText().equals("Load Permissions");
+    }
+
+    /**
+     * Induces the {@code HouseLayoutPanel} to redraw itself.
+     */
+    public void redrawHouse() {
+        layout.revalidate();
+        layout.repaint();
+    }
+
+    /**
+     * Induces the {@code HouseLayoutPanel} to render {@code Room} states or not depending on the specified {@code
+     * flag}.
+     *
+     * @param flag If {@code true}, {@code Room} states shall be rendered on this {@code Dashboard}'s {@code
+     * HouseLayoutPanel}
+     */
+    public void showStates(boolean flag) {
+        layout.showStates = flag;
     }
 
 }

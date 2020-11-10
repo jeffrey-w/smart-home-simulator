@@ -1,5 +1,6 @@
 package main.view;
 
+import main.model.elements.House;
 import main.model.parameters.permissions.Permission;
 import main.view.viewtils.SpringUtilities;
 
@@ -72,7 +73,7 @@ public class ProfileEditor extends JFrame {
     }
 
     /**
-     *  Populate dropdown with given locations
+     * Populate dropdown with given locations
      *
      * @param locations Set of locations to add
      */
@@ -81,6 +82,7 @@ public class ProfileEditor extends JFrame {
         for (String location : locations) {
             this.location.addItem(location);
         }
+        location.addItem(House.EXTERIOR_NAME);
     }
 
     /**

@@ -2,7 +2,6 @@ package main.model.elements;
 
 import java.util.Arrays;
 import java.util.Objects;
-import main.model.parameters.permissions.Action;
 
 /**
  * A {@code Room} is comprised of many {@code House} elements, such as {@code Door}s, {@code Light}s, and {@code
@@ -14,11 +13,12 @@ import main.model.parameters.permissions.Action;
  * @see Light
  * @see Window
  */
-public class Room extends Place {
+public class Room extends Place { // TODO add validation logic to room element setters
 
     private static final int DEFAULT_ROOM_TEMPERATURE = 25;
 
     private int temperature;
+    private boolean awayLight;
     private final Door[] doors;
     private final Light[] lights;
     private final Window[] windows;
@@ -35,49 +35,6 @@ public class Room extends Place {
         this.doors = Objects.requireNonNull(doors); // TODO consider making defensive copies in a future release
         this.lights = Objects.requireNonNull(lights);
         this.windows = Objects.requireNonNull(windows);
-    }
-
-    /**
-     * runs a routine if there is a person added to the "Room'
-     *
-     * @return message depending on context
-     */
-    public String addRoutine(){
-        // turn on the lights if there is someone in the room and if light is set to autoMode
-        for (Light light : this.lights) {
-            if (light.isAutoMode()) {
-                if(light.isOn() == false){ // only turn on light if it was off
-                    String msg = light.manipulate(Action.TOGGLE_LIGHT);
-                    return msg;
-                }
-            }
-        }
-
-        // if there is no operations done
-        return "no operations done";
-    }
-
-    /**
-     * runs a routine if there is a person removed from the "Room'
-     *
-     * @return message depending on context
-     */
-    public String removeRoutine() {
-        // turn off the lights if there is no one in the room
-        if (this.getNumPeople() == 0) {
-            // turn on the lights if there is someone in the room and if light is set to autoMode
-            for (Light light : this.lights) {
-                if (light.isAutoMode()) {
-                    if (light.isOn() == true) { // only turn on light if it was on
-                        String msg = light.manipulate(Action.TOGGLE_LIGHT);
-                        return msg;
-                    }
-                }
-            }
-        }
-
-        // if there is no operations done
-        return "no operations done";
     }
 
     /**
@@ -110,6 +67,85 @@ public class Room extends Place {
         this.temperature = temperature;
     }
 
+    /**
+     * @return The number of open {@code Door}s in this {@code Room}
+     */
+    public int getNumberOfOpenDoors() {
+        int count = 0;
+        for (Door door : doors) {
+            if (door != null && door.isOpen()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * @return The number of locked {@code Door}s in this {@code Room}
+     */
+    public int getNumberOfLockedDoors() {
+        int count = 0;
+        for (Door door : doors) {
+            if (door != null && door.isLocked()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * @return The number of {@code Light}s in this {@code Room} that are on
+     */
+    public int getNumberOfLightsOn() {
+        int count = 0;
+        for (Light light : lights) {
+            if (light != null && light.isOn()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * @return The number of open {@code Window}s in this {@code Room}
+     */
+    public int getNumberOfWindowsOpen() {
+        int count = 0;
+        for (Window window : windows) {
+            if (window != null && window.isOpen()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * @return The number of blocked {@code Window}s in this {@code Room}
+     */
+    public int getNumberOfWindowsBlocked() {
+        int count = 0;
+        for (Window window : windows) {
+            if (window != null && window.isBlocked()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Turns on or off all of the {@code Light}s in this {@code Room} depending on the specified {@code flag}.
+     *
+     * @param flag If {@code true} all {@code Light}s in this {@code Room} shall be turned on, otherwise they will be
+     * turned off
+     */
+    public void toggleLights(boolean flag) {
+        for (Light light : lights) {
+            if (light != null) {
+                light.setOn(flag);
+            }
+        }
+    }
+
     @Override
     public boolean equals(final Object obj) {
         if (!(obj instanceof Room)) {
@@ -129,6 +165,15 @@ public class Room extends Place {
         result = prime * result + Arrays.hashCode(lights);
         result = prime * result + Arrays.hashCode(windows);
         return result;
+    }
+
+    /**
+     * Sets this {@code Room}'s away light status to the specified {@code flag}.
+     *
+     * @param flag If {@code true} this {@code Room} will be lit during {@code AwayMode}
+     */
+    public void setAwayLight(boolean flag) {
+        awayLight = flag;
     }
 
 }

@@ -1,6 +1,6 @@
 package main.view;
 
-import main.model.elements.Manipulable;
+import main.model.Manipulable;
 import main.view.viewtils.ManipulableRenderer;
 
 import javax.swing.*;
@@ -49,6 +49,7 @@ public class ItemChooser extends JFrame {
 
     /**
      * Provides the currently selected {@code Manipulable} household item.
+     *
      * @return The currently selected item
      */
     public Manipulable getSelectedItem() {
@@ -57,6 +58,7 @@ public class ItemChooser extends JFrame {
 
     /**
      * Registers the specified event handler on this {@code ItemChooser}
+     *
      * @param listener The specified event handler
      */
     public void addActionListener(ActionListener listener) {

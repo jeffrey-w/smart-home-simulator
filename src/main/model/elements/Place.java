@@ -1,12 +1,10 @@
 package main.model.elements;
 
-import main.model.parameters.permissions.Action;
 import main.model.parameters.permissions.Permission;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 import static main.util.NameValidator.validateName;
 
@@ -39,9 +37,6 @@ public abstract class Place {
      */
     public void addPerson(String name, Permission permission) {
         people.put(validateName(name), Objects.requireNonNull(permission, "Please select a permission level."));
-
-        // run routine
-        addRoutine();
     }
 
     /**
@@ -51,26 +46,23 @@ public abstract class Place {
      * @return {@code true} if the specified {@code person} was removed from this {@code Place}.
      */
     public boolean removePerson(String person) {
-        boolean state = people.remove(person) != null;
-
-        // run routine
-        removeRoutine();
-
-        return state;
+        return people.remove(person) != null;
     }
 
     /**
-     * @return number of people inside the place.
+     *
+     * @return The number of people in this {@code Place}
      */
-    public int getNumPeople(){
-        return this.people.size();
+    public int getNumberOfPeople() {
+        return people.size();
     }
 
-    // runs a routine if there is a person added to the "Place'
-    public abstract String addRoutine();
-
-    // runs a routine if there is a person added to the "Place'
-    public abstract String removeRoutine();
-
-
+    /**
+     * Determines whether or not this {@code Place} has any people in it.
+     *
+     * @return {@code true} if any people are in this {@code Place}
+     */
+    public boolean isOccupied() {
+        return getNumberOfPeople() > 0;
+    }
 }

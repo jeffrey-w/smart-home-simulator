@@ -1,0 +1,4 @@
+Stranger
+Parent:Change Temperature,Toggle Lock Door,Toggle Door,Open Window,Turn On Light,Block Window
+Guest:Toggle Door,Open Window,Turn On Light
+Child:Toggle Lock Door,Turn On Light
