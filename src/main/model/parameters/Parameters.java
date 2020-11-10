@@ -246,7 +246,6 @@ public class Parameters {
     }
 
     /**
-     * <<<<<<< HEAD
      *
      * @return The {@code AwayMode} of this {@code Parameters}
      */
@@ -255,7 +254,7 @@ public class Parameters {
     }
 
     /**
-     * ======= >>>>>>> origin/dev2-pv-clock Sets the current actors of the simulation to that specified. Used when
+     * Sets the current actors of the simulation to that specified. Used when
      * loading the list of actors from a file
      *
      * @param actors The loaded or specified actors of the simulation
