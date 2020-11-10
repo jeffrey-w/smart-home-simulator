@@ -17,29 +17,14 @@ public class Garage extends Place {
      * @return The {@code Garage} object
      */
     public static Garage getInstance() {
-        if (garage == null) {
-            garage = new Garage();
+        synchronized (Garage.class) {
+            if (garage == null) {
+                synchronized (Garage.class) {
+                    garage = new Garage();
+                }
+            }
         }
         return garage;
     }
-
-    /**
-     * Runs a routine if there is a person removed from the {@code Garage}
-     *
-     * @return The contextual message
-     */
-    public String addRoutine(){
-        // Empty for now
-        return "No operation performed.";
-    }
-
-    /**
-     * Runs a routine if there is a person removed from the {@code Garage}
-     *
-     * @return The contextual message
-     */
-    public String removeRoutine(){
-        // Empty for now
-        return "No operation performed.";
-    }
+    
 }
