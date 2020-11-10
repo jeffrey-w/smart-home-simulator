@@ -32,6 +32,7 @@ class WindowTest {
 
     }
 
+    @Test
     void testManipulate(){
         // try to open window while blocked
         window.manipulate(Action.TOGGLE_BLOCK_WINDOW, null, null); // block the window
@@ -51,6 +52,6 @@ class WindowTest {
         window.manipulate(Action.TOGGLE_WINDOW, null, null); // open the window
         window.manipulate(Action.TOGGLE_BLOCK_WINDOW, null, null); // block the window
         window.manipulate(Action.TOGGLE_WINDOW, null, null); // close the window
-        assertFalse(window.isOpen()); // cant close if blocked
+        assertTrue(window.isOpen()); // cant close if blocked
     }
 }
