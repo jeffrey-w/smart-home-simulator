@@ -293,7 +293,9 @@ public class Controller {
                         }
                     }
                 }
-                dashboard.togglePermissionButton();
+                if (dashboard.canLoadPermissions()) {
+                    dashboard.togglePermissionButton();
+                }
             });
 
             editor.setLocationRelativeTo(dashboard);
