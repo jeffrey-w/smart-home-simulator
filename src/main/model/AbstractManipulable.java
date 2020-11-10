@@ -19,4 +19,5 @@ public abstract class AbstractManipulable implements Manipulable {
             return "You cannot perform that action on this item.";
         }
     }
+
 }

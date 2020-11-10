@@ -246,7 +246,7 @@ public enum Action {
         public String doAction(Manipulable manipulable, Parameters parameters, House house) {
             MultiValueManipulable multiValueManipulable = (MultiValueManipulable) manipulable;
             @SuppressWarnings("unchecked") // We catch ClassCastExceptions upstream
-            Set<String> locations = (Set<String>)multiValueManipulable.getValue();
+            Set<String> locations = (Set<String>) multiValueManipulable.getValue();
             for (String location : house.getLocations()) {
                 house.getRoom(location).setAwayLight(locations.contains(location));
             }
@@ -286,16 +286,11 @@ public enum Action {
     };
 
     /**
-     * @return The list of all permission levels of this action in the following order:
-     *          {
-     *              Parent permission,
-     *              Child permission,
-     *              Guest permission,
-     *              Stranger permission
-     *          }
+     * @return The list of all permission levels of this action in the following order: { Parent permission, Child
+     * permission, Guest permission, Stranger permission }
      */
     public Boolean[] getPermissions() {
-        return new Boolean[]{true, this.isChildPermissible(), this.isGuestPermissible(), false};
+        return new Boolean[] {true, this.isChildPermissible(), this.isGuestPermissible(), false};
     }
 
     /**

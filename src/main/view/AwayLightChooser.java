@@ -44,8 +44,6 @@ public class AwayLightChooser extends JFrame {
     private final List<JCheckBox> locations = new LinkedList<>();
     JSpinner startSpinner = new JSpinner(new SpinnerDateModel());
     JSpinner endSpinner = new JSpinner(new SpinnerDateModel());
-    private final JSpinner.DateEditor startEditor = new JSpinner.DateEditor(startSpinner, "HH:mm");
-    private final JSpinner.DateEditor endEditor = new JSpinner.DateEditor(endSpinner, "HH:mm");
     private final JButton ok = new JButton("Ok");
 
     /**
@@ -93,7 +91,9 @@ public class AwayLightChooser extends JFrame {
         super("Away Light Control");
         JPanel staticFields = new JPanel(new GridLayout(CELLS, 1));
         JPanel timeSpinners = new JPanel(new GridLayout(1, CELLS));
+        final JSpinner.DateEditor startEditor = new JSpinner.DateEditor(startSpinner, "HH:mm");
         DateFormatter startFormatter = (DateFormatter) startEditor.getTextField().getFormatter();
+        final JSpinner.DateEditor endEditor = new JSpinner.DateEditor(endSpinner, "HH:mm");
         DateFormatter endFormatter = (DateFormatter) endEditor.getTextField().getFormatter();
         startFormatter.setAllowsInvalid(false);
         startFormatter.setOverwriteMode(true);

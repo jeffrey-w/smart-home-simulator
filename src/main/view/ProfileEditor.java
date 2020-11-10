@@ -73,7 +73,7 @@ public class ProfileEditor extends JFrame {
     }
 
     /**
-     *  Populate dropdown with given locations
+     * Populate dropdown with given locations
      *
      * @param locations Set of locations to add
      */

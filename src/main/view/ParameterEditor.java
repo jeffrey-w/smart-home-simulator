@@ -27,14 +27,13 @@ public class ParameterEditor extends JPanel {
     private static final int FIELD_COLUMNS = 2;
     private static final int FIELD_Y_PADDING = 0x30;
 
-
     private static final Permission[] PERMISSIONS = new Permission[] {
             null,
             new ParentPermission(),
             new ChildPermission(),
             new GuestPermission(),
             new StrangerPermission()
-    };
+    }; // TODO use parameters permissions instead
     private static final SpinnerNumberModel TEMP_MODEL =
             new SpinnerNumberModel(Parameters.DEFAULT_TEMPERATURE, Parameters.MIN_TEMPERATURE,
                     Parameters.MAX_TEMPERATURE, 1);
@@ -75,7 +74,6 @@ public class ParameterEditor extends JPanel {
     JSpinner hour = new JSpinner(HOUR_MODEL);
     JSpinner min = new JSpinner(MIN_MODEL);
     JSpinner sec = new JSpinner(SEC_MODEL);
-
 
     /**
      * Constructs a new {@code ParameterEditor} object.

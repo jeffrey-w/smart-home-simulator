@@ -1,7 +1,7 @@
 package main.view;
 
-import main.model.Module;
 import main.model.Action;
+import main.model.Module;
 
 import javax.swing.*;
 import java.util.LinkedList;
@@ -29,7 +29,7 @@ public class ActionPanel extends JTabbedPane {
      * @return The selected {@code House} item
      */
     public String getSelectedItem() {
-        return ((ModuleView)getSelectedComponent()).items.getSelectedValue();
+        return ((ModuleView) getSelectedComponent()).items.getSelectedValue();
     }
 
     /**
@@ -38,7 +38,7 @@ public class ActionPanel extends JTabbedPane {
      * @return The selected {@code Action}
      */
     public Action getSelectedAction() {
-        return ((ModuleView)getSelectedComponent()).actions.getSelectedValue();
+        return ((ModuleView) getSelectedComponent()).actions.getSelectedValue();
     }
 
 }

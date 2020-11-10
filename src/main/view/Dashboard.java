@@ -48,14 +48,14 @@ public class Dashboard extends JFrame {
     static final int WINDOW_HEIGHT = 0x300;
     static final int PARAMETER_PANE_WIDTH = WINDOW_WIDTH >>> 2; // x >>> y == x / 2^y
     static final int CONTENT_PANE_WIDTH = WINDOW_WIDTH - PARAMETER_PANE_WIDTH;
-    static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd"); // NOTE: removed the time here so that we can implement that independently
+    static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd");
+            // NOTE: removed the time here so that we can implement that independently
     private static final EnumMap<MessageType, Color> MESSAGE_COLORS = new EnumMap<>(MessageType.class);
 
     static {
         MESSAGE_COLORS.put(MessageType.WARNING, Color.YELLOW);
         MESSAGE_COLORS.put(MessageType.ERROR, Color.RED);
     }
-
 
     private int inputLoc;
 
@@ -287,7 +287,6 @@ public class Dashboard extends JFrame {
     }
 
     /**
-     *
      * @param listener
      */
     public void addPersistPermissionListener(ActionListener listener) {
@@ -305,6 +304,7 @@ public class Dashboard extends JFrame {
 
     /**
      * Registers an event handler for editing a the permissible actions given by the user's {@code Permission} level.
+     *
      * @param editPermissionsListener
      */
     public void addEditPermissionListener(ActionListener editPermissionsListener) {
@@ -500,7 +500,6 @@ public class Dashboard extends JFrame {
     }
 
     /**
-     *
      * @return {@code true} if this {@code Dashboard} allows users to load {@code Permission}s
      */
     public boolean canLoadPermissions() {

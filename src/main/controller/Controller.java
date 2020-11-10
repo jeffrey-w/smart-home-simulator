@@ -9,7 +9,10 @@ import main.model.elements.Room;
 import main.model.elements.Yard;
 import main.model.parameters.Parameters;
 import main.model.parameters.permissions.Permission;
-import main.util.*;
+import main.util.HouseReader;
+import main.util.JSONFilter;
+import main.util.PermissionManager;
+import main.util.TextFilter;
 import main.view.*;
 
 import javax.swing.*;
@@ -280,13 +283,13 @@ public class Controller {
             PermissionEditor editor = dashboard.getPermissionEditor();
             editor.addTableModelListener(f -> {
                 DefaultTableModel table = (DefaultTableModel) f.getSource();
-                for(int i=0; i<table.getRowCount(); i++) {
+                for (int i = 0; i < table.getRowCount(); i++) {
                     Action action = (Action) table.getValueAt(i, 0);
 
-                    for(int j=1; j<table.getColumnCount(); j++) {
+                    for (int j = 1; j < table.getColumnCount(); j++) {
                         Boolean value = (Boolean) table.getValueAt(i, j);
 
-                        if(value) { // If checkbox is selected
+                        if (value) { // If checkbox is selected
                             parameters.getPermissionOf(table.getColumnName(j)).addPermission(action);
                         } else {
                             parameters.getPermissionOf(table.getColumnName(j)).removePermission(action);
@@ -369,7 +372,8 @@ public class Controller {
                     } else if (actionPanel.getSelectedAction().equals(Action.SET_AWAY_MODE_LIGHTS)) {
                         AwayLightChooser chooser = AwayLightChooser.of(house.getLocations());
                         chooser.addActionListener(f -> {
-                            MultiValueManipulable multiValueManipulable = new MultiValueManipulable(chooser.getSelectedLocations());
+                            MultiValueManipulable multiValueManipulable =
+                                    new MultiValueManipulable(chooser.getSelectedLocations());
                             multiValueManipulable.addValue(chooser.getStart());
                             multiValueManipulable.addValue(chooser.getEnd());
                             performActionOn(multiValueManipulable, Action.SET_AWAY_MODE_LIGHTS);
@@ -499,7 +503,7 @@ public class Controller {
     public void startClockDisplayUpdate() {
         ActionListener updateClockListener = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            dashboard.setTime(parameters.getClockTime());
+                dashboard.setTime(parameters.getClockTime());
             }
         };
 
@@ -523,7 +527,7 @@ public class Controller {
             int h = dashboard.getHourInput();
             int m = dashboard.getMinInput();
             int s = dashboard.getSecInput();
-            int[] time = new int[]{h,m,s};
+            int[] time = new int[] {h, m, s};
 
             parameters.setTime(time);
         }
