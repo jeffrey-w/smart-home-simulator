@@ -17,10 +17,12 @@ public abstract class PermissionManager {
         HashMap<String, Permission> permissions = new HashMap<>();
         Scanner scanner = new Scanner(file);
         while (scanner.hasNextLine()) {
+            int nameIndex;
             String line = scanner.nextLine();
+            String name = line.substring(0, (nameIndex = line.indexOf(":")));
+            line = line.substring(0, nameIndex + 1);
             String[] lineArray = line.split(",");
-            String name = lineArray[0];
-            String permissionString = lineArray[1] + "Permission";
+            String permissionString = name + "Permission";
             Class<?> klass = Class.forName("main.model.parameters.permissions." + permissionString);
             Permission permission = (Permission) klass.getDeclaredConstructor().newInstance();
 
