@@ -23,7 +23,7 @@ public class ParameterEditor extends JPanel {
     private static final int BUTTON_OFFSET = 0x10;
     private static final int BUTTON_X_PADDING = 0x40;
     private static final int BUTTON_Y_PADDING = 0x20;
-    private static final int FIELD_ROWS = 7;
+    private static final int FIELD_ROWS = 8;
     private static final int FIELD_COLUMNS = 2;
     private static final int FIELD_Y_PADDING = 0x30;
 
@@ -83,7 +83,6 @@ public class ParameterEditor extends JPanel {
     ParameterEditor() {
         // Containers for buttons and fields respectively.
         JPanel buttons = new JPanel(new SpringLayout());
-        JPanel permissions = new JPanel(new SpringLayout());
         JPanel fields = new JPanel(new SpringLayout());
 
         // Set panel display behavior.
@@ -105,6 +104,8 @@ public class ParameterEditor extends JPanel {
                         BUTTON_Y_PADDING);
 
         // Add fields to field panel.
+        fields.add(labelFactory("Permission"));
+        fields.add(permission);
         fields.add(labelFactory("Location"));
         fields.add(location);
         fields.add(labelFactory("Temperature"));
