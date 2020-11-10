@@ -500,6 +500,14 @@ public class Dashboard extends JFrame {
     }
 
     /**
+     *
+     * @return {@code true} if this {@code Dashboard} allows users to load {@code Permission}s
+     */
+    public boolean canLoadPermissions() {
+        return editor.persistPermissions.getText().equals("Load Permissions");
+    }
+
+    /**
      * Induces the {@code HouseLayoutPanel} to redraw itself.
      */
     public void redrawHouse() {
