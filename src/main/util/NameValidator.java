@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
  */
 public class NameValidator {
 
-    private static final Pattern NAME_PATTERN = Pattern.compile("^\\w+$");
+    private static final Pattern NAME_PATTERN = Pattern.compile("^[\\w,\\s]+$"); // TODO fix comments
 
     /**
      * Determines whether or not the specified {@code name} is valid insofar as it is a non-empty string comprised of
@@ -19,8 +19,8 @@ public class NameValidator {
      *
      * @param name The specified name
      * @return The specified {@code name} provided it is valid
-     * @throws IllegalArgumentException if the specified {@code name} is not valid
-     * @throws NullPointerException if the specified {@code name} is {@code null}
+     * @throws IllegalArgumentException If the specified {@code name} is not valid
+     * @throws NullPointerException If the specified {@code name} is {@code null}
      */
     public static String validateName(String name) {
         if (!NAME_PATTERN.matcher(name).matches()) {

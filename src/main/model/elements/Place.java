@@ -31,21 +31,38 @@ public abstract class Place {
      *
      * @param name The name of the person/user to be added
      * @param permission The {@code Permission} level of the added person
-     * @throws IllegalArgumentException if the specified {@code name} is not a non-empty string of word
+     * @throws IllegalArgumentException If the specified {@code name} is not a non-empty string of word
      *         characters (i.e. [a-z, A-Z, 0-9, _])
-     * @throws NullPointerException if the specified {@code permission} is {@code null}
+     * @throws NullPointerException If the specified {@code permission} is {@code null}
      */
     public void addPerson(String name, Permission permission) {
-        people.put(validateName(name), Objects.requireNonNull(permission));
+        people.put(validateName(name), Objects.requireNonNull(permission, "Please select a permission level."));
     }
 
     /**
-     * Remove the specified person from this {@code Place}
+     * Remove the specified {@code person} from this {@code Place}
      *
-     * @param name The name of the person/user to remove from this {@code Place}
+     * @param person The specified person
+     * @return {@code true} if the specified {@code person} was removed from this {@code Place}.
      */
-    public void removePerson(String name) {
-        // TODO: Do we need to consider people with the same name located in the same room?
-        people.remove(name);
+    public boolean removePerson(String person) {
+        return people.remove(person) != null;
+    }
+
+    /**
+     *
+     * @return The number of people in this {@code Place}
+     */
+    public int getNumberOfPeople() {
+        return people.size();
+    }
+
+    /**
+     * Determines whether or not this {@code Place} has any people in it.
+     *
+     * @return {@code true} if any people are in this {@code Place}
+     */
+    public boolean isOccupied() {
+        return getNumberOfPeople() > 0;
     }
 }

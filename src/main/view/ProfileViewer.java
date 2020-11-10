@@ -1,14 +1,9 @@
 package main.view;
 
-import main.controller.Controller;
-import main.model.elements.House;
-import main.model.parameters.Parameters;
-import main.model.parameters.permissions.Permission;
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Set;
 
 /**
  * The {@code ProfileViewer} class provides the UI elements for a user to browse the profiles (names, {@code Permission}
@@ -17,7 +12,7 @@ import java.awt.event.ActionListener;
  * @author Jeff Wilgus
  * @author Ayman Shehri
  */
-public class ProfileViewer extends JFrame implements ActionListener { // TODO move this logic to controller
+public class ProfileViewer extends JFrame {
 
     private static final int DIMENSION = 0x100;
 
@@ -26,17 +21,12 @@ public class ProfileViewer extends JFrame implements ActionListener { // TODO mo
     JButton add = new JButton("Add");
     JButton edit = new JButton("Edit");
     JButton remove = new JButton("Remove");
-    Parameters parameters;
-    House house;
 
     /**
      * Constructs a new {@code ProfileViewer} object with the profiles from the specified {@code parameters} and the
      * locations from the specified {@code house}.
-     *
-     * @param parameters the specified {@code Parameters}
-     * @param house the specified {@code House}
      */
-    public ProfileViewer(Parameters parameters, House house) {
+    public ProfileViewer() {
         // Set window title.
         super("Edit Profiles");
 
@@ -54,20 +44,12 @@ public class ProfileViewer extends JFrame implements ActionListener { // TODO mo
         add(scrollPane);
         add(buttons, BorderLayout.SOUTH);
 
-        // Populate profile list.
-        for (String actor : parameters.getActors()) {
-            profiles.addElement(actor);
-        }
-
         // Add buttons to panel
         buttons.add(add);
         buttons.add(edit);
         buttons.add(remove);
 
-        // Register handlers for buttons.
-        add.addActionListener(this);
-        edit.addActionListener(this);
-        remove.addActionListener(this);
+        // Initially disable edit and remove buttons.
         edit.setEnabled(false);
         remove.setEnabled(false);
 
@@ -85,77 +67,67 @@ public class ProfileViewer extends JFrame implements ActionListener { // TODO mo
                 }
             }
         });
-
-        // Keep track of model data.
-        this.parameters = parameters;
-        this.house = house;
     }
 
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-        String actionCommand = e.getActionCommand();
-        switch (actionCommand) {
-            case "Add":
-            case "Edit": {
-                SwingUtilities.invokeLater(() -> {
-                    ProfileEditor editor = new ProfileEditor(list.getSelectedValue(), house != null);
-                    if (house != null) {
-                        for (String location : house.getLocations()) {
-                            editor.location.addItem(location);
-                        }
-                    }
-                    editor.pack();
-                    editor.setLocationRelativeTo(this);
-                    editor.setVisible(true);
-                    editor.ok.addActionListener(new ConfirmListener(editor));
-                });
-                break;
-            }
-            case "Remove": {
-                parameters.removeActor(list.getSelectedValue());
-                if (house != null) {
-                    house.removePerson(list.getSelectedValue());
-                }
-                profiles.removeElement(list.getSelectedValue());
-                break;
-            }
-            default:
-                throw new AssertionError();
+    /**
+     * Populate system profiles with given profiles
+     *
+     * @param names The list of profiles to populate the system with
+     */
+    public void populateList(Set<String> names) {
+        for (String name : names) {
+            profiles.addElement(name);
         }
     }
 
-    class ConfirmListener implements ActionListener {
-
-        ProfileEditor editor;
-
-        ConfirmListener(ProfileEditor editor) {
-            this.editor = editor;
-        }
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-            // Extract input from user
-            String name = editor.role.getText();
-            Permission permission = (Permission)editor.permission.getSelectedItem();
-            String location = editor.location.isEnabled() ? (String)editor.location.getSelectedItem() : null;
-
-            // TODO validate input
-
-            // Add profile
-            Controller.addProfile(name, permission);
-
-            // Place person in location
-            if (location != null){
-                Controller.placePerson(name, permission, location);
-            }
-
-            // Add in the ui
-            if (!profiles.contains(name)) {
-                profiles.addElement(name);
-            }
-            editor.dispose();
-        }
-
+    /**
+     * Clears the list of profiles currently registered by the system.
+     */
+    public void clear() {
+        profiles.clear();
     }
 
+    /**
+     * Add profile management action listeners to allow the simulation user to add, edit or remove profiles.
+     *
+     * @param listener The specified event handler
+     */
+    public void addManageProfileListener(ActionListener listener) {
+        add.addActionListener(listener);
+        edit.addActionListener(listener);
+        remove.addActionListener(listener);
+    }
+
+    /**
+     * @param name The profile we are verifying
+     * @return {@code true} if the specified profile exists in the system
+     */
+    public boolean containsProfile(String name) {
+        return profiles.contains(name);
+    }
+
+    /**
+     * Add a given profile to the simulation system.
+     *
+     * @param name The name of the profile to be added
+     */
+    public void addProfile(String name) {
+        profiles.addElement(name);
+    }
+
+    /**
+     * @return The selected Profile value
+     */
+    public String getSelectedValue() {
+        return list.getSelectedValue();
+    }
+
+    /**
+     * Remove a given profile from the simulation system.
+     *
+     * @param name The name of the profile to be removed
+     */
+    public void removeProfile(String name) {
+        profiles.removeElement(name);
+    }
 }

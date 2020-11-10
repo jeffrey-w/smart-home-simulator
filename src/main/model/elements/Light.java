@@ -1,47 +1,50 @@
 package main.model.elements;
 
+import main.model.AbstractManipulable;
+
 /**
  * The {@code Light} class represents a light object, which the user can interact with. A user can choose to turn on/off
  * lights as they please.
  *
  * @author Émilie Martin
  */
-public class Light {
+public class Light extends AbstractManipulable {
 
-    // If not provided by the user, the system uses these default values.
-    private final boolean DEFAULT_LIGHT_PRESENCE = true;
-    private final boolean DEFAULT_LIGHT_ON = true;
+    // If not provided by the user, the system uses this default value.
+    private static final boolean DEFAULT_ON_VALUE = false;
 
-    private final boolean isPresent;
-    private boolean isOn;
+    private boolean on;
 
     /**
-     * Constructs a {@code Light} object with the default presence and state.
+     * Constructs a {@code Light} object with a {@value DEFAULT_ON_VALUE} state.
      */
     public Light() {
-        this.isPresent = DEFAULT_LIGHT_PRESENCE;
-        this.isOn = DEFAULT_LIGHT_ON;
+        this(DEFAULT_ON_VALUE);
     }
 
     /**
-     * Constructs a {@code Light} object with a given presence and state.
+     * Constructs a {@code Light} object with the specified {@code on} state.
      *
-     * @param pres This boolean serves to determine if there is a {@code Light} object in this Room or not. If
-     *         true, there is a light in this room. If false, there isn't.
-     * @param on This boolean serves to determine if the light is on or not.
+     * @param on The specified on state
      */
-    public Light(boolean pres, boolean on) {
-        this.isPresent = pres;
-        this.isOn = on;
+    public Light(boolean on) {
+        setOn(on);
     }
 
     /**
-     * By setting the state, the user can turn lights on or off.
-     *
-     * @param state The new light state. If the boolean is true, it is on. If it is false, it is off.
+     * @return The on state of this {@code Light}
      */
-    void setOnState(boolean state) {
-        this.isOn = state;
+    public boolean isOn() {
+        return on;
+    }
+
+    /**
+     * Sets the {@code on} state of this {@code Light} to that specified.
+     *
+     * @param state The specified on state
+     */
+    public void setOn(boolean state) {
+        this.on = state;
     }
 
     @Override
@@ -49,16 +52,14 @@ public class Light {
         if (!(obj instanceof Light)) {
             return false;
         }
-        Light light = (Light) obj;
-        return isPresent == light.isPresent && isOn == light.isOn;
+        return on == ((Light) obj).on;
     }
 
     @Override
     public int hashCode() {
         int prime = 31;
         int result = 1;
-        result = prime * result + Boolean.hashCode(isPresent);
-        result = prime * result + Boolean.hashCode(isOn);
+        result = prime * result + Boolean.hashCode(on);
         return result;
     }
 }

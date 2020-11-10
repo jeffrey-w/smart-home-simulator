@@ -1,64 +1,44 @@
 package main.view;
 
+import main.model.Action;
+import main.model.Module;
+
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.MouseListener;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
- * The {@code ActionPanel} class provides the UI elements to choose a type of item and the action to perform
- * on it during a simulation.
+ * The {@code ActionPanel} class provides the UI elements to choose a type of item and the action to perform on it
+ * during a simulation.
  *
  * @author Jeff Wilgus
  */
-public class ActionPanel extends JPanel {
+public class ActionPanel extends JTabbedPane {
 
-    static MouseListener WINDOW_ACTION_LISTENER; // TODO make this a member?
-    private static final Map<String, String[]> ACTIONS = new HashMap<>();
+    List<JList<Action>> actions = new LinkedList<>();
 
-    static {
-        ACTIONS.put("Windows", new String[] {"Open/Close", "Obstruct"});
-        ACTIONS.put("Thermostat", new String[] {"Set Temperature"});
+    public void addModule(Module module) {
+        ModuleView view = new ModuleView(module);
+        actions.add(view.actions);
+        addTab(module.getName(), view);
     }
 
-    DefaultListModel<String> actionsModel = new DefaultListModel<>();
-    JList<String> items = new JList<>(ACTIONS.keySet().toArray(new String[0]));
-    JList<String> actions = new JList<>(actionsModel);
+    /**
+     * Provides the {@code House} item currently selected by this {@code ActionPanel}.
+     *
+     * @return The selected {@code House} item
+     */
+    public String getSelectedItem() {
+        return ((ModuleView) getSelectedComponent()).items.getSelectedValue();
+    }
 
     /**
-     * Constructs a new {@code ActionPanel} object.
+     * Provides the {@code Action} currently selected by this {@code ActionPanel}.
+     *
+     * @return The selected {@code Action}
      */
-    public ActionPanel() {
-        JPanel top = new JPanel(new BorderLayout());
-        JPanel bottom = new JPanel(new BorderLayout());
-        setLayout(new BorderLayout());
-        add(top, BorderLayout.NORTH);
-        add(bottom, BorderLayout.SOUTH);
-        top.add(new JLabel("Items"), BorderLayout.NORTH);
-        top.add(new JScrollPane(items));
-        bottom.add(new JLabel("Actions"), BorderLayout.NORTH);
-        bottom.add(new JScrollPane(actions));
-        items.setPreferredSize(new Dimension(576 - 32, 215)); // TODO avoid magic constants
-        actions.setPreferredSize(new Dimension(576 - 32, 215));
-        items.addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                if (items.getSelectedIndex() == -1) {
-                    actionsModel.removeAllElements();
-                } else {
-                    actionsModel.removeAllElements();
-                    for (String action : ACTIONS.get(items.getSelectedValue())) {
-                        actionsModel.addElement(action);
-                    }
-                    switch (items.getSelectedValue()) {
-                        case "Windows":
-                            actions.addMouseListener(WINDOW_ACTION_LISTENER);
-                            break;
-                        // TODO other event handlers
-                    }
-                }
-            }
-        });
+    public Action getSelectedAction() {
+        return ((ModuleView) getSelectedComponent()).actions.getSelectedValue();
     }
 
 }

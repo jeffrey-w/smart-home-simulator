@@ -1,14 +1,17 @@
 package main.view;
 
+import main.model.elements.House;
 import main.model.parameters.permissions.Permission;
 import main.view.viewtils.SpringUtilities;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.util.Set;
 
 /**
- * The {@code ProfileEditor} class provides the UI elements to edit a specific profile ({@code Permission}
- * level, and location) that has been added to a simulation.
+ * The {@code ProfileEditor} class provides the UI elements to edit a specific profile ({@code Permission} level, and
+ * location) that has been added to a simulation.
  *
  * @author Jeff Wilgus
  */
@@ -67,6 +70,67 @@ public class ProfileEditor extends JFrame {
 
         // Set whether or not locations may be edited.
         location.setEnabled(enableLocation);
+    }
+
+    /**
+     * Populate dropdown with given locations
+     *
+     * @param locations Set of locations to add
+     */
+    public void addLocations(Set<String> locations) {
+        this.location.addItem(null);
+        for (String location : locations) {
+            this.location.addItem(location);
+        }
+        location.addItem(House.EXTERIOR_NAME);
+    }
+
+    /**
+     * Registers the specified event listener to for saving changes in a simulation profile.
+     *
+     * @param listener The specified event handler
+     */
+    public void addActionListener(ActionListener listener) {
+        ok.addActionListener(listener);
+    }
+
+    /**
+     * @return The profile role
+     */
+    public String getRole() {
+        return role.getText();
+    }
+
+    /**
+     * @return The selected permission
+     */
+    public Permission getSelectedPermission() {
+        return (Permission) permission.getSelectedItem();
+    }
+
+    /**
+     * @return The selected location
+     */
+    public String getSelectedLocation() {
+        return (String) location.getSelectedItem();
+    }
+
+    /**
+     * Sets the location of a user to that specified.
+     *
+     * @param location The given location
+     */
+    public void selectLocation(String location) {
+        this.location.setSelectedItem(location);
+    }
+
+    /**
+     * Sets the permission level of a user to that specified.
+     *
+     * @param permission The given permission level
+     */
+    public void setPermission(Permission permission) {
+        this.permission.setSelectedItem(permission);
     }
 
 }

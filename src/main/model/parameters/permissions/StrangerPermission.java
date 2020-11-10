@@ -1,5 +1,7 @@
 package main.model.parameters.permissions;
 
+import main.model.Action;
+
 import java.util.EnumSet;
 import java.util.Set;
 

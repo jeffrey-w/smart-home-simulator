@@ -1,9 +1,10 @@
 package main.model.elements;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
- * A {@code Room} is comprised of many house main.model.elements, such as {@code Door}s, {@code Light}s, {@code
+ * A {@code Room} is comprised of many {@code House} elements, such as {@code Door}s, {@code Light}s, and {@code
  * Window}s.
  *
  * @author Philippe Vo
@@ -12,71 +13,136 @@ import java.util.Arrays;
  * @see Light
  * @see Window
  */
-public class Room extends Place {
+public class Room extends Place { // TODO add validation logic to room element setters
 
     private static final int DEFAULT_ROOM_TEMPERATURE = 25;
 
     private int temperature;
+    private boolean awayLight;
     private final Door[] doors;
     private final Light[] lights;
     private final Window[] windows;
 
     /**
-     * Constructs a Room with the given doors, lights, and windows.
+     * Constructs a {@code Room} with the given {@code doors}, {@code lights}, and {@code windows}.
      *
-     * @param doors An array of all doors contained within the room (location + lock state)
-     * @param lights An array of all lights contained within the room (presence + on state)
-     * @param windows An array of all windows contained within the room (location + obstruction state)
+     * @param doors A collection of {@code Door}s in this {@code Room}
+     * @param lights A collection of {@code Light}s in this {@code Room}
+     * @param windows A collection of {@code Window}s in this {@code Room}
      */
     public Room(Door[] doors, Light[] lights, Window[] windows) {
         this.temperature = DEFAULT_ROOM_TEMPERATURE;
-        this.doors = doors;
-        this.lights = lights;
-        this.windows = windows;
+        this.doors = Objects.requireNonNull(doors); // TODO consider making defensive copies in a future release
+        this.lights = Objects.requireNonNull(lights);
+        this.windows = Objects.requireNonNull(windows);
     }
 
     /**
-     * @return All doors contained within this {@code Room}
+     * @return All {@code Door}s contained within this {@code Room}
      */
     public Door[] getDoors() {
         return this.doors;
     }
 
     /**
-     * @return All lights contained within this {@code Room}
+     * @return All {@code Light}s contained within this {@code Room}
      */
     public Light[] getLights() {
         return this.lights;
     }
 
     /**
-     * @return All windows contained within this {@code Room}
+     * @return All {@code Window}s contained within this {@code Room}
      */
     public Window[] getWindows() {
         return this.windows;
     }
 
     /**
-     * Setter to change the temperature of this {@code Room}
+     * Sets the internal {@code temperature} of this {@code Room} to that specified.
      *
-     * @param temp The new temperature
+     * @param temperature The specified temperature
      */
-    public void setTemperature(int temp) {
-        this.temperature = temp;
+    public void setTemperature(int temperature) { // TODO do bounds checking
+        this.temperature = temperature;
     }
 
     /**
-     * Sets the {@code obstructed} status of the {@code Window} at the specified {@code wall} to that specified.
-     *
-     * @param wall The specified wall
-     * @param obstructed The specified obstructed status
-     * @throws IllegalArgumentException if the specified {@code wall} does not have a {@code Window}
+     * @return The number of open {@code Door}s in this {@code Room}
      */
-    public void setObstructed(int wall, boolean obstructed) {
-        try {
-            windows[wall].setObstructed(obstructed);
-        } catch (NullPointerException e) {
-            throw new IllegalArgumentException("There is no window on that wall");
+    public int getNumberOfOpenDoors() {
+        int count = 0;
+        for (Door door : doors) {
+            if (door != null && door.isOpen()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * @return The number of locked {@code Door}s in this {@code Room}
+     */
+    public int getNumberOfLockedDoors() {
+        int count = 0;
+        for (Door door : doors) {
+            if (door != null && door.isLocked()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * @return The number of {@code Light}s in this {@code Room} that are on
+     */
+    public int getNumberOfLightsOn() {
+        int count = 0;
+        for (Light light : lights) {
+            if (light != null && light.isOn()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * @return The number of open {@code Window}s in this {@code Room}
+     */
+    public int getNumberOfWindowsOpen() {
+        int count = 0;
+        for (Window window : windows) {
+            if (window != null && window.isOpen()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * @return The number of blocked {@code Window}s in this {@code Room}
+     */
+    public int getNumberOfWindowsBlocked() {
+        int count = 0;
+        for (Window window : windows) {
+            if (window != null && window.isBlocked()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Turns on or off all of the {@code Light}s in this {@code Room} depending on the specified {@code flag}.
+     *
+     * @param flag If {@code true} all {@code Light}s in this {@code Room} shall be turned on, otherwise they will be
+     * turned off
+     */
+    public void toggleLights(boolean flag) {
+        for (Light light : lights) {
+            if (light != null) {
+                light.setOn(flag);
+            }
         }
     }
 
@@ -99,6 +165,15 @@ public class Room extends Place {
         result = prime * result + Arrays.hashCode(lights);
         result = prime * result + Arrays.hashCode(windows);
         return result;
+    }
+
+    /**
+     * Sets this {@code Room}'s away light status to the specified {@code flag}.
+     *
+     * @param flag If {@code true} this {@code Room} will be lit during {@code AwayMode}
+     */
+    public void setAwayLight(boolean flag) {
+        awayLight = flag;
     }
 
 }
