@@ -26,5 +26,5 @@ public class Garage extends Place {
         }
         return garage;
     }
-    
+
 }
