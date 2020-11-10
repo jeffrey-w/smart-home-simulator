@@ -283,6 +283,19 @@ public enum Action {
     };
 
     /**
+     * @return The list of all permission levels of this action in the following order:
+     *          {
+     *              Parent permission,
+     *              Child permission,
+     *              Guest permission,
+     *              Stranger permission
+     *          }
+     */
+    public Boolean[] getPermissions() {
+        return new Boolean[]{true, this.isChildPermissible(), this.isGuestPermissible(), false};
+    }
+
+    /**
      * @return {@code true} if this {@code Action} is allowed to be taken by a child.
      */
     public abstract boolean isChildPermissible();

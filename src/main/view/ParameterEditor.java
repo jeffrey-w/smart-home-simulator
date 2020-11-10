@@ -23,9 +23,10 @@ public class ParameterEditor extends JPanel {
     private static final int BUTTON_OFFSET = 0x10;
     private static final int BUTTON_X_PADDING = 0x40;
     private static final int BUTTON_Y_PADDING = 0x20;
-    private static final int FIELD_ROWS = 8;
+    private static final int FIELD_ROWS = 7;
     private static final int FIELD_COLUMNS = 2;
     private static final int FIELD_Y_PADDING = 0x30;
+
 
     private static final Permission[] PERMISSIONS = new Permission[] {
             null,
@@ -65,7 +66,7 @@ public class ParameterEditor extends JPanel {
     JButton loadHouse = new JButton("Load House");
     JButton manageProfiles = new JButton("Manage Profiles");
     JButton editPermissions = new JButton("Edit Permissions");
-    JButton savePermissions = new JButton("Save Permissions");
+    JButton persistPermissions = new JButton("Load Permissions");
     JComboBox<Permission> permission = permissionJComboBox();
     JComboBox<String> location = new JComboBox<>();
     JSpinner temperature = new JSpinner(TEMP_MODEL);
@@ -75,12 +76,14 @@ public class ParameterEditor extends JPanel {
     JSpinner min = new JSpinner(MIN_MODEL);
     JSpinner sec = new JSpinner(SEC_MODEL);
 
+
     /**
      * Constructs a new {@code ParameterEditor} object.
      */
     ParameterEditor() {
         // Containers for buttons and fields respectively.
         JPanel buttons = new JPanel(new SpringLayout());
+        JPanel permissions = new JPanel(new SpringLayout());
         JPanel fields = new JPanel(new SpringLayout());
 
         // Set panel display behavior.
@@ -94,7 +97,7 @@ public class ParameterEditor extends JPanel {
         buttons.add(loadHouse);
         buttons.add(manageProfiles);
         buttons.add(editPermissions);
-        buttons.add(savePermissions);
+        buttons.add(persistPermissions);
 
         // Set button panel display behavior
         SpringUtilities
@@ -102,8 +105,6 @@ public class ParameterEditor extends JPanel {
                         BUTTON_Y_PADDING);
 
         // Add fields to field panel.
-        fields.add(labelFactory("Permission"));
-        fields.add(permission);
         fields.add(labelFactory("Location"));
         fields.add(location);
         fields.add(labelFactory("Temperature"));

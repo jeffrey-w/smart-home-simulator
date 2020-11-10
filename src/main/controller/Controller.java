@@ -9,15 +9,13 @@ import main.model.elements.Room;
 import main.model.elements.Yard;
 import main.model.parameters.Parameters;
 import main.model.parameters.permissions.Permission;
-import main.util.HouseReader;
-import main.util.JSONFilter;
-import main.util.ProfileManager;
-import main.util.TextFilter;
+import main.util.*;
 import main.view.*;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
 import java.util.Date;
 import java.util.HashSet;
@@ -29,6 +27,7 @@ import java.util.Set;
  * manipulate those objects. It serves as the entry point into the program.
  *
  * @author Jeff Wilgus
+ * @author Émilie Martin
  */
 public class Controller {
     private static final JSONFilter JSON_FILTER = new JSONFilter();
@@ -71,6 +70,7 @@ public class Controller {
         dashboard.addManageProfilesListener(new EditProfileListener());
         dashboard.addPersistPermissionListener(new PersistPermissionListener());
         dashboard.addPermissionListener(new PermissionListener());
+        dashboard.addEditPermissionListener(new EditPermissionsListener());
         dashboard.addTemperatureListener(new TemperatureListener());
         dashboard.addDateListener(new DateListener());
         dashboard.addTimeXListener(new TimeXListener());
@@ -218,7 +218,7 @@ public class Controller {
                     chooser.setFileFilter(TEXT_FILTER);
                     if (chooser.showOpenDialog(dashboard) == JFileChooser.APPROVE_OPTION) {
                         try {
-                            parameters.setActors(ProfileManager.loadProfiles(chooser.getSelectedFile()));
+                            parameters.setPermissions(PermissionManager.loadPermissions(chooser.getSelectedFile()));
                             //TODO update profile list
                         } catch (Exception exception) {
                             sendToConsole(exception.getMessage(), Dashboard.MessageType.ERROR);
@@ -230,18 +230,20 @@ public class Controller {
 
                     JFileChooser chooser = new JFileChooser();
                     chooser.setDialogTitle("Specify a file to save");
-                    //disable the all files option
+
+                    // Disable the all files option
                     chooser.setAcceptAllFileFilterUsed(false);
                     chooser.setCurrentDirectory(new java.io.File("."));
 
                     if (chooser.showSaveDialog(dashboard) == JFileChooser.APPROVE_OPTION) {
                         try {
                             //TODO warn about overwriting
-                            ProfileManager.saveProfiles(parameters.getPermissions(), chooser.getSelectedFile());
+                            PermissionManager.savePermissions(parameters.getPermissions(), chooser.getSelectedFile());
                         } catch (Exception exception) {
                             sendToConsole(exception.getMessage(), Dashboard.MessageType.ERROR);
                         }
                     }
+                    dashboard.togglePermissionButton();
                     break;
                 }
                 default:
@@ -267,6 +269,36 @@ public class Controller {
                     dashboard.setLocation((String) null);
                 }
             }
+        }
+
+    }
+
+    class EditPermissionsListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            PermissionEditor editor = dashboard.getPermissionEditor();
+            editor.addTableModelListener(f -> {
+                DefaultTableModel table = (DefaultTableModel) f.getSource();
+                for(int i=0; i<table.getRowCount(); i++) {
+                    Action action = (Action) table.getValueAt(i, 0);
+
+                    for(int j=1; j<table.getColumnCount(); j++) {
+                        Boolean value = (Boolean) table.getValueAt(i, j);
+
+                        if(value) { // If checkbox is selected
+                            parameters.getPermissionOf(table.getColumnName(j)).addPermission(action);
+                        } else {
+                            parameters.getPermissionOf(table.getColumnName(j)).removePermission(action);
+                        }
+                    }
+                }
+                dashboard.togglePermissionButton();
+            });
+
+            editor.setLocationRelativeTo(dashboard);
+            editor.pack();
+            editor.setVisible(true);
         }
 
     }

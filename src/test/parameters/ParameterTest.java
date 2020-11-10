@@ -1,5 +1,6 @@
 package test.parameters;
 
+import main.model.Action;
 import main.model.parameters.Parameters;
 import main.model.parameters.permissions.Permission;
 import org.junit.jupiter.api.BeforeEach;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,8 +16,26 @@ class ParameterTest {
 
     private static final double PI = 3.14;
     private static final String TEST_ROLE = "Test";
-    private static final Permission TEST_PERMISSION = action -> {
-        return action;
+    private static final Permission TEST_PERMISSION = new Permission() {
+        @Override
+        public Action authorize(final Action action) {
+            return action;
+        }
+
+        @Override
+        public Set<Action> allowed() {
+            return null;
+        }
+
+        @Override
+        public void addPermission(final Action action) {
+
+        }
+
+        @Override
+        public void removePermission(final Action action) {
+
+        }
     };
 
     Parameters parameters;
@@ -36,9 +56,7 @@ class ParameterTest {
     @Test
     void testEditProfile() {
         parameters.addActor(TEST_ROLE, TEST_PERMISSION);
-        parameters.addActor(TEST_ROLE, action -> {
-            return action;
-        });
+        parameters.addActor(TEST_ROLE, TEST_PERMISSION);
         assertEquals(parameters.getActorsIdentifier().size(), 1);
     }
 

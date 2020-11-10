@@ -18,9 +18,9 @@ public interface Permission {
      * so.
      *
      * @param action The specified {@code Action}
-     * @return the specified {@code Action}
-     * @throws IllegalArgumentException if {@code action} is disallowed at this {@code Permission} level
-     * @throws NullPointerException if {@code action} is {@code null}
+     * @return The specified {@code Action}
+     * @throws IllegalArgumentException If {@code action} is disallowed at this {@code Permission} level
+     * @throws NullPointerException If {@code action} is {@code null}
      */
     Action authorize(Action action);
 
@@ -29,5 +29,23 @@ public interface Permission {
      * @return The set of this {@code Permission}'s allowed {@code Action}s
      */
     Set<Action> allowed();
+
+    /**
+     * Allows user to add an {@code Action} to their list of permissible actions.
+     * Applied to a {@code Permission}, it is applied to all other permissions of the same level.
+     *      e.g.: adding the ToggleDoor action to a child-level Permission grants that permission to all child-level users
+     *
+     * @param action The {@code Action} to be added to the users' permissions
+     */
+    void addPermission(Action action);
+
+    /**
+     * Allows user to remove an {@code action} from their list of permissible actions.
+     * Applied to a {@code Permission}, it is applied to all other permissions of the same level.
+     *      e.g.: removing the ToggleDoor action to a child-level Permission removes that permission for all child-level users
+     *
+     * @param action The {@code Action} to be removed from the users' permissions
+     */
+    void removePermission(Action action);
 
 }

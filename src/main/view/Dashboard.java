@@ -34,8 +34,6 @@ import static java.awt.BorderLayout.WEST;
  */
 public class Dashboard extends JFrame {
 
-
-
     /**
      * The category a console message might have.
      */
@@ -67,6 +65,8 @@ public class Dashboard extends JFrame {
     HouseLayoutPanel layout = new HouseLayoutPanel();
     JTextPane console = new JTextPane();
     ProfileViewer profileViewer = new ProfileViewer();
+    PermissionEditor permissionEditor = new PermissionEditor();
+
     /**
      * Creates the dashboard, which is to contain the {@code ParameterPanel}, a console, the {@code HouseLayout}. This
      * is also the interface on which the simulation will be displayed and interacted with.
@@ -181,6 +181,13 @@ public class Dashboard extends JFrame {
     }
 
     /**
+     * @return The {@code PermissionEditor} panel that lets the user change its permissible actions.
+     */
+    public PermissionEditor getPermissionEditor() {
+        return permissionEditor;
+    }
+
+    /**
      * @return The location the user has selected for themselves
      */
     public String getLocationInput() {
@@ -284,7 +291,7 @@ public class Dashboard extends JFrame {
      * @param listener
      */
     public void addPersistPermissionListener(ActionListener listener) {
-        editor.savePermissions.addActionListener(listener);
+        editor.persistPermissions.addActionListener(listener);
     }
 
     /**
@@ -294,6 +301,14 @@ public class Dashboard extends JFrame {
      */
     public void addPermissionListener(ActionListener listener) {
         editor.permission.addActionListener(listener);
+    }
+
+    /**
+     * Registers an event handler for editing a the permissible actions given by the user's {@code Permission} level.
+     * @param editPermissionsListener
+     */
+    public void addEditPermissionListener(ActionListener editPermissionsListener) {
+        editor.editPermissions.addActionListener(editPermissionsListener);
     }
 
     /**
@@ -460,6 +475,24 @@ public class Dashboard extends JFrame {
                 break;
             case "Off":
                 parameters.on.setText("On");
+                break;
+            default:
+                throw new AssertionError();
+        }
+    }
+
+    /**
+     * Switches the function of the Save/Load Permissions button between the save and load functionality.
+     */
+    public void togglePermissionButton() {
+        switch (editor.persistPermissions.getText()) {
+            case "Save Permissions":
+                editor.persistPermissions.setText("Load Permissions");
+                editor.persistPermissions.setActionCommand("Load Permissions");
+                break;
+            case "Load Permissions":
+                editor.persistPermissions.setText("Save Permissions");
+                editor.persistPermissions.setActionCommand("Save Permissions");
                 break;
             default:
                 throw new AssertionError();

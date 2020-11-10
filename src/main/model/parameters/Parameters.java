@@ -4,6 +4,7 @@ import main.model.Manipulable;
 import main.model.elements.Room;
 import main.model.parameters.permissions.Permission;
 import main.model.tools.Clock;
+import main.model.parameters.permissions.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,6 +20,7 @@ import static main.util.NameValidator.validateName;
  * number and {@code Permission}s of other actors, the {@code Room} they occupy, and the current temperature and date.
  *
  * @author Jeff Wilgus
+ * @author Émilie Martin
  * @see Permission
  * @see Room
  */
@@ -53,6 +55,9 @@ public class Parameters {
     public static final int MIN_SECS = 0;
     public static final int MAX_SECS = 59;
 
+    // starting the clock
+    private static final Clock clock = new Clock();
+
     private Permission permission;
     private final Map<String, Permission> actors;
     private String location;
@@ -63,8 +68,7 @@ public class Parameters {
     private AwayMode awayMode;
     private int[] clockTime;
 
-    // starting the clock
-    private static final Clock clock = new Clock();
+    private Map<String, Permission> permissions;
 
     /**
      * Constructs a new {@code Parameters} object.
@@ -77,10 +81,29 @@ public class Parameters {
         temperature = DEFAULT_TEMPERATURE;
         on = false;
         awayMode = new AwayMode();
-
         // setting the time and time multiplier
         startUpdateClock(); // start the listener to update time given the clock time
         clockTime = clock.getClockTime();
+        permissions = new HashMap<>();
+        fillPermissionMap();
+    }
+
+    /**
+     * Populates the Permission HashMap with all permission types.
+     */
+    private void fillPermissionMap() {
+        permissions.put("Parent", new ParentPermission());
+        permissions.put("Child", new ChildPermission());
+        permissions.put("Guest", new GuestPermission());
+        permissions.put("Stranger", new StrangerPermission());
+    }
+
+    /**
+     * @param type The specified permission type
+     * @return The permission of the specified type
+     */
+    public Permission getPermissionOf(String type) {
+        return(permissions.get(type));
     }
 
     /**
@@ -327,5 +350,22 @@ public class Parameters {
         timerClock.start();
     }
 
+    /**
+     *
+     * @return The {@code Permission} levels available to the simulation
+     */
+    public Map<String, Permission> getPermissions() {
+        return permissions;
+    }
+
+    /**
+     * Sets the {@code permission} levels available to the simulation to that specified.
+     *
+     * @param permissions The specified {@code Permission} levels
+     * @throws NullPointerException if the specified {@code permission}s are {@code null}
+     */
+    public void setPermissions(Map<String, Permission> permissions) {
+        this.permissions = Objects.requireNonNull(permissions); // TODO need more validation
+    }
 }
 
