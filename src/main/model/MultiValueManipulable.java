@@ -13,9 +13,19 @@ import java.util.Objects;
  * @author Jeff Wilgus
  * @see Parameters
  */
-public class MultiValueManipulable extends AbstractManipulable {
+public class MultiValueManipulable extends ValueManipulable {
 
     private List<ValueManipulable<?>> valueManipulables = new LinkedList<>();
+
+    /**
+     * Constructs a new {@code ValueManipulable} with the specified {@code value}.
+     *
+     * @param value The value held by this {@code ValueManipulable}
+     * @throws NullPointerException If the specified {@code value} is {@code null}
+     */
+    public MultiValueManipulable(Object value) {
+        super(value);
+    }
 
     /**
      * Adds the specified {@code value} to this {@code MultiValueManipulable}.

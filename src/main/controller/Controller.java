@@ -367,8 +367,7 @@ public class Controller {
                     } else if (actionPanel.getSelectedAction().equals(Action.SET_AWAY_MODE_LIGHTS)) {
                         AwayLightChooser chooser = AwayLightChooser.of(house.getLocations());
                         chooser.addActionListener(f -> {
-                            MultiValueManipulable multiValueManipulable = new MultiValueManipulable();
-                            multiValueManipulable.addValue(chooser.getSelectedLocations());
+                            MultiValueManipulable multiValueManipulable = new MultiValueManipulable(chooser.getSelectedLocations());
                             multiValueManipulable.addValue(chooser.getStart());
                             multiValueManipulable.addValue(chooser.getEnd());
                             performActionOn(multiValueManipulable, Action.SET_AWAY_MODE_LIGHTS);

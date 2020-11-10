@@ -67,8 +67,9 @@ public class Parameters {
     private boolean autoLight;
     private AwayMode awayMode;
     private int[] clockTime;
-
     private Map<String, Permission> permissions;
+    private LocalTime awayLightStart;
+    private LocalTime awayLightEnd;
 
     /**
      * Constructs a new {@code Parameters} object.
@@ -86,6 +87,8 @@ public class Parameters {
         clockTime = clock.getClockTime();
         permissions = new HashMap<>();
         fillPermissionMap();
+        awayLightStart = DEFAULT_AWAY_LIGHT_START;
+        awayLightEnd = DEFAULT_AWAY_LIGHT_END;
     }
 
     /**
@@ -367,5 +370,24 @@ public class Parameters {
     public void setPermissions(Map<String, Permission> permissions) {
         this.permissions = Objects.requireNonNull(permissions); // TODO need more validation
     }
+
+    /**
+     * Sets the {@code start} of away light mode to the time specified
+     * @param start the specified start of away light mode
+     * @throws NullPointerException if the specified {@code start} is {@code null}
+     */
+    public void setAwayLightStart(LocalTime start) {
+        awayLightStart = Objects.requireNonNull(start);
+    }
+
+    /**
+     * Sets the {@code end} of away light mode to the time specified
+     * @param end the specified end of away light mode
+     * @throws NullPointerException if the specified {@code end} is {@code null}
+     */
+    public void setAwayLightEnd(LocalTime end) {
+        awayLightEnd = Objects.requireNonNull(end);
+    }
+
 }
 
