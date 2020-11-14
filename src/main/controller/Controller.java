@@ -19,6 +19,7 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.*;
 import java.util.Date;
 import java.util.HashSet;
@@ -83,6 +84,28 @@ public class Controller {
 
         // start clock update
         startClockDisplayUpdate();
+    }
+
+    // TODO comment this
+    Parameters getParameters() {
+        return parameters;
+    }
+
+    // TODO comment this
+    House getHouse() {
+        return house;
+    }
+
+    Action getSelectedAction() {
+        return dashboard.getActions().getSelectedAction();
+    }
+
+    Manipulable[] getItemsForSelection() {
+        return getItems(dashboard.getActions().getSelectedItem());
+    }
+
+    Component getDashboard() {
+        return dashboard;
     }
 
     /*
@@ -419,7 +442,7 @@ public class Controller {
 
     }
 
-    private boolean canAct() {
+    boolean canAct() {
         return !(parameters.getPermission() == null || parameters.getLocation() == null);
     }
 
@@ -448,7 +471,7 @@ public class Controller {
         }
     }
 
-    private void toggleAutoLight() {
+    void toggleAutoLight() {
         if (parameters.isAutoLight()) {
             for (Room room : house) {
                 room.toggleLights(room.isOccupied());
@@ -489,11 +512,11 @@ public class Controller {
         timer.start();
     }
 
-    private void sendToConsole(String message, Dashboard.MessageType type) {
+    void sendToConsole(String message, Dashboard.MessageType type) {
         dashboard.sendToConsole(message, type, true);
     }
 
-    private void redrawHouse() {
+    void redrawHouse() {
         for (String location : house.getLocations()) {
             dashboard.updateRoom(location, house.getRoom(location));
         }
