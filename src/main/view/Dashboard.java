@@ -42,14 +42,13 @@ public class Dashboard extends JFrame {
         WARNING,
         ERROR;
     }
-    // Pre-determined size parameters
 
+    // Pre-determined size parameters
     static final int WINDOW_WIDTH = 0x600;
     static final int WINDOW_HEIGHT = 0x300;
     static final int PARAMETER_PANE_WIDTH = WINDOW_WIDTH >>> 2; // x >>> y == x / 2^y
     static final int CONTENT_PANE_WIDTH = WINDOW_WIDTH - PARAMETER_PANE_WIDTH;
     static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd");
-            // NOTE: removed the time here so that we can implement that independently
     private static final EnumMap<MessageType, Color> MESSAGE_COLORS = new EnumMap<>(MessageType.class);
 
     static {
