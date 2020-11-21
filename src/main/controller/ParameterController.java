@@ -19,17 +19,29 @@ import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.Date;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
+/**
+ * The {@code ParameterController} class provides services for querying and modifying simulation {@code Parameters}.
+ *
+ * @author Jeff Wilgus
+ */
 public class ParameterController {
 
+    private static final File CURRENT_DIRECTORY = new File(".");
     private static final JSONFilter JSON_FILTER = new JSONFilter();
     private static final TextFilter TEXT_FILTER = new TextFilter();
 
     private final Controller parent;
 
+    /**
+     * Constructs a new {@code ParameterController} object with the specified {@code parent}.
+     * @param parent The {@code Controller} to which this {@code ParameterController} is subordinate to
+     * @throws NullPointerException If the specified {@code parent} is {@code null}
+     */
     public ParameterController(Controller parent) {
         this.parent = Objects.requireNonNull(parent);
     }
@@ -42,6 +54,8 @@ public class ParameterController {
             House house;
             JFileChooser chooser = new JFileChooser();
             chooser.setFileFilter(JSON_FILTER);
+            chooser.setAcceptAllFileFilterUsed(false);
+            chooser.setCurrentDirectory(CURRENT_DIRECTORY);
             if (chooser.showOpenDialog(dashboard) == JFileChooser.APPROVE_OPTION) {
                 HouseReader reader = new HouseReader(chooser.getSelectedFile());
                 parent.setHouse(house = reader.readHouse());
@@ -147,10 +161,12 @@ public class ParameterController {
             String actionCommand = e.getActionCommand();
             Parameters parameters = parent.getParameters();
             Dashboard dashboard = parent.getDashboard();
+            JFileChooser chooser = new JFileChooser();
+            chooser.setFileFilter(TEXT_FILTER);
+            chooser.setAcceptAllFileFilterUsed(false);
+            chooser.setCurrentDirectory(CURRENT_DIRECTORY);
             switch (actionCommand) {
                 case "Load Permissions": {
-                    JFileChooser chooser = new JFileChooser();
-                    chooser.setFileFilter(TEXT_FILTER);
                     if (chooser.showOpenDialog(dashboard) == JFileChooser.APPROVE_OPTION) {
                         try {
                             parameters.setPermissions(PermissionManager.loadPermissions(chooser.getSelectedFile()));
@@ -162,14 +178,6 @@ public class ParameterController {
                     break;
                 }
                 case "Save Permissions": {
-
-                    JFileChooser chooser = new JFileChooser();
-                    chooser.setDialogTitle("Specify a file to save");
-
-                    // Disable the all files option
-                    chooser.setAcceptAllFileFilterUsed(false);
-                    chooser.setCurrentDirectory(new java.io.File("."));
-
                     if (chooser.showSaveDialog(dashboard) == JFileChooser.APPROVE_OPTION) {
                         try {
                             //TODO warn about overwriting
