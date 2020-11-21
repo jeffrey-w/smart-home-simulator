@@ -70,6 +70,8 @@ public class Dashboard extends JFrame {
     /**
      * Creates the dashboard, which is to contain the {@code ParameterPanel}, a console, the {@code HouseLayout}. This
      * is also the interface on which the simulation will be displayed and interacted with.
+     *
+     * @param permissions TODO
      */
     public Dashboard() {
         // Set window title.
@@ -388,6 +390,16 @@ public class Dashboard extends JFrame {
             console.setEditable(true);
             console.grabFocus();
             inputLoc = console.getDocument().getLength();
+        }
+    }
+
+    /**
+     * TODO
+     * @param permissions
+     */
+    public void addPermissions(Collection<Permission> permissions) {
+        for (Permission permission : permissions) {
+            editor.permission.addItem(permission);
         }
     }
 
