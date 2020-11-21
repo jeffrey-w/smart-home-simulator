@@ -1,30 +1,31 @@
 package main.controller;
 
 import main.model.Action;
-import main.model.Manipulable;
-import main.model.MultiValueManipulable;
-import main.model.ValueManipulable;
+import main.model.Module;
 import main.model.elements.House;
-import main.model.elements.Room;
-import main.model.elements.Yard;
 import main.model.parameters.Parameters;
 import main.model.parameters.permissions.Permission;
 import main.util.HouseReader;
 import main.util.JSONFilter;
 import main.util.PermissionManager;
 import main.util.TextFilter;
-import main.view.*;
+import main.view.Dashboard;
+import main.view.PermissionEditor;
+import main.view.ProfileEditor;
+import main.view.ProfileViewer;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Set;
 
 /**
  * The {@code Controller} class provides the interface between runtime simulation objects and the UI elements to
@@ -36,14 +37,9 @@ import java.util.Set;
 public class Controller {
     private static final JSONFilter JSON_FILTER = new JSONFilter();
     private static final TextFilter TEXT_FILTER = new TextFilter();
-    private static final Set<String> CANCEL_KEYWORDS = new HashSet<>();
-
-    static {
-        CANCEL_KEYWORDS.add("Y");
-        CANCEL_KEYWORDS.add("YES");
-    }
 
     // This is the entry point into the program
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             try {
@@ -60,12 +56,14 @@ public class Controller {
 
     private House house;
     private final Parameters parameters = new Parameters();
+    private final Map<String, ModuleController> modules = new HashMap<>();
     private final Dashboard dashboard = new Dashboard();
 
     /**
      * Constructs a new {@code Controller} object.
      */
     public Controller() {
+        addModules();
         dashboard.setTemperature(String.valueOf(parameters.getTemperature()));
         dashboard.setDate(parameters.getDate());
         dashboard.addSimulationListener(new SimulationListener());
@@ -86,26 +84,9 @@ public class Controller {
         startClockDisplayUpdate();
     }
 
-    // TODO comment this
-    Parameters getParameters() {
-        return parameters;
-    }
-
-    // TODO comment this
-    House getHouse() {
-        return house;
-    }
-
-    Action getSelectedAction() {
-        return dashboard.getActions().getSelectedAction();
-    }
-
-    Manipulable[] getItemsForSelection() {
-        return getItems(dashboard.getActions().getSelectedItem());
-    }
-
-    Component getDashboard() {
-        return dashboard;
+    private void addModules() {
+        modules.put(Module.SHC.getName(), new CoreModuleController(this, dashboard.addModule(Module.SHC)));
+        modules.put(Module.SHP.getName(), new SecurityModuleController(this, dashboard.addModule(Module.SHP)));
     }
 
     /*
@@ -120,12 +101,12 @@ public class Controller {
                 parameters.setOn(((JToggleButton) e.getSource()).isSelected());
                 dashboard.toggleOnButton();
                 dashboard.showStates(parameters.isOn());
-                toggleAutoLight();
+                getCoreModuleController().toggleAutoLight();
                 redrawHouse();
                 sendToConsole("Simulation has " + (parameters.isOn() ? "begun." : "ended."),
                         Dashboard.MessageType.NORMAL);
                 if (parameters.isOn() && parameters.isAwayMode() && house.isOccupied()) {
-                    startAwayModeCountdown();
+                    getSecurityModuleController().startAwayModeCountdown();
                 }
             } else {
                 sendToConsole("Please load a house to start the simulation.", Dashboard.MessageType.ERROR);
@@ -136,6 +117,7 @@ public class Controller {
     }
 
     class LoadHouseListener implements ActionListener {
+
         @Override
         public void actionPerformed(final ActionEvent e) {
             JFileChooser chooser = new JFileChooser();
@@ -153,6 +135,7 @@ public class Controller {
     }
 
     class ManageProfilesListener implements ActionListener {
+
         @Override
         public void actionPerformed(ActionEvent e) {
             ProfileViewer viewer = dashboard.getProfileViewer();
@@ -166,6 +149,7 @@ public class Controller {
     }
 
     class EditProfileListener implements ActionListener {
+
         @Override
         public void actionPerformed(final ActionEvent e) {
             String actionCommand = e.getActionCommand();
@@ -191,10 +175,10 @@ public class Controller {
                                 house.addPerson(name, permission, location);
                                 sendToConsole(name + " has entered the " + location + ".",
                                         Dashboard.MessageType.NORMAL);
-                                toggleAutoLight();
+                                getCoreModuleController().toggleAutoLight();
                                 redrawHouse();
                                 if (parameters.isOn() && parameters.isAwayMode()) {
-                                    startAwayModeCountdown();
+                                    getSecurityModuleController().startAwayModeCountdown();
                                 }
                             } else {
                                 if (house != null && house.removePerson(name)) {
@@ -220,7 +204,7 @@ public class Controller {
                         house.removePerson(viewer.getSelectedValue());
                         sendToConsole(viewer.getSelectedValue() + " has exited the house.",
                                 Dashboard.MessageType.NORMAL);
-                        toggleAutoLight();
+                        getCoreModuleController().toggleAutoLight();
                         redrawHouse();
                     }
                     viewer.removeProfile(viewer.getSelectedValue());
@@ -280,6 +264,7 @@ public class Controller {
     }
 
     class PermissionListener implements ActionListener {
+
         @Override
         public void actionPerformed(final ActionEvent e) {
             Permission permission = dashboard.getPermissionInput();
@@ -332,6 +317,7 @@ public class Controller {
     }
 
     class LocationListener implements ActionListener {
+
         @Override
         public void actionPerformed(final ActionEvent e) {
             String location = dashboard.getLocationInput();
@@ -341,7 +327,7 @@ public class Controller {
                 house.addPerson("user", parameters.getPermission(), location);
                 sendToConsole("You have entered the " + location + ".", Dashboard.MessageType.NORMAL);
                 if (parameters.isOn() && parameters.isAwayMode()) {
-                    startAwayModeCountdown();
+                    getSecurityModuleController().startAwayModeCountdown();
                 }
             } catch (NoSuchElementException exception) {
                 sendToConsole("You have exited the house.", Dashboard.MessageType.NORMAL);
@@ -349,13 +335,14 @@ public class Controller {
                 exception.printStackTrace();
                 sendToConsole(exception.getMessage(), Dashboard.MessageType.ERROR);
             }
-            toggleAutoLight();
+            getCoreModuleController().toggleAutoLight();
             redrawHouse();
         }
 
     }
 
     class TemperatureListener implements ChangeListener {
+
         @Override
         public void stateChanged(final ChangeEvent e) {
             int temperature = dashboard.getTemperatureInput();
@@ -366,6 +353,7 @@ public class Controller {
     }
 
     class DateListener implements ChangeListener {
+
         @Override
         public void stateChanged(final ChangeEvent e) {
             Date date = dashboard.getDateInput();
@@ -375,152 +363,15 @@ public class Controller {
 
     }
 
-    private static final Object[] AWAY_MODE_DELAYS = new Integer[] {
-            5, 6, 7, 8, 9, 10
-    }; // TODO move this
-
     class ActionSelectionListener extends MouseAdapter {
 
         @Override
         public void mouseClicked(MouseEvent e) {
             if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() > 1) {
-                ActionPanel actionPanel = dashboard.getActions();
-                if (actionPanel.getSelectedItem().equals("Away Mode")) {
-                    if (actionPanel.getSelectedAction().equals(Action.SET_AWAY_MODE_DELAY)) {
-                        ValueManipulable<Integer> valueManipulable = new ValueManipulable<Integer>((Integer) JOptionPane
-                                .showInputDialog(dashboard, "Enter an away mode delay.", "Away Mode Delay",
-                                        JOptionPane.PLAIN_MESSAGE, null,
-                                        AWAY_MODE_DELAYS, AWAY_MODE_DELAYS[5]));
-                        performActionOn(valueManipulable, Action.SET_AWAY_MODE_DELAY);
-                    } else if (actionPanel.getSelectedAction().equals(Action.SET_AWAY_MODE_LIGHTS)) {
-                        AwayLightChooser chooser = AwayLightChooser.of(house.getLocations());
-                        chooser.addActionListener(f -> {
-                            MultiValueManipulable multiValueManipulable =
-                                    new MultiValueManipulable(chooser.getSelectedLocations());
-                            multiValueManipulable.addValue(chooser.getStart());
-                            multiValueManipulable.addValue(chooser.getEnd());
-                            performActionOn(multiValueManipulable, Action.SET_AWAY_MODE_LIGHTS);
-                            chooser.dispose();
-                        });
-                        chooser.pack();
-                        chooser.setLocationRelativeTo(dashboard);
-                        chooser.setVisible(true);
-                    } else {
-                        performActionOn(parameters.getAwayMode(), actionPanel.getSelectedAction());
-                        redrawHouse();
-                    }
-                } else if (canAct()) {
-                    if (actionPanel.getSelectedAction().equals(Action.TOGGLE_AUTO_LIGHT)) {
-                        try {
-                            sendToConsole(parameters.getPermission().authorize(Action.TOGGLE_AUTO_LIGHT)
-                                    .doAction(null, parameters, house), Dashboard.MessageType.NORMAL);
-                            toggleAutoLight();
-                            redrawHouse();
-                        } catch (Exception exception) {
-                            sendToConsole(exception.getMessage(), Dashboard.MessageType.ERROR);
-                        }
-                    } else {
-                        ItemChooser chooser = ItemChooser.of(getItems(actionPanel.getSelectedItem()));
-                        chooser.addActionListener(f -> {
-                            performActionOn(chooser.getSelectedItem(), actionPanel.getSelectedAction());
-                            redrawHouse();
-                            chooser.dispose();
-                        });
-                        chooser.pack();
-                        chooser.setLocationRelativeTo(dashboard);
-                        chooser.setVisible(true);
-                    }
-                } else {
-                    String message = "Please select a permission and location to choose an action.";
-                    if (house == null) {
-                        message += " You must first load a house to select a location.";
-                    }
-                    sendToConsole(message, Dashboard.MessageType.ERROR);
-                }
+                modules.get(dashboard.getSelectedModule()).control();
             }
         }
 
-    }
-
-    boolean canAct() {
-        return !(parameters.getPermission() == null || parameters.getLocation() == null);
-    }
-
-    private Manipulable[] getItems(String type) {
-        Room location = house.getRoom(parameters.getLocation());
-        switch (type) {
-            case "Doors":
-                return location.getDoors();
-            case "Lights":
-                return location.getLights();
-            case "Windows":
-                return location.getWindows();
-            default:
-                throw new AssertionError(); // Defensive measure; this should never happen.
-        }
-    }
-
-    private void performActionOn(Manipulable manipulable, Action action) {
-        try {
-            sendToConsole(manipulable.manipulate(parameters.getPermission().authorize(action), parameters, house),
-                    Dashboard.MessageType.NORMAL);
-        } catch (IllegalArgumentException e) {
-            sendToConsole(e.getMessage(), Dashboard.MessageType.ERROR);
-        } catch (NullPointerException e) {
-            sendToConsole("Please select a permission level first.", Dashboard.MessageType.ERROR);
-        }
-    }
-
-    void toggleAutoLight() {
-        if (parameters.isAutoLight()) {
-            for (Room room : house) {
-                room.toggleLights(room.isOccupied());
-            }
-            if (Yard.getInstance().isOccupied()) {
-                Yard.getInstance().setLightOn(true);
-            }
-        }
-    }
-
-    private void startAwayModeCountdown() {
-        final boolean[] cancel = {false, false};
-        Timer timer = new Timer(parameters.getAwayDelay(), e -> {
-            dashboard.addConsoleListener(null, null);
-            if (cancel[0]) {
-                sendToConsole("Crisis averted!", Dashboard.MessageType.WARNING);
-            } else {
-                sendToConsole((cancel[1] ? "" : "\n") + "Intruder detected, the authorities have been alerted!",
-                        Dashboard.MessageType.WARNING);
-            }
-        });
-        dashboard.addConsoleListener(new KeyAdapter() {
-
-            @Override
-            public void keyPressed(final KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    if (CANCEL_KEYWORDS.contains(dashboard.getLastConsoleMessage())) {
-                        cancel[0] = true;
-                        timer.setInitialDelay(0);
-                        timer.restart();
-                    }
-                    cancel[1] = true;
-                }
-            }
-
-        }, "Potential break in, do you want to disable the alarm [y/N]?");
-        timer.setRepeats(false);
-        timer.start();
-    }
-
-    void sendToConsole(String message, Dashboard.MessageType type) {
-        dashboard.sendToConsole(message, type, true);
-    }
-
-    void redrawHouse() {
-        for (String location : house.getLocations()) {
-            dashboard.updateRoom(location, house.getRoom(location));
-        }
-        dashboard.redrawHouse();
     }
 
     public void startClockDisplayUpdate() {
@@ -541,6 +392,7 @@ public class Controller {
             int timeX = dashboard.getTimeXInput();
             parameters.setClockTimeMultiplier(timeX);
         }
+
     }
 
     class TimeUpdateListener implements ChangeListener {
@@ -554,6 +406,40 @@ public class Controller {
 
             parameters.setTime(time);
         }
+
+    }
+
+    // TODO comment this
+    Parameters getParameters() {
+        return parameters;
+    }
+
+    // TODO comment this
+    House getHouse() {
+        return house;
+    }
+
+    Dashboard getDashboard() {
+        return dashboard;
+    }
+
+    void sendToConsole(String message, Dashboard.MessageType type) {
+        dashboard.sendToConsole(message, type, true);
+    }
+
+    void redrawHouse() {
+        for (String location : house.getLocations()) {
+            dashboard.updateRoom(location, house.getRoom(location));
+        }
+        dashboard.redrawHouse();
+    }
+
+    private CoreModuleController getCoreModuleController() {
+        return ((CoreModuleController) modules.get(Module.SHC.getName()));
+    }
+
+    private SecurityModuleController getSecurityModuleController() {
+        return ((SecurityModuleController) modules.get(Module.SHP.getName()));
     }
 
 }
