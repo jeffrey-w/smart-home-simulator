@@ -7,6 +7,7 @@ import main.view.viewtils.SpringUtilities;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -23,7 +24,7 @@ public class ProfileEditor extends JFrame {
     private static final int Y_PADDING = 0x30;
 
     JTextField role = new JTextField();
-    JComboBox<Permission> permission = ParameterEditor.permissionJComboBox();
+    JComboBox<Permission> permission = new JComboBox<>(); // TODO rename this
     JComboBox<String> location = new JComboBox<>();
     JButton ok = new JButton("Ok");
 
@@ -32,9 +33,10 @@ public class ProfileEditor extends JFrame {
      * editable only if specified.
      *
      * @param name The name of the profile being edited; if {@code null}, a new profile will be added
+     * @param permissions TODO
      * @param enableLocation If {@code true}, this profile's location may be edited
      */
-    public ProfileEditor(String name, boolean enableLocation) {
+    public ProfileEditor(String name, Collection<Permission> permissions, boolean enableLocation) {
         // Set window title.
         super("Edit Profile");
 
@@ -61,6 +63,10 @@ public class ProfileEditor extends JFrame {
 
         // Set field display behavior.
         SpringUtilities.makeCompactGrid(fields, ROWS, COLUMNS, 1, 1, 1, Y_PADDING);
+
+        for (Permission permission : permissions) {
+            this.permission.addItem(permission);
+        }
 
         // A name is being edited, set the name and disable changing it.
         if (name != null) {
