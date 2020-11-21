@@ -4,29 +4,24 @@ import main.model.Action;
 import main.model.Manipulable;
 import main.model.parameters.Parameters;
 import main.view.Dashboard;
-import main.model.Module;
 import main.view.ModuleView;
 
 import java.util.Objects;
 
-public abstract class AbstractModuleController {
+public abstract class AbstractModuleController implements ModuleController {
 
     final Controller parent;
-    final Module module;
     final ModuleView view;
 
     /**
-     * Constructs a new {@code AbstractModuleController} with the specified {@code parent}, {@code module}, and {@code
-     * view}.
+     * Constructs a new {@code AbstractModuleController} with the specified {@code parent} and {@code view}.
      *
      * @param parent The {@code Controller} to which this {@code AbstractModuleController} is subordinate to
-     * @param module The {@code module} that this {@code AbstractModuleController} controls
      * @param view The {@code ModuleView} that this {@code AbstractModuleController} controls
-     * @throws NullPointerException If the specified {@code parent}, {@code module}, or {@code view} is {@code null}
+     * @throws NullPointerException If the specified {@code parent} or {@code view} is {@code null}
      */
-    public AbstractModuleController(Controller parent, Module module, ModuleView view) {
+    public AbstractModuleController(Controller parent, ModuleView view) {
         this.parent = Objects.requireNonNull(parent);
-        this.module = Objects.requireNonNull(module);
         this.view = Objects.requireNonNull(view);
     }
 
