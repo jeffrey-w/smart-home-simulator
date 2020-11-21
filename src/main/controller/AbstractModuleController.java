@@ -8,6 +8,12 @@ import main.view.ModuleView;
 
 import java.util.Objects;
 
+/**
+ * The {@code AbstractModuleController} class provides a minimal implementation of the {@code ModuleController}
+ * interface.
+ *
+ * @author Jeff Wilgus
+ */
 public abstract class AbstractModuleController implements ModuleController {
 
     final Controller parent;
@@ -25,7 +31,7 @@ public abstract class AbstractModuleController implements ModuleController {
         this.view = Objects.requireNonNull(view);
     }
 
-    void performCommand(Manipulable manipulable, Action action) {
+    void performActionOn(Action action, Manipulable manipulable) {
         Parameters parameters = parent.getParameters();
         try {
             parent.sendToConsole(
@@ -35,5 +41,7 @@ public abstract class AbstractModuleController implements ModuleController {
             parent.sendToConsole(e.getMessage(), Dashboard.MessageType.ERROR);
         }
     }
+
+    abstract boolean canAct();
 
 }
