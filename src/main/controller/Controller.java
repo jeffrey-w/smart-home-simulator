@@ -83,42 +83,8 @@ public class Controller {
     }
 
     /*
-     * Below are various event handlers that transform input from the user into data that can be manipulated by the data
-     * model of a simulation
+     * Utility methods for subordinate controllers.
      */
-    class SimulationListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (house != null) {
-                parameters.setOn(((JToggleButton) e.getSource()).isSelected());
-                dashboard.toggleOnButton();
-                dashboard.showStates(parameters.isOn());
-                getCoreModuleController().toggleAutoLight();
-                redrawHouse();
-                sendToConsole("Simulation has " + (parameters.isOn() ? "begun." : "ended."),
-                        Dashboard.MessageType.NORMAL);
-                if (parameters.isOn() && parameters.isAwayMode() && house.isOccupied()) {
-                    getSecurityModuleController().startAwayModeCountdown();
-                }
-            } else {
-                sendToConsole("Please load a house to start the simulation.", Dashboard.MessageType.ERROR);
-                ((JToggleButton) e.getSource()).setSelected(false);
-            }
-        }
-
-    }
-
-    class ActionSelectionListener extends MouseAdapter {
-
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() > 1) {
-                modules.get(dashboard.getSelectedModule()).control();
-            }
-        }
-
-    }
 
     Parameters getParameters() {
         return parameters;
@@ -153,6 +119,43 @@ public class Controller {
             dashboard.updateRoom(location, house.getRoom(location));
         }
         dashboard.redrawHouse();
+    }
+
+    /*
+     * Event handlers.
+     */
+    class SimulationListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (house != null) {
+                parameters.setOn(((JToggleButton) e.getSource()).isSelected());
+                dashboard.toggleOnButton();
+                dashboard.showStates(parameters.isOn());
+                getCoreModuleController().toggleAutoLight();
+                redrawHouse();
+                sendToConsole("Simulation has " + (parameters.isOn() ? "begun." : "ended."),
+                        Dashboard.MessageType.NORMAL);
+                if (parameters.isOn() && parameters.isAwayMode() && house.isOccupied()) {
+                    getSecurityModuleController().startAwayModeCountdown();
+                }
+            } else {
+                sendToConsole("Please load a house to start the simulation.", Dashboard.MessageType.ERROR);
+                ((JToggleButton) e.getSource()).setSelected(false);
+            }
+        }
+
+    }
+
+    class ActionSelectionListener extends MouseAdapter {
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() > 1) {
+                modules.get(dashboard.getSelectedModule()).control();
+            }
+        }
+
     }
 
 }
