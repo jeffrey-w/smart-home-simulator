@@ -14,7 +14,7 @@ import java.awt.*;
  * @author Émilie Martin
  */
 public class PermissionEditor extends JFrame {
-    private static final int DIM_X = 0x150;
+    private static final int DIM_X = 0x400;
     private static final int DIM_Y = 0x100;
 
     private String[] columnNames = {"Action", "Parent", "Child", "Guest", "Stranger"};
