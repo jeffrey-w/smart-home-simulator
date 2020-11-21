@@ -10,8 +10,22 @@ import main.view.Dashboard;
 import main.view.ItemChooser;
 import main.view.ModuleView;
 
+/**
+ * The {@code CoreModuleController} class provides services for delivering core smart home functionality. This includes
+ * operations such as opening and closing {@code Door}s, {@code Light}s, and {@code Window}s, and toggling auto light
+ * mode.
+ *
+ * @author Jeff Wilgus
+ */
 public class CoreModuleController extends AbstractModuleController {
 
+    /**
+     * Constructs a new {@code CoreModuleController} object with the specified {@code parent} and {@code view}.
+     *
+     * @param parent The {@code Controller} to which this {@code CoreModuleController} is subordinate to
+     * @param view The {@code ModuleView} that this {@code CoreModuleController} controls
+     * @throws NullPointerException If the specified {@code parent} or {@code view} is {@code null}
+     */
     public CoreModuleController(Controller parent, ModuleView view) {
         super(parent, view);
     }
@@ -22,12 +36,12 @@ public class CoreModuleController extends AbstractModuleController {
             Parameters parameters = parent.getParameters();
             Action action = view.getSelectedAction();
             if (action.equals(Action.TOGGLE_AUTO_LIGHT)) {
-                performCommand(new ValueManipulable<>(!parameters.isAutoLight()), action);
+                performActionOn(action, new ValueManipulable<>(!parameters.isAutoLight()));
                 toggleAutoLight();
             } else {
                 ItemChooser chooser = ItemChooser.of(getItemsForSelection());
                 chooser.addActionListener(f -> {
-                    performCommand(chooser.getSelectedItem(), action);
+                    performActionOn(action, chooser.getSelectedItem());
                     chooser.dispose();
                 });
                 chooser.pack();
@@ -44,11 +58,10 @@ public class CoreModuleController extends AbstractModuleController {
         }
     }
 
-    @Override
-    public boolean canAct() {
-        return !(parent.getParameters().getPermission() == null || parent.getParameters().getLocation() == null);
-    }
-
+    /**
+     * Iterates over the {@code Room}s in the {@code House} controlled by this {@code CoreModuleController}, turning on
+     * and off the {@code Light}s as per occupancy in each.
+     */
     public void toggleAutoLight() {
         if (parent.getParameters().isAutoLight()) {
             for (Room room : parent.getHouse()) {
@@ -58,6 +71,11 @@ public class CoreModuleController extends AbstractModuleController {
                 Yard.getInstance().setLightOn(true);
             }
         }
+    }
+
+    @Override
+    boolean canAct() {
+        return !(parent.getParameters().getPermission() == null || parent.getParameters().getLocation() == null);
     }
 
     private Manipulable[] getItemsForSelection() {
