@@ -34,6 +34,14 @@ import static java.awt.BorderLayout.WEST;
  */
 public class Dashboard extends JFrame {
 
+    public ModuleView addModule(Module module) {
+        return actions.addModule(module);
+    }
+
+    public String getSelectedModule() {
+        return actions.getTitleAt(actions.getSelectedIndex());
+    }
+
     /**
      * The category a console message might have.
      */
@@ -107,8 +115,6 @@ public class Dashboard extends JFrame {
 
         // Set content display behavior.
         actions.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-        actions.addModule(Module.SHC);
-        actions.addModule(Module.SHP);
         layout.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 
         // Set console display behavior.
