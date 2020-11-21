@@ -65,6 +65,7 @@ public class Controller {
      * Constructs a new {@code Controller} object.
      */
     public Controller() {
+        dashboard.addPermissions(parameters.getPermissions().values());
         dashboard.setTemperature(String.valueOf(parameters.getTemperature()));
         dashboard.setDate(parameters.getDate());
         dashboard.addSimulationListener(new SimulationListener());
@@ -150,7 +151,9 @@ public class Controller {
             switch (actionCommand) {
                 case "Add":
                 case "Edit": {
-                    ProfileEditor editor = new ProfileEditor(viewer.getSelectedValue(), house != null);
+                    ProfileEditor editor =
+                            new ProfileEditor(viewer.getSelectedValue(), parameters.getPermissions().values(),
+                                    house != null);
                     editor.setPermission(parameters.permissionOf(editor.getRole()));
                     if (house != null) {
                         editor.addLocations(house.getLocations());
@@ -301,8 +304,8 @@ public class Controller {
                 }
             });
 
-            editor.setLocationRelativeTo(dashboard);
             editor.pack();
+            editor.setLocationRelativeTo(dashboard);
             editor.setVisible(true);
         }
 
