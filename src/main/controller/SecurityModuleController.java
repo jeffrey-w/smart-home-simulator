@@ -40,7 +40,7 @@ public class SecurityModuleController extends AbstractModuleController {
                         parent.sendToConsole("Please enter a positive integer.", Dashboard.MessageType.ERROR);
                         return;
                     }
-                    performCommand(valueManipulable, Action.SET_AWAY_MODE_DELAY);
+                    performActionOn(Action.SET_AWAY_MODE_DELAY, valueManipulable);
                     break;
                 case SET_AWAY_MODE_LIGHTS:
                     AwayLightChooser chooser = AwayLightChooser.of(parent.getHouse().getLocations());
@@ -49,24 +49,19 @@ public class SecurityModuleController extends AbstractModuleController {
                                 new MultiValueManipulable(chooser.getSelectedLocations());
                         multiValueManipulable.addValue(chooser.getStart());
                         multiValueManipulable.addValue(chooser.getEnd());
-                        performCommand(multiValueManipulable, Action.SET_AWAY_MODE_LIGHTS);
+                        performActionOn(Action.SET_AWAY_MODE_LIGHTS, multiValueManipulable);
                         chooser.dispose();
                     });
                     chooser.pack();
                     chooser.setLocationRelativeTo(parent.getDashboard());
                     chooser.setVisible(true);
                 case SET_AWAY_MODE:
-                    performCommand(parent.getParameters().getAwayMode(), view.getSelectedAction());
+                    performActionOn(view.getSelectedAction(), parent.getParameters().getAwayMode());
                     parent.redrawHouse();
             }
         } else {
             parent.sendToConsole("Please select a permission to choose an action.", Dashboard.MessageType.ERROR);
         }
-    }
-
-    @Override
-    public boolean canAct() {
-        return parent.getParameters().getPermission() != null;
     }
 
     public void startAwayModeCountdown() {
@@ -97,6 +92,11 @@ public class SecurityModuleController extends AbstractModuleController {
         }, "Potential break in, do you want to disable the alarm [y/N]?");
         timer.setRepeats(false);
         timer.start();
+    }
+
+    @Override
+    boolean canAct() {
+        return parent.getParameters().getPermission() != null;
     }
 
 }
