@@ -20,6 +20,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
+import java.io.File;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
@@ -74,7 +75,7 @@ public class Controller {
         dashboard.addManageProfilesListener(new EditProfileListener());
         dashboard.addPersistPermissionListener(new PersistPermissionListener());
         dashboard.addPermissionListener(new PermissionListener());
-        dashboard.addEditPermissionListener(new EditPermissionsListener());
+        dashboard.addEditPermissionListener(new EditPermissionListener());
         dashboard.addTemperatureListener(new TemperatureListener());
         dashboard.addDateListener(new DateListener());
         dashboard.addTimeXListener(new TimeXListener());
@@ -222,12 +223,13 @@ public class Controller {
                 case "Load Permissions": {
                     JFileChooser chooser = new JFileChooser();
                     chooser.setFileFilter(TEXT_FILTER);
+                    chooser.setCurrentDirectory(new File("."));
                     if (chooser.showOpenDialog(dashboard) == JFileChooser.APPROVE_OPTION) {
                         try {
                             parameters.setPermissions(PermissionManager.loadPermissions(chooser.getSelectedFile()));
                             //TODO update profile list
                         } catch (Exception exception) {
-                            sendToConsole(exception.getMessage(), Dashboard.MessageType.ERROR);
+                            exception.printStackTrace();
                         }
                     }
                     break;
@@ -279,11 +281,11 @@ public class Controller {
 
     }
 
-    class EditPermissionsListener implements ActionListener {
+    class EditPermissionListener implements ActionListener {
 
         @Override
         public void actionPerformed(final ActionEvent e) {
-            PermissionEditor editor = dashboard.getPermissionEditor();
+            PermissionEditor editor = new PermissionEditor(parameters);
             editor.addTableModelListener(f -> {
                 DefaultTableModel table = (DefaultTableModel) f.getSource();
                 for (int i = 0; i < table.getRowCount(); i++) {
@@ -293,9 +295,9 @@ public class Controller {
                         Boolean value = (Boolean) table.getValueAt(i, j);
 
                         if (value) { // If checkbox is selected
-                            parameters.getPermissionOf(table.getColumnName(j)).addPermission(action);
+                            parameters.getPermissionOf(table.getColumnName(j)).allow(action);
                         } else {
-                            parameters.getPermissionOf(table.getColumnName(j)).removePermission(action);
+                            parameters.getPermissionOf(table.getColumnName(j)).disallow(action);
                         }
                     }
                 }
