@@ -20,6 +20,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.*;
 
 import static java.awt.BorderLayout.EAST;
@@ -49,7 +50,7 @@ public class Dashboard extends JFrame {
     static final int PARAMETER_PANE_WIDTH = WINDOW_WIDTH >>> 2; // x >>> y == x / 2^y
     static final int CONTENT_PANE_WIDTH = WINDOW_WIDTH - PARAMETER_PANE_WIDTH;
     static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd");
-            // NOTE: removed the time here so that we can implement that independently
+    // NOTE: removed the time here so that we can implement that independently
     private static final EnumMap<MessageType, Color> MESSAGE_COLORS = new EnumMap<>(MessageType.class);
 
     static {
@@ -165,12 +166,7 @@ public class Dashboard extends JFrame {
      * @throws NullPointerException If the specified {@code time} is {@code null}
      */
     public void setTime(int[] time) {
-        String h = Integer.toString(time[0]);
-        String m = Integer.toString(time[1]);
-        String s = Integer.toString(time[2]);
-        String timeStr = ("" + h + ":" + m + ":" + s);
-
-        parameters.setTime(timeStr);
+        parameters.setTime(time[0] + ":" + time[1] + ":" + time[2]);
     }
 
     /**
@@ -215,25 +211,16 @@ public class Dashboard extends JFrame {
         return (Integer) editor.timeX.getValue();
     }
 
-    /**
-     * @return The time hour the user has set for the simulation {@code House}
-     */
-    public Integer getHourInput() {
-        return (Integer) editor.hour.getValue();
-    }
-
-    /**
-     * @return The time min the user has set for the simulation {@code House}
-     */
-    public Integer getMinInput() {
-        return (Integer) editor.min.getValue();
-    }
-
-    /**
-     * @return The time sec the user has set for the simulation {@code House}
-     */
-    public Integer getSecInput() {
-        return (Integer) editor.sec.getValue();
+    public int[] getTimeInput() {
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime((Date) editor.time.getValue());
+        LocalTime time = LocalTime
+                .of(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND));
+        return new int[] {
+                time.getHour(),
+                time.getMinute(),
+                time.getSecond()
+        };
     }
 
     /**
@@ -353,9 +340,7 @@ public class Dashboard extends JFrame {
      * @param listener The specified event handler
      */
     public void addTimeUpdateListener(ChangeListener listener) {
-        editor.hour.addChangeListener(listener);
-        editor.min.addChangeListener(listener);
-        editor.sec.addChangeListener(listener);
+        editor.time.addChangeListener(listener);
     }
 
     /**
