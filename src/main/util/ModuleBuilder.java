@@ -21,8 +21,8 @@ public class ModuleBuilder {
 
     private static class CommandEntry implements Map.Entry<String, Action> {
 
-        String key;
-        Action value;
+        final String key;
+        final Action value;
 
         CommandEntry(String key, Action value) {
             this.key = validateName(key);

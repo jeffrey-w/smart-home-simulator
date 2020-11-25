@@ -23,10 +23,10 @@ public class ProfileEditor extends JFrame {
     private static final int COLUMNS = 2;
     private static final int Y_PADDING = 0x30;
 
-    JTextField role = new JTextField();
-    JComboBox<Permission> permission = new JComboBox<>(); // TODO rename this
-    JComboBox<String> location = new JComboBox<>();
-    JButton ok = new JButton("Ok");
+    final JTextField role = new JTextField();
+    final JComboBox<Permission> permission = new JComboBox<>(); // TODO rename this
+    final JComboBox<String> location = new JComboBox<>();
+    final JButton ok = new JButton("Ok");
 
     /**
      * Constructs a new {@code ProfileEditor} object for the specified {@code name}. The location of this profile is

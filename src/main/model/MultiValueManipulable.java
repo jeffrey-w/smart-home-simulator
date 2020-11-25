@@ -13,9 +13,9 @@ import java.util.Objects;
  * @author Jeff Wilgus
  * @see Parameters
  */
-public class MultiValueManipulable extends ValueManipulable {
+public class MultiValueManipulable extends ValueManipulable<Object> {
 
-    private List<ValueManipulable<?>> valueManipulables = new LinkedList<>();
+    private final List<ValueManipulable<?>> valueManipulables = new LinkedList<>();
 
     /**
      * Constructs a new {@code ValueManipulable} with the specified {@code value}.
@@ -34,9 +34,8 @@ public class MultiValueManipulable extends ValueManipulable {
      * @return The index at which the specified {@code value} may be accessed
      * @throws NullPointerException if the specified {@code value} is {@code null}
      */
-    public int addValue(Object value) {
+    public void addValue(Object value) {
         valueManipulables.add(new ValueManipulable<>(Objects.requireNonNull(value)));
-        return valueManipulables.size() - 1;
     }
 
     /**

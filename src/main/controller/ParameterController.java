@@ -111,7 +111,7 @@ public class ParameterController {
                         String location = editor.getSelectedLocation();
                         try {
                             parameters.addActor(name, permission);
-                            if (location != null) { // Assume that house is non-null since location field is enabled.
+                            if (location != null && house != null) {
                                 house.addPerson(name, permission, location);
                                 parent.sendToConsole(name + " has entered the " + location + ".",
                                         Dashboard.MessageType.NORMAL);

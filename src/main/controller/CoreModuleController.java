@@ -73,8 +73,7 @@ public class CoreModuleController extends AbstractModuleController {
         }
     }
 
-    @Override
-    boolean canAct() {
+    private boolean canAct() {
         return !(parent.getParameters().getPermission() == null || parent.getParameters().getLocation() == null);
     }
 

@@ -19,9 +19,9 @@ public class House implements Iterable<Room> {
 
     private static class Node {
 
-        Room room;
+        final Room room;
 
-        Set<String> adjacents;
+        final Set<String> adjacents;
         boolean visited;
         Node(Room room) {
             this.room = Objects.requireNonNull(room);
@@ -325,7 +325,7 @@ public class House implements Iterable<Room> {
 
     @Override
     public Iterator<Room> iterator() {
-        return new Iterator<Room>() {
+        return new Iterator<>() {
 
             final Iterator<Node> iterator = rooms.values().iterator();
 

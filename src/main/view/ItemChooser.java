@@ -17,9 +17,9 @@ public class ItemChooser extends JFrame {
 
     private static final int DIM = 0x100;
 
-    DefaultListModel<Manipulable> manipulables = new DefaultListModel<>();
-    JList<Manipulable> list = new JList<>(manipulables);
-    JButton ok = new JButton("Ok");
+    final DefaultListModel<Manipulable> manipulables = new DefaultListModel<>();
+    final JList<Manipulable> list = new JList<>(manipulables);
+    final JButton ok = new JButton("Ok");
 
     /**
      * Provides a new {@code ItemChoose} populated with the specified {@code item}.

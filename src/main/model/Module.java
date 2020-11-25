@@ -68,22 +68,6 @@ public final class Module {
     }
 
     /**
-     * Adds the specified {@code action} to the specified {@code item} of this {@code Module}.
-     *
-     * @param item the specified item
-     * @param actions the specified {@code Action}
-     * @throws IllegalArgumentException If the specified {@code item} is not a non-empty string of word characters(i.e.
-     * [a-z, A-Z, 0-9, _, ])
-     * @throws NullPointerException If {@code actions} is {@code null} or any of the {@code Action}s therein are {@code
-     * null}
-     */
-    public void addCommands(String item, Collection<Action> actions) {
-        Set<Action> actionSet = commands.getOrDefault(validateName(item), new HashSet<>());
-        actionSet.addAll(actions);
-        commands.putIfAbsent(item, actionSet);
-    }
-
-    /**
      * @return The name of this {@code Module}
      */
     public String getName() {

@@ -41,8 +41,8 @@ public class AwayLightChooser extends JFrame {
     }
 
     private final List<JCheckBox> locations = new LinkedList<>();
-    JSpinner startSpinner = new JSpinner(new SpinnerDateModel());
-    JSpinner endSpinner = new JSpinner(new SpinnerDateModel());
+    final JSpinner startSpinner = new JSpinner(new SpinnerDateModel());
+    final JSpinner endSpinner = new JSpinner(new SpinnerDateModel());
     private final JButton ok = new JButton("Ok");
 
     /**

@@ -49,7 +49,7 @@ public class Dashboard extends JFrame {
     public enum MessageType {
         NORMAL,
         WARNING,
-        ERROR;
+        ERROR
     }
 
     // Pre-determined size parameters
@@ -68,12 +68,12 @@ public class Dashboard extends JFrame {
 
     private int inputLoc;
 
-    ParameterPanel parameters = new ParameterPanel();
-    ParameterEditor editor = new ParameterEditor();
-    ActionPanel actions = new ActionPanel();
-    HouseLayoutPanel layout = new HouseLayoutPanel();
-    JTextPane console = new JTextPane();
-    ProfileViewer profileViewer = new ProfileViewer();
+    final ParameterPanel parameters = new ParameterPanel();
+    final ParameterEditor editor = new ParameterEditor();
+    final ActionPanel actions = new ActionPanel();
+    final HouseLayoutPanel layout = new HouseLayoutPanel();
+    final JTextPane console = new JTextPane();
+    final ProfileViewer profileViewer = new ProfileViewer();
 
     /**
      * Creates the dashboard, which is to contain the {@code ParameterPanel}, a console, the {@code HouseLayout}. This
@@ -229,13 +229,6 @@ public class Dashboard extends JFrame {
     }
 
     /**
-     * @return The {@code ActionPanel} for this {@code Dashboard}
-     */
-    public ActionPanel getActions() {
-        return actions;
-    }
-
-    /**
      * Registers an event handler for turning the simulation on and off.
      *
      * @param listener The specified event handler
@@ -272,7 +265,9 @@ public class Dashboard extends JFrame {
     }
 
     /**
-     * @param listener
+     * Registers an event handler for loading and saving custom {@code Permission} settings.
+     *
+     * @param listener The specified event handler
      */
     public void addPersistPermissionListener(ActionListener listener) {
         editor.persistPermissions.addActionListener(listener);
@@ -288,9 +283,9 @@ public class Dashboard extends JFrame {
     }
 
     /**
-     * Registers an event handler for editing a the permissible actions given by the user's {@code Permission} level.
+     * Registers an event handler for editing a the permissible {@code Action}s for each {@code Permission}.
      *
-     * @param editPermissionsListener
+     * @param editPermissionsListener The specified event handler
      */
     public void addEditPermissionListener(ActionListener editPermissionsListener) {
         editor.editPermissions.addActionListener(editPermissionsListener);
@@ -375,9 +370,9 @@ public class Dashboard extends JFrame {
     }
 
     /**
-     * TODO
+     * Provides the specified {@code permissions} to various UI elements.
      *
-     * @param permissions
+     * @param permissions The specified {@code Permission}s
      */
     public void addPermissions(Collection<Permission> permissions) {
         for (Permission permission : permissions) {

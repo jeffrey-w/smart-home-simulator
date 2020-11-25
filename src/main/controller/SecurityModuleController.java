@@ -31,7 +31,7 @@ public class SecurityModuleController extends AbstractModuleController {
         if (canAct()) {
             switch (view.getSelectedAction()) {
                 case SET_AWAY_MODE_DELAY:
-                    ValueManipulable<Integer> valueManipulable = null;
+                    ValueManipulable<Integer> valueManipulable;
                     try {
                         valueManipulable = new ValueManipulable<>(Integer.parseInt(JOptionPane
                                 .showInputDialog(parent.getDashboard(), "Enter an away mode delay.", "Away mode Delay",
@@ -94,8 +94,7 @@ public class SecurityModuleController extends AbstractModuleController {
         timer.start();
     }
 
-    @Override
-    boolean canAct() {
+    private boolean canAct() {
         return parent.getParameters().getPermission() != null;
     }
 

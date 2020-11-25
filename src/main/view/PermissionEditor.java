@@ -24,8 +24,8 @@ public class PermissionEditor extends JFrame {
        Column0 is the action and Columns1-4 are the parent, child, guest and stranger permissions.
      */
     Object[][] permissions;
-    DefaultTableModel model;
-    JTable table;
+    final DefaultTableModel model;
+    final JTable table;
 
     /**
      * Constructs a new {@code PermissionEditor} object.
@@ -43,7 +43,7 @@ public class PermissionEditor extends JFrame {
         model = new DefaultTableModel(permissions, COLUMN_NAMES);
         table = new JTable(model) {
             @Override
-            public Class getColumnClass(int col) {
+            public Class<?> getColumnClass(int col) {
                 if (col == 0) {
                     return Action.class;
                 } else {

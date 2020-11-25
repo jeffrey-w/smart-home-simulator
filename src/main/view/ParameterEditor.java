@@ -40,16 +40,16 @@ public class ParameterEditor extends JPanel {
         return new JLabel(text + ":", SwingConstants.RIGHT);
     }
 
-    JButton loadHouse = new JButton("Load House");
-    JButton manageProfiles = new JButton("Manage Profiles");
-    JButton editPermissions = new JButton("Edit Permissions");
-    JButton persistPermissions = new JButton("Load Permissions");
-    JComboBox<Permission> permission = new JComboBox<>(); // TODO rename this
-    JComboBox<String> location = new JComboBox<>();
-    JSpinner temperature = new JSpinner(TEMP_MODEL);
-    JSpinner date = new JSpinner(DATE_MODEL);
-    JSpinner time = new JSpinner(new SpinnerDateModel());
-    JSpinner timeX = new JSpinner(TIMEX_MODEL);
+    final JButton loadHouse = new JButton("Load House");
+    final JButton manageProfiles = new JButton("Manage Profiles");
+    final JButton editPermissions = new JButton("Edit Permissions");
+    final JButton persistPermissions = new JButton("Load Permissions");
+    final JComboBox<Permission> permission = new JComboBox<>(); // TODO rename this
+    final JComboBox<String> location = new JComboBox<>();
+    final JSpinner temperature = new JSpinner(TEMP_MODEL);
+    final JSpinner date = new JSpinner(DATE_MODEL);
+    final JSpinner time = new JSpinner(new SpinnerDateModel());
+    final JSpinner timeX = new JSpinner(TIMEX_MODEL);
 
     /**
      * Constructs a new {@code ParameterEditor} object.

@@ -42,6 +42,4 @@ public abstract class AbstractModuleController implements ModuleController {
         }
     }
 
-    abstract boolean canAct();
-
 }

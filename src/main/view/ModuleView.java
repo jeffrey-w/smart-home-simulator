@@ -11,7 +11,6 @@ public class ModuleView extends JPanel {
 
     private static final int NUM_ROWS = 2;
 
-    final Module module;
     final DefaultListModel<String> itemsModel = new DefaultListModel<>();
     final DefaultListModel<Action> actionsModel = new DefaultListModel<>();
     final JList<String> items = new JList<>(itemsModel);

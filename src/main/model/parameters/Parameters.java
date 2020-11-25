@@ -120,13 +120,6 @@ public class Parameters {
     }
 
     /**
-     * @return The List of the actors added to the simulation along with their permission
-     */
-    public Map<String, Permission> getActors() {
-        return actors;
-    }
-
-    /**
      * @return The location of the user controlling the simulation
      */
     public String getLocation() {
@@ -224,19 +217,6 @@ public class Parameters {
      */
     public Manipulable getAwayMode() {
         return awayMode;
-    }
-
-    /**
-     * Sets the current actors of the simulation to that specified. Used when
-     * loading the list of actors from a file
-     *
-     * @param actors The loaded or specified actors of the simulation
-     */
-    public void setActors(HashMap<String, Permission> actors) {
-        this.actors.clear();
-        for (Map.Entry<String, Permission> item : actors.entrySet()) {
-            this.actors.put(validateName(item.getKey()), item.getValue());
-        }
     }
 
     /**
