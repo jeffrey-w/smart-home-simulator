@@ -13,6 +13,13 @@ import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * The {@code SecurityModuleController} class provides services for delivering security-related smart home
+ * functionality. This includes operations such as turning away mode on and off, setting the alarm delay for away mode,
+ * and defining away mode light {@code Parameter}s.
+ *
+ * @author Jeff Wilgus
+ */
 public class SecurityModuleController extends AbstractModuleController {
 
     private static final Set<String> CANCEL_KEYWORDS = new HashSet<>();
@@ -22,6 +29,13 @@ public class SecurityModuleController extends AbstractModuleController {
         CANCEL_KEYWORDS.add("YES");
     }
 
+    /**
+     * Constructs a new {@code SecurityModuleController} object with the specified {@code parent} and {@code view}.
+     *
+     * @param parent The {@code Controller} to which this {@code SecurityModuleController} is subordinate to
+     * @param view The {@code ModuleView} that this {@code SecurityModuleController} controls
+     * @throws NullPointerException If the specified {@code parent} or {@code view} is {@code null}
+     */
     public SecurityModuleController(Controller parent, ModuleView view) {
         super(parent, view);
     }
@@ -64,6 +78,10 @@ public class SecurityModuleController extends AbstractModuleController {
         }
     }
 
+    /**
+     * Notifies the authorities of a potential break in after a specified interval has elapsed. The user is given the
+     * opportunity to cancel this operation.
+     */
     public void startAwayModeCountdown() {
         final boolean[] cancel = {false, false};
         Timer timer = new Timer(parent.getParameters().getAwayDelay(), e -> {
