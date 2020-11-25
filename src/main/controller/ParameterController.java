@@ -98,7 +98,7 @@ public class ParameterController {
                     ProfileEditor editor =
                             new ProfileEditor(viewer.getSelectedValue(), parameters.getPermissions().values(),
                                     house != null);
-                    editor.setPermission(parameters.permissionOf(editor.getRole()));
+                    editor.setPermissions(parameters.permissionOf(editor.getRole()));
                     if (house != null) {
                         editor.addLocations(house.getLocations());
                         if (editor.getRole() != null && house.contains(editor.getRole())) {
@@ -172,7 +172,7 @@ public class ParameterController {
                     if (chooser.showOpenDialog(dashboard) == JFileChooser.APPROVE_OPTION) {
                         try {
                             parameters.setPermissions(PermissionManager.loadPermissions(chooser.getSelectedFile()));
-                            //TODO update profile list
+                            // TODO update profile list
                         } catch (Exception exception) {
                             exception.printStackTrace();
                         }
@@ -190,7 +190,7 @@ public class ParameterController {
 
                     if (chooser.showSaveDialog(dashboard) == JFileChooser.APPROVE_OPTION) {
                         try {
-                            //TODO warn about overwriting
+                            // TODO warn about overwriting
                             PermissionManager.savePermissions(parameters.getPermissions(), chooser.getSelectedFile());
                         } catch (Exception exception) {
                             parent.sendToConsole(exception.getMessage(), Dashboard.MessageType.ERROR);

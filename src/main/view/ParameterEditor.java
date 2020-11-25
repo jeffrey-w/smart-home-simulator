@@ -44,7 +44,7 @@ public class ParameterEditor extends JPanel {
     final JButton manageProfiles = new JButton("Manage Profiles");
     final JButton editPermissions = new JButton("Edit Permissions");
     final JButton persistPermissions = new JButton("Load Permissions");
-    final JComboBox<Permission> permission = new JComboBox<>(); // TODO rename this
+    final JComboBox<Permission> permissions = new JComboBox<>();
     final JComboBox<String> location = new JComboBox<>();
     final JSpinner temperature = new JSpinner(TEMP_MODEL);
     final JSpinner date = new JSpinner(DATE_MODEL);
@@ -79,7 +79,7 @@ public class ParameterEditor extends JPanel {
 
         // Add fields to field panel.
         fields.add(labelFactory("Permission"));
-        fields.add(permission);
+        fields.add(permissions);
         fields.add(labelFactory("Location"));
         fields.add(location);
         fields.add(labelFactory("Temperature"));

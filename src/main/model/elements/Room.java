@@ -13,7 +13,7 @@ import java.util.Objects;
  * @see Light
  * @see Window
  */
-public class Room extends Place { // TODO add validation logic to room element setters
+public class Room extends Place {
 
     private static final int DEFAULT_ROOM_TEMPERATURE = 25;
 

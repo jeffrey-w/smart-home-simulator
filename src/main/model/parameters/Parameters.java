@@ -37,7 +37,6 @@ public class Parameters {
     public static final int MIN_TIMEX = 1;
     public static final int MAX_TIMEX = 999;
 
-
     private Permission permission;
     private final Map<String, Permission> actors;
     private String location;
@@ -79,7 +78,7 @@ public class Parameters {
      * @return The permission of the specified type
      */
     public Permission getPermissionOf(String type) {
-        return(permissions.get(type));
+        return (permissions.get(type));
     }
 
     /**
@@ -88,7 +87,7 @@ public class Parameters {
      * @param name A unique identifier
      * @param permission The {@code Permission} level of the newly added actor
      * @throws IllegalArgumentException If the specified {@code name} is not a non-empty string of word characters (i.e.
-     * [a-z, A-Z, 0-9, _])
+     * [a-z, A-Z, 0-9, _]) and whitespace
      * @throws NullPointerException If the specified {@code permission} is {@code null}
      */
     public void addActor(String name, Permission permission) {
@@ -161,7 +160,7 @@ public class Parameters {
      *
      * @param location The specified location
      * @throws IllegalArgumentException If the specified {@code location} is not a non-empty string of word characters
-     * (i.e. [a-z, A-Z, 0-9, _])
+     * (i.e. [a-z, A-Z, 0-9, _]) and whitespace
      */
     public void setLocation(String location) {
         this.location = location == null ? null : validateName(location);
@@ -212,7 +211,6 @@ public class Parameters {
     }
 
     /**
-     *
      * @return The {@code AwayMode} of this {@code Parameters}
      */
     public Manipulable getAwayMode() {
@@ -293,7 +291,6 @@ public class Parameters {
     }
 
     /**
-     *
      * @return The {@code Permission} levels available to the simulation
      */
     public Map<String, Permission> getPermissions() {
@@ -307,11 +304,10 @@ public class Parameters {
      * @throws NullPointerException if the specified {@code permission}s are {@code null}
      */
     public void setPermissions(Map<String, Permission> permissions) {
-        this.permissions = Objects.requireNonNull(permissions); // TODO need more validation
+        this.permissions = Objects.requireNonNull(permissions);
     }
 
     /**
-     *
      * @return The start of away light mode
      */
     public LocalTime getAwayLightStart() {
@@ -320,6 +316,7 @@ public class Parameters {
 
     /**
      * Sets the {@code start} of away light mode to the time specified
+     *
      * @param start the specified start of away light mode
      * @throws NullPointerException if the specified {@code start} is {@code null}
      */
@@ -328,7 +325,6 @@ public class Parameters {
     }
 
     /**
-     *
      * @return The end of away light mode
      */
     public LocalTime getAwayLightEnd() {
@@ -337,6 +333,7 @@ public class Parameters {
 
     /**
      * Sets the {@code end} of away light mode to the time specified
+     *
      * @param end the specified end of away light mode
      * @throws NullPointerException if the specified {@code end} is {@code null}
      */

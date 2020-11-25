@@ -178,7 +178,7 @@ public class Dashboard extends JFrame {
      * @return The {@code Permission} level the user has selected for themselves
      */
     public Permission getPermissionInput() {
-        return (Permission) editor.permission.getSelectedItem();
+        return (Permission) editor.permissions.getSelectedItem();
     }
 
     /**
@@ -279,7 +279,7 @@ public class Dashboard extends JFrame {
      * @param listener The specified event handler
      */
     public void addPermissionListener(ActionListener listener) {
-        editor.permission.addActionListener(listener);
+        editor.permissions.addActionListener(listener);
     }
 
     /**
@@ -376,7 +376,7 @@ public class Dashboard extends JFrame {
      */
     public void addPermissions(Collection<Permission> permissions) {
         for (Permission permission : permissions) {
-            editor.permission.addItem(permission);
+            editor.permissions.addItem(permission);
         }
     }
 

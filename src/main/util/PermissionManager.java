@@ -54,6 +54,7 @@ public abstract class PermissionManager { // TODO redo comments
 
     /**
      * Writes the specified {@code permissions} to the specified {@code file}.
+     *
      * @param permissions The specified {@code Permission}s
      * @param file The specified {@code File}
      * @throws IOException If any error occurs when attempting to write to the specified {@code file}

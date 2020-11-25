@@ -55,8 +55,12 @@ public class Window extends AbstractManipulable {
      * Sets the {@code open} state of this {@code Window} to that specified.
      *
      * @param open The specified open state
+     * @throws IllegalStateException If this {@code Window} is blocked
      */
     public void setOpen(boolean open) {
+        if (blocked) {
+            throw new IllegalStateException("Please unblock this window first.");
+        }
         this.open = open;
     }
 

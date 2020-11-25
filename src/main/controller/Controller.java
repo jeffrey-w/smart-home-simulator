@@ -141,7 +141,7 @@ public class Controller {
     }
 
     void setHouse(House house) {
-        this.house = house; // TODO null check?
+        this.house = house;
     }
 
     Dashboard getDashboard() {

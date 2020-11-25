@@ -4,6 +4,7 @@ import main.model.elements.Door;
 import main.model.elements.House;
 import main.model.elements.Light;
 import main.model.elements.Window;
+import main.model.parameters.Clock;
 import main.model.parameters.Parameters;
 import main.model.parameters.permissions.Permission;
 
@@ -56,12 +57,12 @@ public enum Action {
         @Override
         public String doAction(Manipulable manipulable, Parameters parameters, House house) {
             Door door = (Door) manipulable;
-            if (door.isOpen()) {
-                return "Please close this door first.";
-            } else {
+            try {
                 door.setLocked(!door.isLocked());
-                return door.isLocked() ? "Door has been locked." : "Door has been unlocked";
+            } catch (IllegalStateException e) {
+                return e.getMessage();
             }
+            return door.isLocked() ? "Door has been locked." : "Door has been unlocked";
         }
 
         @Override
@@ -86,12 +87,12 @@ public enum Action {
         @Override
         public String doAction(Manipulable manipulable, Parameters parameters, House house) {
             Door door = (Door) manipulable;
-            if (!door.isOpen() && door.isLocked()) {
-                return "Please unlock this door first.";
-            } else {
+            try {
                 door.setOpen(!door.isOpen());
-                return door.isOpen() ? "Door has been opened." : "Door has been closed";
+            } catch (IllegalStateException e) {
+                return e.getMessage();
             }
+            return door.isOpen() ? "Door has been opened." : "Door has been closed";
         }
 
         @Override
@@ -114,17 +115,42 @@ public enum Action {
         @Override
         public String doAction(Manipulable manipulable, Parameters parameters, House house) {
             Window window = (Window) manipulable;
-            if (window.isBlocked()) {
-                return "Please unblock this window first.";
-            } else {
+            try {
                 window.setOpen(!window.isOpen());
-                return window.isOpen() ? "Window has been opened." : "Window has been closed";
+            } catch (IllegalStateException e) {
+                return e.getMessage();
             }
+            return window.isOpen() ? "Window has been opened." : "Window has been closed";
         }
 
         @Override
         public String toString() {
             return "Open/Close Window";
+        }
+
+    },
+
+    TOGGLE_BLOCK_WINDOW {
+        @Override
+        public boolean isChildPermissible() {
+            return false;
+        }
+
+        @Override
+        public boolean isGuestPermissible() {
+            return false;
+        }
+
+        @Override
+        public String toString() {
+            return "Block/Unblock Window";
+        }
+
+        @Override
+        public String doAction(Manipulable manipulable, Parameters parameters, House house) {
+            Window window = (Window) manipulable;
+            window.setBlocked(!window.isBlocked());
+            return window.isBlocked() ? "Window has been blocked." : "Window has been unblocked";
         }
 
     },
@@ -174,31 +200,6 @@ public enum Action {
         public String toString() {
             return "Turn On/Off Auto Light";
         }
-    },
-
-    TOGGLE_BLOCK_WINDOW {
-        @Override
-        public boolean isChildPermissible() {
-            return false;
-        }
-
-        @Override
-        public boolean isGuestPermissible() {
-            return false;
-        }
-
-        @Override
-        public String toString() {
-            return "Block/Unblock Window";
-        }
-
-        @Override
-        public String doAction(Manipulable manipulable, Parameters parameters, House house) {
-            Window window = (Window) manipulable;
-            window.setBlocked(!window.isBlocked());
-            return window.isBlocked() ? "Window has been blocked." : "Window has been unblocked";
-        }
-
     },
 
     SET_AWAY_MODE {
@@ -260,6 +261,7 @@ public enum Action {
             return "Set Away Mode Lights";
         }
     },
+
     SET_AWAY_MODE_DELAY {
         @Override
         public boolean isChildPermissible() {
@@ -275,7 +277,7 @@ public enum Action {
         public String doAction(Manipulable manipulable, Parameters parameters, House house) {
             @SuppressWarnings("unchecked")
             ValueManipulable<Integer> valueManipulable = (ValueManipulable<Integer>) manipulable;
-            parameters.setAwayDelay(valueManipulable.getValue() * 1_000); // TODO use constant
+            parameters.setAwayDelay(valueManipulable.getValue() * Clock.SECONDS_PER_MILLISECOND);
             return "Away mode delay set for " + valueManipulable.getValue() + " seconds.";
         }
 

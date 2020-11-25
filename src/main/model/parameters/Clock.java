@@ -11,11 +11,11 @@ import java.time.LocalTime;
  */
 public class Clock {
 
+    public static final int SECONDS_PER_MILLISECOND = 1000;
     private static final int NUM_FIELDS = 3;
     private static final int HOURS = 0, MINUTES = 1, SECONDS = 2;
     private static final int SECONDS_PER_MINUTE = 60;
     private static final int SECONDS_PER_HOUR = SECONDS_PER_MINUTE * SECONDS_PER_MINUTE;
-    private static final int SECONDS_PER_MILLISECOND = 1000;
     private static final int HOURS_PER_DAY = 24;
 
     private final int[] clockTime;
