@@ -295,8 +295,7 @@ public enum Action {
     };
 
     /**
-     * @return The list of all permission levels of this action in the following order: { Parent permission, Child
-     * permission, Guest permission, Stranger permission }
+     * @return A summary of the permissibility of this {@code Action} by each {@code Permission} level
      */
     public boolean[] isPermissibleBy(Parameters parameters) {
         boolean[] isPermissible = new boolean[PERMISSIONS.length];
