@@ -35,6 +35,14 @@ import static java.awt.BorderLayout.WEST;
  */
 public class Dashboard extends JFrame {
 
+    public ModuleView addModule(Module module) {
+        return actions.addModule(module);
+    }
+
+    public String getSelectedModule() {
+        return actions.getTitleAt(actions.getSelectedIndex());
+    }
+
     /**
      * The category a console message might have.
      */
@@ -43,14 +51,14 @@ public class Dashboard extends JFrame {
         WARNING,
         ERROR;
     }
-    // Pre-determined size parameters
 
+    // Pre-determined size parameters
     static final int WINDOW_WIDTH = 0x600;
     static final int WINDOW_HEIGHT = 0x300;
     static final int PARAMETER_PANE_WIDTH = WINDOW_WIDTH >>> 2; // x >>> y == x / 2^y
     static final int CONTENT_PANE_WIDTH = WINDOW_WIDTH - PARAMETER_PANE_WIDTH;
     static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd");
-    // NOTE: removed the time here so that we can implement that independently
+
     private static final EnumMap<MessageType, Color> MESSAGE_COLORS = new EnumMap<>(MessageType.class);
 
     static {
@@ -70,7 +78,6 @@ public class Dashboard extends JFrame {
     /**
      * Creates the dashboard, which is to contain the {@code ParameterPanel}, a console, the {@code HouseLayout}. This
      * is also the interface on which the simulation will be displayed and interacted with.
-     *
      */
     public Dashboard() {
         // Set window title.
@@ -109,8 +116,6 @@ public class Dashboard extends JFrame {
 
         // Set content display behavior.
         actions.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-        actions.addModule(Module.SHC);
-        actions.addModule(Module.SHP);
         layout.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 
         // Set console display behavior.
@@ -371,6 +376,7 @@ public class Dashboard extends JFrame {
 
     /**
      * TODO
+     *
      * @param permissions
      */
     public void addPermissions(Collection<Permission> permissions) {

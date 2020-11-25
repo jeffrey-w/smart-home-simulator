@@ -41,4 +41,11 @@ public class ModuleView extends JPanel {
         });
     }
 
+    public String getSelectedItem() {
+        return items.getSelectedValue();
+    }
+
+    public Action getSelectedAction() {
+        return actions.getSelectedValue();
+    }
 }
