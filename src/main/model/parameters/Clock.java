@@ -1,36 +1,48 @@
-package main.model.tools;
+package main.model.parameters;
 
-import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
+import java.time.LocalTime;
 
 /**
- * The {@code Clock} class represents a clock object that will be used to keep track of time. It will be running a thread that
- * will continuously be incrementing clock by 1 (default) every 1 second.
+ * The {@code Clock} class represents a clock object that will be used to keep track of time. It will be running a
+ * thread that will continuously be incrementing clock by 1 (default) every 1 second.
  *
  * @author Philippe Vo
- *
  */
 public class Clock {
 
-    private int[] clockTime;
+    private static final int NUM_FIELDS = 3;
+    private static final int HOURS = 0, MINUTES = 1, SECONDS = 2;
+    private static final int SECONDS_PER_MINUTE = 60;
+    private static final int SECONDS_PER_HOUR = SECONDS_PER_MINUTE * SECONDS_PER_MINUTE;
+    private static final int SECONDS_PER_MILLISECOND = 1000;
+    private static final int HOURS_PER_DAY = 24;
+
+    private final int[] clockTime;
     private long referenceTime;
     private int multiplier;
 
     /**
-     * Constructs a {@code Clock} that will be used to keep track of time. It will be running a thread that
-     * will continously be looking at the system clock every 1 second.
+     * Constructs a {@code Clock} that will be used to keep track of time. It will be running a thread that will
+     * continuously be looking at the system clock every 1 second.
      */
-    public Clock(){
-        referenceTime = 0; // close to 24:00:00 -> 86390 seconds
+    public Clock() {
+        LocalTime now = LocalTime.now();
+        Timer timer;
+        clockTime = new int[NUM_FIELDS];
+        referenceTime = now.getHour() * SECONDS_PER_HOUR + now.getMinute() * SECONDS_PER_MINUTE + now.getSecond();
         multiplier = 1;
-
-        javax.swing.Timer timerClock = new javax.swing.Timer(1000, new Clock.ClockListener());
-        timerClock.start();
+        timer = new Timer(SECONDS_PER_MILLISECOND, e -> {
+            referenceTime = referenceTime + multiplier; // increment clock
+            clockTime[HOURS] = (int) referenceTime / SECONDS_PER_HOUR;
+            if (clockTime[HOURS] < HOURS_PER_DAY) {
+                clockTime[MINUTES] = ((int) referenceTime % SECONDS_PER_HOUR) / SECONDS_PER_MINUTE;
+                clockTime[SECONDS] = (int) (referenceTime % SECONDS_PER_MINUTE);
+            } else {
+                referenceTime = clockTime[HOURS] = clockTime[MINUTES] = clockTime[SECONDS] = 0;
+            }
+        });
+        timer.start();
     }
 
     /**
@@ -47,12 +59,12 @@ public class Clock {
      *
      * @param time the current time to be referenced
      */
-    public void updateTime(int[] time) {
-        int h = time[0];
-        int m = time[1];
-        int s = time[2];
+    public void setTime(int[] time) {
+        int h = time[HOURS];
+        int m = time[MINUTES];
+        int s = time[SECONDS];
 
-        this.referenceTime = (h * 60 * 60) + (m * 60) + s;
+        referenceTime = (h * SECONDS_PER_HOUR) + (m * SECONDS_PER_MINUTE) + s;
     }
 
     /**
@@ -62,36 +74,4 @@ public class Clock {
         return clockTime;
     }
 
-    // this method is called every 1 second by the javax.swing.Timer class timerClock
-    class ClockListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            referenceTime = referenceTime + (1 * multiplier); // increment clock
-
-            clockTime = splitToComponentTimes(referenceTime);
-        }
-
-        /**
-         * Returns the totalSeconds into h:m:s
-         *
-         * @param totalSeconds the total amount of seconds
-         */
-        public int[] splitToComponentTimes(long totalSeconds)
-        {
-            int hours = (int) totalSeconds / 3600;
-            int remainder = (int) totalSeconds - hours * 3600;
-            int mins = remainder / 60;
-            remainder = remainder - mins * 60;
-            int secs = remainder;
-
-            if(hours >= 24){ // if past the 24hrs mark -> reset the reference time
-                referenceTime = 0;
-                hours = 0;
-                mins = 0;
-                secs = 0;
-            }
-
-            int[] ints = {hours , mins , secs};
-            return ints;
-        }
-    }
 }
