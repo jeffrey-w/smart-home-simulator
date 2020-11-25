@@ -81,5 +81,5 @@ public class PermissionEditor extends JFrame {
     public void addTableModelListener(TableModelListener listener) {
         model.addTableModelListener(listener);
     }
-    
+
 }
