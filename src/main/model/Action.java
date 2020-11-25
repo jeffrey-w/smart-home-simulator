@@ -8,6 +8,7 @@ import main.model.parameters.Parameters;
 import main.model.parameters.permissions.Permission;
 
 import java.time.LocalTime;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -285,12 +286,24 @@ public enum Action {
         }
     };
 
+    static final String[] PERMISSIONS = new String[] {
+            "Parent",
+            "Child",
+            "Guest",
+            "Stranger"
+    };
+
     /**
      * @return The list of all permission levels of this action in the following order: { Parent permission, Child
      * permission, Guest permission, Stranger permission }
      */
-    public Boolean[] getPermissions() {
-        return new Boolean[] {true, this.isChildPermissible(), this.isGuestPermissible(), false};
+    public boolean[] isPermissibleBy(Parameters parameters) {
+        boolean[] isPermissible = new boolean[PERMISSIONS.length];
+        Map<String, Permission> permissions = parameters.getPermissions();
+        for (int i = 0; i < isPermissible.length; i++) {
+            isPermissible[i] = parameters.getPermissions().get(PERMISSIONS[i]).allowed().contains(this);
+        }
+        return isPermissible;
     }
 
     /**

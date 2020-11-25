@@ -28,12 +28,12 @@ class ParameterTest {
         }
 
         @Override
-        public void addPermission(final Action action) {
+        public void allow(final Action action) {
 
         }
 
         @Override
-        public void removePermission(final Action action) {
+        public void disallow(final Action action) {
 
         }
     };

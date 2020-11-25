@@ -26,26 +26,27 @@ public interface Permission {
 
     /**
      * Provides the {@code Action}s that this {@code Permission} level is allowed to perform.
+     *
      * @return The set of this {@code Permission}'s allowed {@code Action}s
      */
     Set<Action> allowed();
 
     /**
-     * Allows user to add an {@code Action} to their list of permissible actions.
+     * Adds the specified {@code action} to this {@code Permission} level's permissible {@code Action}s.
      * Applied to a {@code Permission}, it is applied to all other permissions of the same level.
      *      e.g.: adding the ToggleDoor action to a child-level Permission grants that permission to all child-level users
      *
-     * @param action The {@code Action} to be added to the users' permissions
+     * @param action The {@code Action} to be added to this {@code Permission}
      */
-    void addPermission(Action action);
+    void allow(Action action);
 
     /**
-     * Allows user to remove an {@code action} from their list of permissible actions.
+     * Removes the specified {@code action} from this {@code Permission} level's permissible {@code Actions}.
      * Applied to a {@code Permission}, it is applied to all other permissions of the same level.
      *      e.g.: removing the ToggleDoor action to a child-level Permission removes that permission for all child-level users
      *
-     * @param action The {@code Action} to be removed from the users' permissions
+     * @param action The {@code Action} to be removed from this {@code Permission}
      */
-    void removePermission(Action action);
+    void disallow(Action action);
 
 }

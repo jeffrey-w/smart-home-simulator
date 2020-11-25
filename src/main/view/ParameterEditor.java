@@ -1,7 +1,7 @@
 package main.view;
 
 import main.model.parameters.Parameters;
-import main.model.parameters.permissions.*;
+import main.model.parameters.permissions.Permission;
 import main.view.viewtils.SpringUtilities;
 
 import javax.swing.*;
@@ -27,13 +27,6 @@ public class ParameterEditor extends JPanel {
     private static final int FIELD_COLUMNS = 2;
     private static final int FIELD_Y_PADDING = 0x40;
 
-    private static final Permission[] PERMISSIONS = new Permission[] {
-            null,
-            new ParentPermission(),
-            new ChildPermission(),
-            new GuestPermission(),
-            new StrangerPermission()
-    }; // TODO use parameters permissions instead
     private static final SpinnerNumberModel TEMP_MODEL =
             new SpinnerNumberModel(Parameters.DEFAULT_TEMPERATURE, Parameters.MIN_TEMPERATURE,
                     Parameters.MAX_TEMPERATURE, 1);
@@ -43,10 +36,6 @@ public class ParameterEditor extends JPanel {
             new SpinnerNumberModel(Parameters.DEFAULT_TIMEX, Parameters.MIN_TIMEX,
                     Parameters.MAX_TIMEX, 1);
 
-    static JComboBox<Permission> permissionJComboBox() {
-        return new JComboBox<>(PERMISSIONS);
-    }
-
     static JLabel labelFactory(String text) {
         return new JLabel(text + ":", SwingConstants.RIGHT);
     }
@@ -55,7 +44,7 @@ public class ParameterEditor extends JPanel {
     JButton manageProfiles = new JButton("Manage Profiles");
     JButton editPermissions = new JButton("Edit Permissions");
     JButton persistPermissions = new JButton("Load Permissions");
-    JComboBox<Permission> permission = permissionJComboBox();
+    JComboBox<Permission> permission = new JComboBox<>(); // TODO rename this
     JComboBox<String> location = new JComboBox<>();
     JSpinner temperature = new JSpinner(TEMP_MODEL);
     JSpinner date = new JSpinner(DATE_MODEL);

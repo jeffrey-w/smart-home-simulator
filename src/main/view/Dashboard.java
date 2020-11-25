@@ -66,11 +66,11 @@ public class Dashboard extends JFrame {
     HouseLayoutPanel layout = new HouseLayoutPanel();
     JTextPane console = new JTextPane();
     ProfileViewer profileViewer = new ProfileViewer();
-    PermissionEditor permissionEditor = new PermissionEditor();
 
     /**
      * Creates the dashboard, which is to contain the {@code ParameterPanel}, a console, the {@code HouseLayout}. This
      * is also the interface on which the simulation will be displayed and interacted with.
+     *
      */
     public Dashboard() {
         // Set window title.
@@ -174,13 +174,6 @@ public class Dashboard extends JFrame {
      */
     public Permission getPermissionInput() {
         return (Permission) editor.permission.getSelectedItem();
-    }
-
-    /**
-     * @return The {@code PermissionEditor} panel that lets the user change its permissible actions.
-     */
-    public PermissionEditor getPermissionEditor() {
-        return permissionEditor;
     }
 
     /**
@@ -373,6 +366,16 @@ public class Dashboard extends JFrame {
             console.setEditable(true);
             console.grabFocus();
             inputLoc = console.getDocument().getLength();
+        }
+    }
+
+    /**
+     * TODO
+     * @param permissions
+     */
+    public void addPermissions(Collection<Permission> permissions) {
+        for (Permission permission : permissions) {
+            editor.permission.addItem(permission);
         }
     }
 
