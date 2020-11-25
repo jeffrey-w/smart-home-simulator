@@ -68,6 +68,23 @@ public class Room extends Place {
     }
 
     /**
+     *
+     * @return {@code true} if away light mode is set in this {@code Room}
+     */
+    public boolean isAwayLight() {
+        return awayLight;
+    }
+
+    /**
+     * Sets this {@code Room}'s away light status to the specified {@code flag}.
+     *
+     * @param flag If {@code true} this {@code Room} will be lit during {@code AwayMode}
+     */
+    public void setAwayLight(boolean flag) {
+        awayLight = flag;
+    }
+
+    /**
      * @return The number of open {@code Door}s in this {@code Room}
      */
     public int getNumberOfOpenDoors() {
@@ -165,23 +182,6 @@ public class Room extends Place {
         result = prime * result + Arrays.hashCode(lights);
         result = prime * result + Arrays.hashCode(windows);
         return result;
-    }
-
-    /**
-     *
-     * @return {@code true} if away light mode is set in this {@code Room}
-     */
-    public boolean isAwayLight() {
-        return awayLight;
-    }
-
-    /**
-     * Sets this {@code Room}'s away light status to the specified {@code flag}.
-     *
-     * @param flag If {@code true} this {@code Room} will be lit during {@code AwayMode}
-     */
-    public void setAwayLight(boolean flag) {
-        awayLight = flag;
     }
 
 }
