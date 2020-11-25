@@ -20,6 +20,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
@@ -65,6 +66,7 @@ public class Controller {
      * Constructs a new {@code Controller} object.
      */
     public Controller() {
+        startClock();
         dashboard.setTemperature(String.valueOf(parameters.getTemperature()));
         dashboard.setDate(parameters.getDate());
         dashboard.addSimulationListener(new SimulationListener());
@@ -80,9 +82,25 @@ public class Controller {
         dashboard.addTimeUpdateListener(new TimeUpdateListener());
         dashboard.addActionSelectionListener(new ActionSelectionListener());
         dashboard.drawHouse(house);
+    }
 
-        // start clock update
-        startClockDisplayUpdate();
+    private void startClock() {
+        (new Timer(1000, e -> {
+            int[] fields = parameters.getClockTime();
+            LocalTime time = LocalTime.of(fields[0], fields[1], fields[2]); // TODO avoid magic constants
+            dashboard.setTime(fields);
+            if (parameters.isAwayMode()) {
+                for (Room room : house) {
+                    room.toggleLights(room.isAwayLight() && isBetween(time, parameters.getAwayLightStart(),
+                            parameters.getAwayLightEnd()));
+                }
+                redrawHouse();
+            }
+        })).start();
+    }
+
+    private boolean isBetween(LocalTime time, LocalTime origin, LocalTime bound) {
+        return origin.compareTo(time) <= 0 && bound.compareTo(time) > 0;
     }
 
     /*
@@ -90,6 +108,7 @@ public class Controller {
      * model of a simulation
      */
     class SimulationListener implements ActionListener {
+
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -111,8 +130,8 @@ public class Controller {
         }
 
     }
-
     class LoadHouseListener implements ActionListener {
+
         @Override
         public void actionPerformed(final ActionEvent e) {
             JFileChooser chooser = new JFileChooser();
@@ -128,8 +147,8 @@ public class Controller {
         }
 
     }
-
     class ManageProfilesListener implements ActionListener {
+
         @Override
         public void actionPerformed(ActionEvent e) {
             ProfileViewer viewer = dashboard.getProfileViewer();
@@ -141,8 +160,8 @@ public class Controller {
         }
 
     }
-
     class EditProfileListener implements ActionListener {
+
         @Override
         public void actionPerformed(final ActionEvent e) {
             String actionCommand = e.getActionCommand();
@@ -209,8 +228,8 @@ public class Controller {
         }
 
     }
-
     class PersistPermissionListener implements ActionListener {
+
 
         @Override
         public void actionPerformed(final ActionEvent e) {
@@ -255,8 +274,8 @@ public class Controller {
         }
 
     }
-
     class PermissionListener implements ActionListener {
+
         @Override
         public void actionPerformed(final ActionEvent e) {
             Permission permission = dashboard.getPermissionInput();
@@ -275,8 +294,8 @@ public class Controller {
         }
 
     }
-
     class EditPermissionsListener implements ActionListener {
+
 
         @Override
         public void actionPerformed(final ActionEvent e) {
@@ -307,8 +326,8 @@ public class Controller {
         }
 
     }
-
     class LocationListener implements ActionListener {
+
         @Override
         public void actionPerformed(final ActionEvent e) {
             String location = dashboard.getLocationInput();
@@ -331,8 +350,8 @@ public class Controller {
         }
 
     }
-
     class TemperatureListener implements ChangeListener {
+
         @Override
         public void stateChanged(final ChangeEvent e) {
             int temperature = dashboard.getTemperatureInput();
@@ -341,8 +360,8 @@ public class Controller {
         }
 
     }
-
     class DateListener implements ChangeListener {
+
         @Override
         public void stateChanged(final ChangeEvent e) {
             Date date = dashboard.getDateInput();
@@ -355,8 +374,8 @@ public class Controller {
     private static final Object[] AWAY_MODE_DELAYS = new Integer[] {
             5, 6, 7, 8, 9, 10
     }; // TODO move this
-
     class ActionSelectionListener extends MouseAdapter {
+
 
         @Override
         public void mouseClicked(MouseEvent e) {
@@ -499,38 +518,23 @@ public class Controller {
         }
         dashboard.redrawHouse();
     }
-
-    public void startClockDisplayUpdate() {
-        ActionListener updateClockListener = new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                dashboard.setTime(parameters.getClockTime());
-            }
-        };
-
-        javax.swing.Timer timerClock = new javax.swing.Timer(1000, updateClockListener);
-        timerClock.start();
-    }
-
     class TimeXListener implements ChangeListener {
 
+
         @Override
         public void stateChanged(final ChangeEvent e) {
-            int timeX = dashboard.getTimeXInput();
-            parameters.setClockTimeMultiplier(timeX);
+            parameters.setClockTimeMultiplier(dashboard.getTimeXInput());
         }
-    }
 
+    }
     class TimeUpdateListener implements ChangeListener {
 
+
         @Override
         public void stateChanged(final ChangeEvent e) {
-            int h = dashboard.getHourInput();
-            int m = dashboard.getMinInput();
-            int s = dashboard.getSecInput();
-            int[] time = new int[] {h, m, s};
-
-            parameters.setTime(time);
+            parameters.setTime(dashboard.getTimeInput());
         }
+
     }
 
 }
