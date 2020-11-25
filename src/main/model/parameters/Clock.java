@@ -4,8 +4,7 @@ import javax.swing.*;
 import java.time.LocalTime;
 
 /**
- * The {@code Clock} class represents a clock object that will be used to keep track of time. It will be running a
- * thread that will continuously be incrementing clock by 1 (default) every 1 second.
+ * The {@code Clock} class is a facility for measuring the passage of time.
  *
  * @author Philippe Vo
  */
@@ -23,8 +22,7 @@ public class Clock {
     private int multiplier;
 
     /**
-     * Constructs a {@code Clock} that will be used to keep track of time. It will be running a thread that will
-     * continuously be looking at the system clock every 1 second.
+     * Constructs a {@code Clock} object.
      */
     public Clock() {
         LocalTime now = LocalTime.now();
@@ -48,30 +46,30 @@ public class Clock {
     /**
      * Sets the {@code multiplier} state of this {@code Clock} to that specified.
      *
-     * @param multiplier the amount of time we want to speed the time
+     * @param multiplier the amount of time this {@code Clock} is incremented by per actual second.
      */
-    public void setMultiplier(int multiplier) {
+    public void setMultiplier(int multiplier) { // TODO validate multiplier
         this.multiplier = multiplier;
     }
 
     /**
-     * Sets the {@code referenceTime} num of this {@code Clock} to that specified.
-     *
-     * @param time the current time to be referenced
+     * @return The current time this {@code Clock} is set to
      */
-    public void setTime(int[] time) {
+    public int[] getTime() {
+        return clockTime;
+    }
+
+    /**
+     * Sets the {@code time} of this {@code Clock} to that specified.
+     *
+     * @param time the specified time
+     */
+    public void setTime(int[] time) { // TODO validate fields
         int h = time[HOURS];
         int m = time[MINUTES];
         int s = time[SECONDS];
 
         referenceTime = (h * SECONDS_PER_HOUR) + (m * SECONDS_PER_MINUTE) + s;
-    }
-
-    /**
-     * @return {@code int[]} the clock time
-     */
-    public int[] getClockTime() {
-        return clockTime;
     }
 
 }
