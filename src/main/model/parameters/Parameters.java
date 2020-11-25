@@ -269,7 +269,7 @@ public class Parameters {
      * @return The time
      */
     public int[] getClockTime() {
-        return clock.getClockTime();
+        return clock.getTime();
     }
 
     /**
