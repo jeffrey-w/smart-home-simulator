@@ -168,6 +168,14 @@ public class Room extends Place { // TODO add validation logic to room element s
     }
 
     /**
+     *
+     * @return {@code true} if away light mode is set in this {@code Room}
+     */
+    public boolean isAwayLight() {
+        return awayLight;
+    }
+
+    /**
      * Sets this {@code Room}'s away light status to the specified {@code flag}.
      *
      * @param flag If {@code true} this {@code Room} will be lit during {@code AwayMode}
