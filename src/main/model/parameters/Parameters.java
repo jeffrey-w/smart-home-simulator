@@ -2,12 +2,8 @@ package main.model.parameters;
 
 import main.model.Manipulable;
 import main.model.elements.Room;
-import main.model.parameters.permissions.Permission;
-import main.model.tools.Clock;
 import main.model.parameters.permissions.*;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.util.*;
@@ -36,27 +32,11 @@ public class Parameters {
     /**
      * The default values for away light beginning and end.
      */
-    public static final LocalTime DEFAULT_AWAY_LIGHT_START = LocalTime.of(18, 0);
-    public static final LocalTime DEFAULT_AWAY_LIGHT_END = LocalTime.of(0, 0);
 
     public static final int DEFAULT_TIMEX = 1;
     public static final int MIN_TIMEX = 1;
     public static final int MAX_TIMEX = 999;
 
-    public static final int DEFAULT_HOURS = 0;
-    public static final int MIN_HOURS = 0;
-    public static final int MAX_HOURS = 23;
-
-    public static final int DEFAULT_MINS = 0;
-    public static final int MIN_MINS = 0;
-    public static final int MAX_MINS = 59;
-
-    public static final int DEFAULT_SECS = 0;
-    public static final int MIN_SECS = 0;
-    public static final int MAX_SECS = 59;
-
-    // starting the clock
-    private static final Clock clock = new Clock();
 
     private Permission permission;
     private final Map<String, Permission> actors;
@@ -65,11 +45,9 @@ public class Parameters {
     private int temperature;
     private boolean on;
     private boolean autoLight;
-    private AwayMode awayMode;
-    private int[] clockTime;
+    private final AwayMode awayMode;
     private Map<String, Permission> permissions;
-    private LocalTime awayLightStart;
-    private LocalTime awayLightEnd;
+    private final Clock clock = new Clock();
 
     /**
      * Constructs a new {@code Parameters} object.
@@ -82,13 +60,8 @@ public class Parameters {
         temperature = DEFAULT_TEMPERATURE;
         on = false;
         awayMode = new AwayMode();
-        // setting the time and time multiplier
-        startUpdateClock(); // start the listener to update time given the clock time
-        clockTime = clock.getClockTime();
         permissions = new HashMap<>();
         fillPermissionMap();
-        awayLightStart = DEFAULT_AWAY_LIGHT_START;
-        awayLightEnd = DEFAULT_AWAY_LIGHT_END;
     }
 
     /**
@@ -318,7 +291,7 @@ public class Parameters {
      * @return The time
      */
     public int[] getClockTime() {
-        return clockTime;
+        return clock.getClockTime();
     }
 
     /**
@@ -336,20 +309,7 @@ public class Parameters {
      * @param time is the time we want to set
      */
     public void setTime(int[] time) {
-        clock.updateTime(time);
-    }
-
-    // start the clock time listener (basically there is 2 threads, one for the clock and one to retreive the time
-    // from that clock)
-    public void startUpdateClock() {
-        ActionListener updateClockListener = new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                clockTime = clock.getClockTime();
-            }
-        };
-
-        javax.swing.Timer timerClock = new javax.swing.Timer(1000, updateClockListener);
-        timerClock.start();
+        clock.setTime(time);
     }
 
     /**
@@ -371,12 +331,28 @@ public class Parameters {
     }
 
     /**
+     *
+     * @return The start of away light mode
+     */
+    public LocalTime getAwayLightStart() {
+        return awayMode.getDefaultAwayLightStart();
+    }
+
+    /**
      * Sets the {@code start} of away light mode to the time specified
      * @param start the specified start of away light mode
      * @throws NullPointerException if the specified {@code start} is {@code null}
      */
     public void setAwayLightStart(LocalTime start) {
-        awayLightStart = Objects.requireNonNull(start);
+        awayMode.setAwayLightStart(start);
+    }
+
+    /**
+     *
+     * @return The end of away light mode
+     */
+    public LocalTime getAwayLightEnd() {
+        return awayMode.getAwayLightEnd();
     }
 
     /**
@@ -385,7 +361,7 @@ public class Parameters {
      * @throws NullPointerException if the specified {@code end} is {@code null}
      */
     public void setAwayLightEnd(LocalTime end) {
-        awayLightEnd = Objects.requireNonNull(end);
+        awayMode.setAwayLightEnd(end);
     }
 
 }
