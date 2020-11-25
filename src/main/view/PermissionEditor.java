@@ -9,10 +9,12 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 /**
- * The {@code PermissionEditor} class provides the UI for a user to change the permissible actions of all permission types.
- * The permission types include: Parent, Child, Guest, Stranger.
+ * The {@code PermissionEditor} class provides the UI for a user to change the permissible {@code Action}s of all {@code
+ * Permission} levels.
  *
  * @author Émilie Martin
+ * @see Action
+ * @see main.model.parameters.permissions.Permission
  */
 public class PermissionEditor extends JFrame {
     private static final int DIM_X = 0x400;
@@ -79,4 +81,5 @@ public class PermissionEditor extends JFrame {
     public void addTableModelListener(TableModelListener listener) {
         model.addTableModelListener(listener);
     }
+    
 }
