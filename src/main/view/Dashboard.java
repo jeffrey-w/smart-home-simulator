@@ -375,6 +375,7 @@ public class Dashboard extends JFrame {
      * @param permissions The specified {@code Permission}s
      */
     public void addPermissions(Collection<Permission> permissions) {
+        editor.permissions.addItem(null); // Add default option
         for (Permission permission : permissions) {
             editor.permissions.addItem(permission);
         }
