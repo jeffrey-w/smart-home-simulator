@@ -5,7 +5,6 @@ import main.model.Module;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Objects;
 
 public class ModuleView extends JPanel {
 
@@ -19,7 +18,6 @@ public class ModuleView extends JPanel {
     public ModuleView(Module module) {
         JScrollPane itemsPane = new JScrollPane(items);
         JScrollPane actionPane = new JScrollPane(actions);
-        this.module = Objects.requireNonNull(module);
         setLayout(new GridLayout(NUM_ROWS, 1));
         add(itemsPane);
         add(actionPane);
