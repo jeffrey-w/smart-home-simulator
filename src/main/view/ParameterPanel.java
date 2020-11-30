@@ -15,13 +15,13 @@ public class ParameterPanel extends JPanel {
 
     private static final int ROWS = 7;
 
-    Avatar avatar;
-    JToggleButton on = new JToggleButton("On");
-    JLabel permission = new JLabel();
-    JLabel location = new JLabel();
-    JLabel temperature = new JLabel();
-    JLabel date = new JLabel();
-    JLabel time = new JLabel();
+    final Avatar avatar;
+    final JToggleButton on = new JToggleButton("On");
+    final JLabel permission = new JLabel();
+    final JLabel location = new JLabel();
+    final JLabel temperature = new JLabel();
+    final JLabel date = new JLabel();
+    final JLabel time = new JLabel();
 
     /**
      * Constructs a parameter panel with an avatar and editable main.model.parameters

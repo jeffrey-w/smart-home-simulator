@@ -14,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ParameterTest {
 
-    private static final double PI = 3.14;
     private static final String TEST_ROLE = "Test";
     private static final Permission TEST_PERMISSION = new Permission() {
         @Override
@@ -28,12 +27,12 @@ class ParameterTest {
         }
 
         @Override
-        public void addPermission(final Action action) {
+        public void allow(final Action action) {
 
         }
 
         @Override
-        public void removePermission(final Action action) {
+        public void disallow(final Action action) {
 
         }
     };

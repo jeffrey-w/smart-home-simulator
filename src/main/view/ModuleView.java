@@ -5,13 +5,11 @@ import main.model.Module;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Objects;
 
 public class ModuleView extends JPanel {
 
     private static final int NUM_ROWS = 2;
 
-    final Module module;
     final DefaultListModel<String> itemsModel = new DefaultListModel<>();
     final DefaultListModel<Action> actionsModel = new DefaultListModel<>();
     final JList<String> items = new JList<>(itemsModel);
@@ -20,7 +18,6 @@ public class ModuleView extends JPanel {
     public ModuleView(Module module) {
         JScrollPane itemsPane = new JScrollPane(items);
         JScrollPane actionPane = new JScrollPane(actions);
-        this.module = Objects.requireNonNull(module);
         setLayout(new GridLayout(NUM_ROWS, 1));
         add(itemsPane);
         add(actionPane);
@@ -41,4 +38,11 @@ public class ModuleView extends JPanel {
         });
     }
 
+    public String getSelectedItem() {
+        return items.getSelectedValue();
+    }
+
+    public Action getSelectedAction() {
+        return actions.getSelectedValue();
+    }
 }

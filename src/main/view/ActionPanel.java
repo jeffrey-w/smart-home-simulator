@@ -15,30 +15,13 @@ import java.util.List;
  */
 public class ActionPanel extends JTabbedPane {
 
-    List<JList<Action>> actions = new LinkedList<>();
+    final List<JList<Action>> actions = new LinkedList<>();
 
-    public void addModule(Module module) {
+    public ModuleView addModule(Module module) {
         ModuleView view = new ModuleView(module);
         actions.add(view.actions);
         addTab(module.getName(), view);
-    }
-
-    /**
-     * Provides the {@code House} item currently selected by this {@code ActionPanel}.
-     *
-     * @return The selected {@code House} item
-     */
-    public String getSelectedItem() {
-        return ((ModuleView) getSelectedComponent()).items.getSelectedValue();
-    }
-
-    /**
-     * Provides the {@code Action} currently selected by this {@code ActionPanel}.
-     *
-     * @return The selected {@code Action}
-     */
-    public Action getSelectedAction() {
-        return ((ModuleView) getSelectedComponent()).actions.getSelectedValue();
+        return view;
     }
 
 }

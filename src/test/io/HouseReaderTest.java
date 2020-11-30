@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class HouseReaderTest {
 
-    HouseReader houseReader = new HouseReader(new File("src/test/io/houseLayoutTest.json"));
+    final HouseReader houseReader = new HouseReader(new File("src/test/io/houseLayoutTest.json"));
 
     @Test
     void testReadHouse() {

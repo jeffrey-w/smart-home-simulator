@@ -32,7 +32,6 @@
 package main.view.viewtils;
 
 import javax.swing.*;
-import javax.swing.SpringLayout;
 import java.awt.*;
 
 /**

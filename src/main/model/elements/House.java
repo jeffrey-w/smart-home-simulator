@@ -19,9 +19,9 @@ public class House implements Iterable<Room> {
 
     private static class Node {
 
-        Room room;
+        final Room room;
 
-        Set<String> adjacents;
+        final Set<String> adjacents;
         boolean visited;
         Node(Room room) {
             this.room = Objects.requireNonNull(room);
@@ -68,7 +68,7 @@ public class House implements Iterable<Room> {
      * @param room The specified {@code Room}
      * @param location The specified location
      * @throws IllegalArgumentException If the specified {@code location} is not a non-empty string of word characters
-     * (i.e. [a-z, A-Z, 0-9, _])
+     * (i.e. [a-z, A-Z, 0-9, _]) and whitespace
      */
     public void addRoom(Room room, String location) {
         rooms.putIfAbsent(validateName(location), new Node(room));
@@ -115,7 +115,7 @@ public class House implements Iterable<Room> {
      * @param permission The specified {@code Permission}
      * @param location The specified location
      * @throws IllegalArgumentException If the specified {@code name} is not a non-empty string of word characters (i.e.
-     * [a-z, A-Z, 0-9, _, ])
+     * [a-z, A-Z, 0-9, _, ]) and whitespace
      * @throws NoSuchElementException If the specified {@code location} does not exist in this {@code House}
      * @throws NullPointerException If the specified {@code permission} is {@code null}
      */
@@ -325,7 +325,7 @@ public class House implements Iterable<Room> {
 
     @Override
     public Iterator<Room> iterator() {
-        return new Iterator<Room>() {
+        return new Iterator<>() {
 
             final Iterator<Node> iterator = rooms.values().iterator();
 

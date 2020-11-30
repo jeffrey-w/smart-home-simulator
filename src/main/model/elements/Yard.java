@@ -11,7 +11,7 @@ public class Yard extends Place {
     // Singleton object
     private static volatile Yard yard;
 
-    private Light light = new Light();
+    private final Light light = new Light();
 
     /**
      * Get the {@code Yard} of a {@code House}

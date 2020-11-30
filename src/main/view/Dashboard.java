@@ -20,6 +20,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.*;
 
 import static java.awt.BorderLayout.EAST;
@@ -34,22 +35,30 @@ import static java.awt.BorderLayout.WEST;
  */
 public class Dashboard extends JFrame {
 
+    public ModuleView addModule(Module module) {
+        return actions.addModule(module);
+    }
+
+    public String getSelectedModule() {
+        return actions.getTitleAt(actions.getSelectedIndex());
+    }
+
     /**
      * The category a console message might have.
      */
     public enum MessageType {
         NORMAL,
         WARNING,
-        ERROR;
+        ERROR
     }
-    // Pre-determined size parameters
 
+    // Pre-determined size parameters
     static final int WINDOW_WIDTH = 0x600;
     static final int WINDOW_HEIGHT = 0x300;
     static final int PARAMETER_PANE_WIDTH = WINDOW_WIDTH >>> 2; // x >>> y == x / 2^y
     static final int CONTENT_PANE_WIDTH = WINDOW_WIDTH - PARAMETER_PANE_WIDTH;
     static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd");
-            // NOTE: removed the time here so that we can implement that independently
+
     private static final EnumMap<MessageType, Color> MESSAGE_COLORS = new EnumMap<>(MessageType.class);
 
     static {
@@ -59,13 +68,12 @@ public class Dashboard extends JFrame {
 
     private int inputLoc;
 
-    ParameterPanel parameters = new ParameterPanel();
-    ParameterEditor editor = new ParameterEditor();
-    ActionPanel actions = new ActionPanel();
-    HouseLayoutPanel layout = new HouseLayoutPanel();
-    JTextPane console = new JTextPane();
-    ProfileViewer profileViewer = new ProfileViewer();
-    PermissionEditor permissionEditor = new PermissionEditor();
+    final ParameterPanel parameters = new ParameterPanel();
+    final ParameterEditor editor = new ParameterEditor();
+    final ActionPanel actions = new ActionPanel();
+    final HouseLayoutPanel layout = new HouseLayoutPanel();
+    final JTextPane console = new JTextPane();
+    final ProfileViewer profileViewer = new ProfileViewer();
 
     /**
      * Creates the dashboard, which is to contain the {@code ParameterPanel}, a console, the {@code HouseLayout}. This
@@ -108,8 +116,6 @@ public class Dashboard extends JFrame {
 
         // Set content display behavior.
         actions.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-        actions.addModule(Module.SHC);
-        actions.addModule(Module.SHP);
         layout.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 
         // Set console display behavior.
@@ -165,26 +171,14 @@ public class Dashboard extends JFrame {
      * @throws NullPointerException If the specified {@code time} is {@code null}
      */
     public void setTime(int[] time) {
-        String h = Integer.toString(time[0]);
-        String m = Integer.toString(time[1]);
-        String s = Integer.toString(time[2]);
-        String timeStr = ("" + h + ":" + m + ":" + s);
-
-        parameters.setTime(timeStr);
+        parameters.setTime(time[0] + ":" + time[1] + ":" + time[2]);
     }
 
     /**
      * @return The {@code Permission} level the user has selected for themselves
      */
     public Permission getPermissionInput() {
-        return (Permission) editor.permission.getSelectedItem();
-    }
-
-    /**
-     * @return The {@code PermissionEditor} panel that lets the user change its permissible actions.
-     */
-    public PermissionEditor getPermissionEditor() {
-        return permissionEditor;
+        return (Permission) editor.permissions.getSelectedItem();
     }
 
     /**
@@ -215,25 +209,16 @@ public class Dashboard extends JFrame {
         return (Integer) editor.timeX.getValue();
     }
 
-    /**
-     * @return The time hour the user has set for the simulation {@code House}
-     */
-    public Integer getHourInput() {
-        return (Integer) editor.hour.getValue();
-    }
-
-    /**
-     * @return The time min the user has set for the simulation {@code House}
-     */
-    public Integer getMinInput() {
-        return (Integer) editor.min.getValue();
-    }
-
-    /**
-     * @return The time sec the user has set for the simulation {@code House}
-     */
-    public Integer getSecInput() {
-        return (Integer) editor.sec.getValue();
+    public int[] getTimeInput() {
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime((Date) editor.time.getValue());
+        LocalTime time = LocalTime
+                .of(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND));
+        return new int[] {
+                time.getHour(),
+                time.getMinute(),
+                time.getSecond()
+        };
     }
 
     /**
@@ -241,13 +226,6 @@ public class Dashboard extends JFrame {
      */
     public ProfileViewer getProfileViewer() {
         return profileViewer;
-    }
-
-    /**
-     * @return The {@code ActionPanel} for this {@code Dashboard}
-     */
-    public ActionPanel getActions() {
-        return actions;
     }
 
     /**
@@ -287,7 +265,9 @@ public class Dashboard extends JFrame {
     }
 
     /**
-     * @param listener
+     * Registers an event handler for loading and saving custom {@code Permission} settings.
+     *
+     * @param listener The specified event handler
      */
     public void addPersistPermissionListener(ActionListener listener) {
         editor.persistPermissions.addActionListener(listener);
@@ -299,13 +279,13 @@ public class Dashboard extends JFrame {
      * @param listener The specified event handler
      */
     public void addPermissionListener(ActionListener listener) {
-        editor.permission.addActionListener(listener);
+        editor.permissions.addActionListener(listener);
     }
 
     /**
-     * Registers an event handler for editing a the permissible actions given by the user's {@code Permission} level.
+     * Registers an event handler for editing a the permissible {@code Action}s for each {@code Permission}.
      *
-     * @param editPermissionsListener
+     * @param editPermissionsListener The specified event handler
      */
     public void addEditPermissionListener(ActionListener editPermissionsListener) {
         editor.editPermissions.addActionListener(editPermissionsListener);
@@ -353,9 +333,7 @@ public class Dashboard extends JFrame {
      * @param listener The specified event handler
      */
     public void addTimeUpdateListener(ChangeListener listener) {
-        editor.hour.addChangeListener(listener);
-        editor.min.addChangeListener(listener);
-        editor.sec.addChangeListener(listener);
+        editor.time.addChangeListener(listener);
     }
 
     /**
@@ -388,6 +366,18 @@ public class Dashboard extends JFrame {
             console.setEditable(true);
             console.grabFocus();
             inputLoc = console.getDocument().getLength();
+        }
+    }
+
+    /**
+     * Provides the specified {@code permissions} to various UI elements.
+     *
+     * @param permissions The specified {@code Permission}s
+     */
+    public void addPermissions(Collection<Permission> permissions) {
+        editor.permissions.addItem(null); // Add default option
+        for (Permission permission : permissions) {
+            editor.permissions.addItem(permission);
         }
     }
 

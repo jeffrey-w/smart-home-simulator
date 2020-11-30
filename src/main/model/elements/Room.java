@@ -13,7 +13,7 @@ import java.util.Objects;
  * @see Light
  * @see Window
  */
-public class Room extends Place { // TODO add validation logic to room element setters
+public class Room extends Place {
 
     private static final int DEFAULT_ROOM_TEMPERATURE = 25;
 
@@ -65,6 +65,23 @@ public class Room extends Place { // TODO add validation logic to room element s
      */
     public void setTemperature(int temperature) { // TODO do bounds checking
         this.temperature = temperature;
+    }
+
+    /**
+     *
+     * @return {@code true} if away light mode is set in this {@code Room}
+     */
+    public boolean isAwayLight() {
+        return awayLight;
+    }
+
+    /**
+     * Sets this {@code Room}'s away light status to the specified {@code flag}.
+     *
+     * @param flag If {@code true} this {@code Room} will be lit during {@code AwayMode}
+     */
+    public void setAwayLight(boolean flag) {
+        awayLight = flag;
     }
 
     /**
@@ -165,15 +182,6 @@ public class Room extends Place { // TODO add validation logic to room element s
         result = prime * result + Arrays.hashCode(lights);
         result = prime * result + Arrays.hashCode(windows);
         return result;
-    }
-
-    /**
-     * Sets this {@code Room}'s away light status to the specified {@code flag}.
-     *
-     * @param flag If {@code true} this {@code Room} will be lit during {@code AwayMode}
-     */
-    public void setAwayLight(boolean flag) {
-        awayLight = flag;
     }
 
 }

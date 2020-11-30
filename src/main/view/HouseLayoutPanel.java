@@ -19,8 +19,8 @@ public class HouseLayoutPanel extends JPanel {
 
     private static class RoomInfo {
 
-        Point coordinates;
-        int[] states = new int[NUMBER_OF_STATES];
+        final Point coordinates;
+        final int[] states = new int[NUMBER_OF_STATES];
 
         RoomInfo(int x, int y) {
             coordinates = new Point(x, y);
@@ -61,7 +61,7 @@ public class HouseLayoutPanel extends JPanel {
     int x, y;
     int drawn = 0;
     boolean showStates = false;
-    Map<String, RoomInfo> rooms = new LinkedHashMap<>();
+    final Map<String, RoomInfo> rooms = new LinkedHashMap<>();
 
     /**
      * Provides a visual representation of the specified {@code house}.

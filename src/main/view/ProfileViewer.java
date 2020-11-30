@@ -16,11 +16,11 @@ public class ProfileViewer extends JFrame {
 
     private static final int DIMENSION = 0x100;
 
-    DefaultListModel<String> profiles = new DefaultListModel<>();
-    JList<String> list = new JList<>(profiles);
-    JButton add = new JButton("Add");
-    JButton edit = new JButton("Edit");
-    JButton remove = new JButton("Remove");
+    final DefaultListModel<String> profiles = new DefaultListModel<>();
+    final JList<String> list = new JList<>(profiles);
+    final JButton add = new JButton("Add");
+    final JButton edit = new JButton("Edit");
+    final JButton remove = new JButton("Remove");
 
     /**
      * Constructs a new {@code ProfileViewer} object with the profiles from the specified {@code parameters} and the

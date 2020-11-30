@@ -45,7 +45,7 @@ public final class Module {
      *
      * @param name The specified name
      * @throws IllegalArgumentException If the specified {@code name} is not a non-empty string of word characters (i.e.
-     * [a-z, A-Z, 0-9, _, ])
+     * [a-z, A-Z, 0-9, _, ]) and whitespace
      */
     public Module(String name) {
         this.name = validateName(name);
@@ -58,29 +58,13 @@ public final class Module {
      * @param item the specified item
      * @param action the specified {@code Action}
      * @throws IllegalArgumentException If the specified {@code item} is not a non-empty string of word characters(i.e.
-     * [a-z, A-Z, 0-9, _, ])
+     * [a-z, A-Z, 0-9, _, ]) and whitespae
      * @throws NullPointerException If the specified {@code action} is {@code null}
      */
     public void addCommand(String item, Action action) {
         Set<Action> actions = commands.getOrDefault(validateName(item), new HashSet<>());
         actions.add(Objects.requireNonNull(action));
         commands.putIfAbsent(item, actions);
-    }
-
-    /**
-     * Adds the specified {@code action} to the specified {@code item} of this {@code Module}.
-     *
-     * @param item the specified item
-     * @param actions the specified {@code Action}
-     * @throws IllegalArgumentException If the specified {@code item} is not a non-empty string of word characters(i.e.
-     * [a-z, A-Z, 0-9, _, ])
-     * @throws NullPointerException If {@code actions} is {@code null} or any of the {@code Action}s therein are {@code
-     * null}
-     */
-    public void addCommands(String item, Collection<Action> actions) {
-        Set<Action> actionSet = commands.getOrDefault(validateName(item), new HashSet<>());
-        actionSet.addAll(actions);
-        commands.putIfAbsent(item, actionSet);
     }
 
     /**
@@ -103,7 +87,7 @@ public final class Module {
      * @param item the specified item
      * @return the {@code Action}s that may performed on the specified {@code item}
      * @throws IllegalArgumentException If the specified {@code item} is not a non-empty string of word characters(i.e.
-     * [a-z, A-Z, 0-9, _, ])
+     * [a-z, A-Z, 0-9, _, ]) and whitespace
      */
     public Set<Action> getActionsFor(String item) {
         return Collections.unmodifiableSet(commands.get(validateName(item)));

@@ -21,8 +21,8 @@ public class ModuleBuilder {
 
     private static class CommandEntry implements Map.Entry<String, Action> {
 
-        String key;
-        Action value;
+        final String key;
+        final Action value;
 
         CommandEntry(String key, Action value) {
             this.key = validateName(key);
@@ -61,7 +61,7 @@ public class ModuleBuilder {
      * @param name The specified name
      * @return This {@code ModuleBuilder}
      * @throws IllegalArgumentException If the specified {@code name} is not a non-empty string of word characters (i.e.
-     * [a-z, A-Z, 0-9, _, ])
+     * [a-z, A-Z, 0-9, _, ]) and whitespace
      */
     public ModuleBuilder addName(String name) {
         this.name = validateName(name);
