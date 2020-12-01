@@ -91,6 +91,7 @@ public class Controller {
     private void addModules() {
         modules.put(Module.SHC.getName(), new CoreModuleController(this, dashboard.addModule(Module.SHC)));
         modules.put(Module.SHP.getName(), new SecurityModuleController(this, dashboard.addModule(Module.SHP)));
+        modules.put(Module.SHH.getName(), new HeatingModuleController(this, dashboard.addModule(Module.SHH)));
     }
 
     /*
