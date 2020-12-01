@@ -341,5 +341,13 @@ public class Parameters {
         awayMode.setAwayLightEnd(end);
     }
 
+    public void overrideTemperatureOf( String room) {
+        // TODO
+    }
+
+    // TODO
+    public boolean isTemperatureOverridden(String location) {
+        return true;
+    }
 }
 
