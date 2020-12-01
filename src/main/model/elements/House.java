@@ -20,14 +20,13 @@ public class House implements Iterable<Room> {
     private static class Node {
 
         final Room room;
-
         final Set<String> adjacents;
+
         boolean visited;
         Node(Room room) {
             this.room = Objects.requireNonNull(room);
             this.adjacents = new HashSet<>();
         }
-
         @Override
         public boolean equals(final Object obj) {
             if (!(obj instanceof Node)) {
@@ -38,21 +37,22 @@ public class House implements Iterable<Room> {
         }
 
 
+
     }
+    
     /**
      * The maximum number of {@code Room}s that another {@code Room} may be adjacent to.
      */
     public static final int MAX_CONNECTIONS = 4;
-
     /**
      * The name of the {@code Place} surrounding a {@code House}.
      */
     public static final String EXTERIOR_NAME = "yard";
 
     private String root;
-
     private final Map<String, Node> rooms;
     private final Map<String, String> people;
+
     /**
      * Constructs a new {@code House} object with no {@code Room}s.
      */
@@ -60,7 +60,6 @@ public class House implements Iterable<Room> {
         rooms = new HashMap<>();
         people = new HashMap<>();
     }
-
     /**
      * Adds the specified {@code room} to this {@code House} at the specified {@code location}. Note: if another {@code
      * Room} already exists at the specified {@code location}, the new {@code Room} is not added.
@@ -321,6 +320,11 @@ public class House implements Iterable<Room> {
             return rooms.get(location);
         }
         throw new NoSuchElementException("That location does not exist");
+    }
+
+    // TODO comment this
+    public int getSize() {
+        return rooms.size();
     }
 
     @Override
