@@ -17,7 +17,7 @@ public class Room extends Place {
 
     private static final int DEFAULT_ROOM_TEMPERATURE = 25;
 
-    private int temperature;
+    private int temperature; // TODO this should be double
     private boolean awayLight;
     private final Door[] doors;
     private final Light[] lights;
@@ -184,4 +184,8 @@ public class Room extends Place {
         return result;
     }
 
+    // TODO comment this
+    public int getTemperature() {
+        return temperature;
+    }
 }
