@@ -37,6 +37,15 @@ public final class Module {
             .addName("SHP")
             .build();
 
+    public static final Module SHH = (new ModuleBuilder())
+            .addCommandFor("Zones", Action.CREATE_TEMPERATURE_CONTROL_ZONE)
+            .addCommandFor("Zones", Action.MANAGE_TEMPERATURE_CONTROL_ZONES)
+            .addCommandFor("Temperature", Action.READ_TEMPERATURES)
+            .addCommandFor("Temperature", Action.CHANGE_TEMPERATURE)
+            .addCommandFor("Temperature", Action.SET_DEFAULT_TEMPERATURE)
+            .addName("SHH")
+            .build();
+
     private final String name;
     private final Map<String, Set<Action>> commands;
 
