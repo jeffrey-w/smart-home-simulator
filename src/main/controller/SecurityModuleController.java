@@ -69,9 +69,11 @@ public class SecurityModuleController extends AbstractModuleController {
                     chooser.pack();
                     chooser.setLocationRelativeTo(parent.getDashboard());
                     chooser.setVisible(true);
+                    break;
                 case SET_AWAY_MODE:
                     performActionOn(view.getSelectedAction(), parent.getParameters().getAwayMode());
                     parent.redrawHouse();
+                    break;
             }
         } else {
             parent.sendToConsole("Please select a permission to choose an action.", Dashboard.MessageType.ERROR);
