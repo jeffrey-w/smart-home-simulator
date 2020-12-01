@@ -67,7 +67,6 @@ public class AwayMode extends AbstractManipulable {
     }
 
     /**
-     *
      * @return The start of away light mode
      */
     public LocalTime getDefaultAwayLightStart() {
@@ -75,7 +74,6 @@ public class AwayMode extends AbstractManipulable {
     }
 
     /**
-     *
      * @return The end of away light mode
      */
     public LocalTime getAwayLightEnd() {
@@ -84,7 +82,7 @@ public class AwayMode extends AbstractManipulable {
 
     /**
      * Sets the {@code start} of away light mode to the time specified
-     * @param start the specified start of away light mode
+     * @param start The specified start of away light mode
      * @throws NullPointerException if the specified {@code start} is {@code null}
      */
     public void setAwayLightStart(LocalTime start) {
@@ -93,7 +91,7 @@ public class AwayMode extends AbstractManipulable {
 
     /**
      * Sets the {@code end} of away light mode to the time specified
-     * @param end the specified end of away light mode
+     * @param end The specified end of away light mode
      * @throws NullPointerException if the specified {@code end} is {@code null}
      */
     public void setAwayLightEnd(LocalTime end) {
