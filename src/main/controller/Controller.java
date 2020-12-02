@@ -4,6 +4,7 @@ import main.model.Module;
 import main.model.elements.House;
 import main.model.elements.Room;
 import main.model.parameters.Parameters;
+import main.util.SeasonChecker;
 import main.view.Dashboard;
 
 import javax.swing.*;
@@ -14,6 +15,8 @@ import java.awt.event.MouseEvent;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
+
+import static main.util.SeasonChecker.isIn;
 
 /**
  * The {@code Controller} class provides the interface between runtime simulation objects and the UI elements to
@@ -80,6 +83,18 @@ public class Controller {
                             parameters.getAwayLightEnd()));
                 }
                 redrawHouse();
+            } else {
+                if (isSummer()) {
+                    if (house.hasTemperatureAberration(parameters.getTemperature()) && house.hasObstructedWindow()) {
+                        sendToConsole(
+                                "A blocked window has prevented SHH from opening or closing the windows in this house.",
+                                Dashboard.MessageType.ERROR);
+                    } else {
+                        for (Room room : house) {
+                            room.toggleWindows(room.getTemperature() > parameters.getTemperature());
+                        }
+                    }
+                }
             }
         })).start();
     }
@@ -166,6 +181,10 @@ public class Controller {
             dashboard.updateRoom(location, house.getRoom(location));
         }
         dashboard.redrawHouse();
+    }
+
+    boolean isSummer() {
+        return isIn(parameters.getDate(), SeasonChecker.Season.SUMMER);
     }
 
 }
