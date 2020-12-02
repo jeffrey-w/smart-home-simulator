@@ -15,9 +15,9 @@ import java.util.Objects;
  */
 public class Room extends Place {
 
-    private static final int DEFAULT_ROOM_TEMPERATURE = 25;
+    private static final double DEFAULT_ROOM_TEMPERATURE = 25.00;
 
-    private int temperature;
+    private double temperature;
     private boolean awayLight;
     private final Door[] doors;
     private final Light[] lights;
@@ -63,7 +63,7 @@ public class Room extends Place {
      *
      * @param temperature The specified temperature
      */
-    public void setTemperature(int temperature) { // TODO do bounds checking
+    public void setTemperature(double temperature) { // TODO do bounds checking
         this.temperature = temperature;
     }
 
@@ -177,7 +177,7 @@ public class Room extends Place {
     public int hashCode() {
         int prime = 31;
         int result = 1;
-        result = prime * result + temperature;
+        result = prime * result + (int) temperature;
         result = prime * result + Arrays.hashCode(doors);
         result = prime * result + Arrays.hashCode(lights);
         result = prime * result + Arrays.hashCode(windows);
