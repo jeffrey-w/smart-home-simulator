@@ -163,6 +163,15 @@ public class Room extends Place {
         }
     }
 
+    // TODO
+    public void toggleWindows(boolean flag) {
+        for (Window window : windows) {
+            if (window != null) {
+                window.setOpen(flag); // TODO throws IllegalStateException
+            }
+        }
+    }
+
     @Override
     public boolean equals(final Object obj) {
         if (!(obj instanceof Room)) {
@@ -183,8 +192,8 @@ public class Room extends Place {
         result = prime * result + Arrays.hashCode(windows);
         return result;
     }
-
     // TODO comment this
+
     public int getTemperature() {
         return temperature;
     }
