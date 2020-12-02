@@ -20,9 +20,10 @@ public class House implements Iterable<Room> {
     private static class Node {
 
         final Room room;
-        final Set<String> adjacents;
 
+        final Set<String> adjacents;
         boolean visited;
+
         Node(Room room) {
             this.room = Objects.requireNonNull(room);
             this.adjacents = new HashSet<>();
@@ -36,14 +37,13 @@ public class House implements Iterable<Room> {
             return room.equals(node.room);
         }
 
-
-
     }
-    
+
     /**
      * The maximum number of {@code Room}s that another {@code Room} may be adjacent to.
      */
     public static final int MAX_CONNECTIONS = 4;
+
     /**
      * The name of the {@code Place} surrounding a {@code House}.
      */
@@ -60,6 +60,7 @@ public class House implements Iterable<Room> {
         rooms = new HashMap<>();
         people = new HashMap<>();
     }
+
     /**
      * Adds the specified {@code room} to this {@code House} at the specified {@code location}. Note: if another {@code
      * Room} already exists at the specified {@code location}, the new {@code Room} is not added.
@@ -72,7 +73,6 @@ public class House implements Iterable<Room> {
     public void addRoom(Room room, String location) {
         rooms.putIfAbsent(validateName(location), new Node(room));
     }
-
     /**
      * Signifies adjacency between the specified locations in this {@code House}.
      *
@@ -216,6 +216,16 @@ public class House implements Iterable<Room> {
     public boolean hasObstructedWindow() {
         for (Room room : this) {
             if (room.getNumberOfWindowsBlocked() > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // TODO
+    public boolean hasTemperatureAberration(int temperature) {
+        for (Room room : this) {
+            if (room.getTemperature() > temperature) {
                 return true;
             }
         }
