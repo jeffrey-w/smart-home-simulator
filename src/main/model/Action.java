@@ -4,9 +4,9 @@ import main.model.elements.*;
 import main.model.parameters.Clock;
 import main.model.parameters.Parameters;
 import main.model.parameters.permissions.Permission;
+import main.util.SeasonCheck;
 
 import java.time.LocalTime;
-import java.util.Calendar;
 import java.util.Set;
 
 /**
@@ -227,7 +227,15 @@ public enum Action {
             house.closeOpenables();
 
             // set default temperatures depending on time period (winter / summer)
-            System.out.println("zone temp set to -> " + parameters.getDefaultSummerTemperatureZone());
+            SeasonCheck.Season season = SeasonCheck.getSeason(parameters.getDate());
+            if (season == SeasonCheck.Season.SUMMER) {
+                // TODO : set zone temperatures
+                System.out.println("zone temp set to -> " + parameters.getDefaultSummerTemperatureZone());
+            }
+            else if (season == SeasonCheck.Season.WINTER) {
+                // TODO : set zone temperatures
+                System.out.println("zone temp set to -> " + parameters.getDefaultWinterTemperatureZone());
+            }
 
             parameters.setAwayMode(!parameters.isAwayMode());
             return parameters.isAwayMode() ? "Away mode has been turned on" : "Away mode has been turned off";

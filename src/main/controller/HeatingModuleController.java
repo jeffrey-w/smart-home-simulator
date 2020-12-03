@@ -67,5 +67,4 @@ public class HeatingModuleController extends AbstractModuleController {
     private boolean canAct() {
         return !(parent.getParameters().getPermission() == null || parent.getParameters().getLocation() == null);
     }
-
 }

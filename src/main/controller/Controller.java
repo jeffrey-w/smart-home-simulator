@@ -6,6 +6,7 @@ import main.model.elements.Room;
 import main.model.parameters.Parameters;
 import main.util.SeasonChecker;
 import main.view.Dashboard;
+import main.util.SeasonCheck;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -96,6 +97,14 @@ public class Controller {
                     }
                 }
             }
+
+            // check home temperature -> if <= 0 -> alert users about pipe burst potential
+            if(Double.compare(parameters.getTemperature(), 0) <= 0){
+                sendToConsole(
+                        "WARNING : Temperature inside home is below 0C, pipes might burst.",
+                        Dashboard.MessageType.WARNING);
+            }
+
         })).start();
     }
 
@@ -184,7 +193,7 @@ public class Controller {
     }
 
     boolean isSummer() {
-        return isIn(parameters.getDate(), SeasonChecker.Season.SUMMER);
+        return SeasonCheck.getSeason(parameters.getDate()) == SeasonCheck.Season.SUMMER;
+//        return isIn(parameters.getDate(), SeasonChecker.Season.SUMMER);
     }
-
 }
