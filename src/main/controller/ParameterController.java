@@ -11,7 +11,7 @@ import main.util.TextFilter;
 import main.view.Dashboard;
 import main.view.PermissionEditor;
 import main.view.ProfileEditor;
-import main.view.ProfileViewer;
+import main.view.ParameterViewer;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -74,7 +74,7 @@ public class ParameterController {
         @Override
         public void actionPerformed(ActionEvent e) {
             Dashboard dashboard = parent.getDashboard();
-            ProfileViewer viewer = dashboard.getProfileViewer();
+            ParameterViewer viewer = dashboard.getProfileViewer();
             viewer.clear();
             viewer.populateList(parent.getParameters().getActorsIdentifier());
             viewer.pack();
@@ -91,7 +91,7 @@ public class ParameterController {
             String actionCommand = e.getActionCommand();
             House house = parent.getHouse();
             Parameters parameters = parent.getParameters();
-            ProfileViewer viewer = parent.getDashboard().getProfileViewer();
+            ParameterViewer viewer = parent.getDashboard().getProfileViewer();
             switch (actionCommand) {
                 case "Add":
                 case "Edit": {
@@ -125,8 +125,8 @@ public class ParameterController {
                                     parent.sendToConsole(name + " has exited the house.", Dashboard.MessageType.NORMAL);
                                 }
                             }
-                            if (!viewer.containsProfile(name)) {
-                                viewer.addProfile(name);
+                            if (!viewer.containsParameter(name)) {
+                                viewer.addParameter(name);
                             }
                             editor.dispose();
                         } catch (Exception exception) {
@@ -147,7 +147,7 @@ public class ParameterController {
                         parent.getCoreModuleController().toggleAutoLight();
                         parent.redrawHouse();
                     }
-                    viewer.removeProfile(viewer.getSelectedValue());
+                    viewer.removeParameter(viewer.getSelectedValue());
                     break;
                 }
                 default:
