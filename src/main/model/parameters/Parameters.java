@@ -29,6 +29,11 @@ public class Parameters {
     public static final double DEFAULT_TEMPERATURE = 15;
     public static final double MIN_TEMPERATURE = -100;
     public static final double MAX_TEMPERATURE = 100;
+    public static final int DEFAULT_TEMPERATURE = 15;
+    public static final int MIN_TEMPERATURE = -100;
+    public static final int MAX_TEMPERATURE = 100;
+    public static final int DEFAULT_WINTER_TEMPERATURE_ZONE = 25;
+    public static final int DEFAULT_SUMMER_TEMPERATURE_ZONE = 15;
 
     /**
      * The default values for away light beginning and end.
@@ -43,6 +48,9 @@ public class Parameters {
     private String location;
     private Date date;
     private double externalTemperature;
+    private int temperature;
+    private int defWinterTempZone;
+    private int defSummerTempZone;
     private boolean on;
     private boolean autoLight;
     private final AwayMode awayMode;
@@ -59,6 +67,9 @@ public class Parameters {
         location = null;
         date = Date.from(Instant.now());
         externalTemperature = DEFAULT_TEMPERATURE;
+        temperature = DEFAULT_TEMPERATURE;
+        defWinterTempZone = DEFAULT_WINTER_TEMPERATURE_ZONE;
+        defSummerTempZone = DEFAULT_SUMMER_TEMPERATURE_ZONE;
         on = false;
         awayMode = new AwayMode();
         permissions = new HashMap<>();
@@ -86,11 +97,11 @@ public class Parameters {
     /**
      * Adds a new actor to the simulation with the specified {@code name} and {@code permission}.
      *
-     * @param name A unique identifier
+     * @param name       A unique identifier
      * @param permission The {@code Permission} level of the newly added actor
      * @throws IllegalArgumentException If the specified {@code name} is not a non-empty string of word characters (i.e.
-     * [a-z, A-Z, 0-9, _]) and whitespace
-     * @throws NullPointerException If the specified {@code permission} is {@code null}
+     *                                  [a-z, A-Z, 0-9, _]) and whitespace
+     * @throws NullPointerException     If the specified {@code permission} is {@code null}
      */
     public void addActor(String name, Permission permission) {
         actors.put(validateName(name), Objects.requireNonNull(permission, "Please select a permission level."));
@@ -162,7 +173,7 @@ public class Parameters {
      *
      * @param location The specified location
      * @throws IllegalArgumentException If the specified {@code location} is not a non-empty string of word characters
-     * (i.e. [a-z, A-Z, 0-9, _]) and whitespace
+     *                                  (i.e. [a-z, A-Z, 0-9, _]) and whitespace
      */
     public void setLocation(String location) {
         this.location = location == null ? null : validateName(location);
@@ -183,7 +194,7 @@ public class Parameters {
      *
      * @param temperature The newly specified external temperature
      * @throws IllegalArgumentException If the specified {@code temperature} is above {@value #MAX_TEMPERATURE} or below
-     * {@value #MIN_TEMPERATURE}
+     *                                  {@value #MIN_TEMPERATURE}
      */
     public void setExternalTemperature(double temperature) {
         if (temperature < MIN_TEMPERATURE || temperature > MAX_TEMPERATURE) {
@@ -351,6 +362,8 @@ public class Parameters {
      */
     public void addZone(String id, TemperatureControlZone zone) {
         zones.putIfAbsent(id, zone);
+    public void overrideTemperatureOf(String room) {
+        // TODO
     }
 
     /**
@@ -379,5 +392,20 @@ public class Parameters {
     public boolean isTemperatureOverridden(String location) {
         return true;
     }
-}
 
+    public int getDefaultWinterTemperatureZone() {
+        return defWinterTempZone;
+    }
+
+    public int getDefaultSummerTemperatureZone() {
+        return defSummerTempZone;
+    }
+
+    public void setDefaultWinterTemperatureZone(int temp) {
+        defWinterTempZone = temp;
+    }
+
+    public void setDefaultSummerTemperatureZone(int temp) {
+        defSummerTempZone = temp;
+    }
+}

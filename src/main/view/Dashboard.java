@@ -62,7 +62,7 @@ public class Dashboard extends JFrame {
     // Action color-coded legend
     private static final EnumMap<MessageType, Color> MESSAGE_COLORS = new EnumMap<>(MessageType.class);
     static {
-        MESSAGE_COLORS.put(MessageType.WARNING, Color.YELLOW);
+        MESSAGE_COLORS.put(MessageType.WARNING, Color.MAGENTA);
         MESSAGE_COLORS.put(MessageType.ERROR, Color.RED);
     }
 

@@ -51,6 +51,24 @@ public class HeatingModuleController extends AbstractModuleController {
                 case READ_TEMPERATURES:
                     performActionOn(Action.READ_TEMPERATURES, EMPTY_MANIPULABLE);
                     break;
+                case SET_DEFAULT_TEMPERATURE:
+                    MultiValueManipulable defTempManipulable = new MultiValueManipulable(parent.getParameters().getTemperature()); // FIXME : dont really need the getTemp ?
+                    try {
+                        int defWinterTempZone = Integer.parseInt(JOptionPane
+                                .showInputDialog(parent.getDashboard(), "Enter a default winter temperature.", "Change Default Winter Temperature",
+                                        JOptionPane.PLAIN_MESSAGE));
+                        int defSummerTempZone = Integer.parseInt(JOptionPane
+                                .showInputDialog(parent.getDashboard(), "Enter a default summer temperature.", "Change Default Summer Temperature",
+                                        JOptionPane.PLAIN_MESSAGE));
+                        defTempManipulable.addValue(defWinterTempZone);
+                        defTempManipulable.addValue(defSummerTempZone);
+                    } catch (NumberFormatException e) {
+                        parent.sendToConsole("Please enter an integer.", Dashboard.MessageType.ERROR);
+                        return;
+                    }
+
+                    performActionOn(Action.SET_DEFAULT_TEMPERATURE, defTempManipulable);
+                    break;
             }
         } else {
             String message = "Please select a permission and location to choose an action.";
@@ -64,5 +82,4 @@ public class HeatingModuleController extends AbstractModuleController {
     private boolean canAct() {
         return !(parent.getParameters().getPermission() == null || parent.getParameters().getLocation() == null);
     }
-
 }

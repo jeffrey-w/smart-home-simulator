@@ -4,6 +4,7 @@ import main.model.elements.*;
 import main.model.parameters.Clock;
 import main.model.parameters.Parameters;
 import main.model.parameters.permissions.Permission;
+import main.util.SeasonCheck;
 
 import java.time.LocalTime;
 import java.util.Set;
@@ -222,6 +223,18 @@ public enum Action {
                 return "Away mode can only be set when no one is home";
             }
             house.closeOpenables();
+
+            // set default temperatures depending on time period (winter / summer)
+            SeasonCheck.Season season = SeasonCheck.getSeason(parameters.getDate());
+            if (season == SeasonCheck.Season.SUMMER) {
+                // TODO : set zone temperatures
+                System.out.println("zone temp set to -> " + parameters.getDefaultSummerTemperatureZone());
+            }
+            else if (season == SeasonCheck.Season.WINTER) {
+                // TODO : set zone temperatures
+                System.out.println("zone temp set to -> " + parameters.getDefaultWinterTemperatureZone());
+            }
+
             parameters.setAwayMode(!parameters.isAwayMode());
             return parameters.isAwayMode() ? "Away mode has been turned on" : "Away mode has been turned off";
         }
@@ -380,7 +393,12 @@ public enum Action {
 
         @Override
         public String doAction(Manipulable manipulable, Parameters parameters, House house) {
-            return null;
+            MultiValueManipulable multiValueManipulable = (MultiValueManipulable) manipulable;
+            int defWinterTempZone = (int) multiValueManipulable.getValueAt(0).getValue();
+            int defSummerTempZone = (int) multiValueManipulable.getValueAt(1).getValue();
+            parameters.setDefaultWinterTemperatureZone(defWinterTempZone);
+            parameters.setDefaultSummerTemperatureZone(defSummerTempZone);
+            return "zones temperature has been set to " + defWinterTempZone + " for winter and " + defSummerTempZone + " for summer.";
         }
 
         @Override
