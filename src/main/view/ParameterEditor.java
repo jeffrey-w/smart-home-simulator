@@ -27,7 +27,7 @@ public class ParameterEditor extends JPanel {
     private static final int FIELD_COLUMNS = 2;
     private static final int FIELD_Y_PADDING = 0x40;
 
-    private static final SpinnerNumberModel TEMP_MODEL =
+    static final SpinnerNumberModel TEMP_MODEL =
             new SpinnerNumberModel(Parameters.DEFAULT_TEMPERATURE, Parameters.MIN_TEMPERATURE,
                     Parameters.MAX_TEMPERATURE, 1);
     private static final SpinnerDateModel DATE_MODEL =
