@@ -16,10 +16,6 @@ public class SeasonCheck {
             Season.SUMMER, Season.SUMMER, Season.FALL, Season.FALL, Season.WINTER, Season.WINTER
     };
 
-    public static boolean isIn(Date date, SeasonChecker.Season season) {
-        return date.compareTo(season.start(date)) >= 0 && date.compareTo(season.end(date)) < 0;
-    }
-
     // return the season given the date
     public static Season getSeason(Date date) {
         Calendar cal = Calendar.getInstance();
