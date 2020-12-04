@@ -18,6 +18,7 @@ import javax.swing.*;
  * @author Émilie Martin
  */
 public class HeatingModuleController extends AbstractModuleController {
+
     private static final Manipulable EMPTY_MANIPULABLE = new ValueManipulable<>(new Object());
 
     /**
