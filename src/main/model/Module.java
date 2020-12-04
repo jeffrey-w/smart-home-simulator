@@ -37,6 +37,14 @@ public final class Module {
             .addName("SHP")
             .build();
 
+    /**
+     * Functionality related to heating.
+     */
+    public static final Module SHH = (new ModuleBuilder())
+            .addCommandFor("Change Temperature", Action.CHANGE_TEMPERATURE)
+            .addName("SHH")
+            .build();
+
     private final String name;
     private final Map<String, Set<Action>> commands;
 

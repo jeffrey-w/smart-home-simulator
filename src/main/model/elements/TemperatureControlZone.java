@@ -1,41 +1,72 @@
 package main.model.elements;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.Set;
 
-import static main.util.NameValidator.validateName;
 
+/**
+ *
+ *
+ * @author Émilie Martin
+ */
 public class TemperatureControlZone {
 
-    private static double DEFAULT_ROOM_TEMPERATURE = 15.00;
-    private final Map<String, Room> rooms;
-    private double temperature;
+    private static double DEFAULT_DESIRED_TEMPERATURE = 15.00;
+    private final Set<Room> rooms;
+    private double desiredTemperature;
 
+    /**
+     * Constructs a {@code TemperatureControlZone} with no {@code Room}s.
+     */
     public TemperatureControlZone() {
-        this.rooms = new HashMap<>();
-        this.temperature = DEFAULT_ROOM_TEMPERATURE;
+        this.rooms = Collections.newSetFromMap(new IdentityHashMap<>());
+        this.desiredTemperature = DEFAULT_DESIRED_TEMPERATURE;
     }
 
-    public Map<String, Room> getRooms() {
+    /**
+     * @return The {@code Room}s contained within this {@code TemperatureControlZone}
+     */
+    public Set<Room> getRooms() {
         return this.rooms;
     }
 
+    /**
+     * Adds a {@code Room} to this {@code TemperatureControlZone}.
+     *
+     * @param zone The {@code TemperatureControlZone} to be modified
+     * @param room The {@code Room} to be added to the specified {@code TemperatureControlZone}
+     */
     public void addRoom(String zone, Room room) {
-        rooms.putIfAbsent(validateName(zone), room);
+        rooms.add(room);
     }
 
-    public void removeRoom(String zone, Room room) {
-        rooms.remove(zone, room);
+    /**
+     * Removes a {@code Room} from this {@code TemperatureControlZone}.
+     *
+     * @param room The {@code Room} to be removed from the specified {@code TemperatureControlZone}
+     */
+    public void removeRoom(Room room) {
+        rooms.remove(room);
     }
 
-    public double getTemperature() {
-        return this.temperature;
+    /**
+     * @return The ideal temperature of the room
+     */
+    public double getDesiredTemperature() {
+        return this.desiredTemperature;
     }
 
-    public void setTemperature(double temperature) {
-        this.temperature = temperature;
-        for(Room room : rooms.values()) {
+    /**
+     * Sets the temperature of a chosen {@code Room} to that specified
+     *
+     * @param room The specified {@code Room}
+     * @param temperature The new temperature of the {@code Room}
+     */
+    public void setRoomTemperature(Room room, double temperature) {
+        if(rooms.contains(room)) {
             room.setTemperature(temperature);
         }
     }
+
 }

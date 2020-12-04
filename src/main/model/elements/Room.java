@@ -22,6 +22,7 @@ public class Room extends Place {
     private final Door[] doors;
     private final Light[] lights;
     private final Window[] windows;
+    private boolean HVACon;
 
     /**
      * Constructs a {@code Room} with the given {@code doors}, {@code lights}, and {@code windows}.
@@ -68,7 +69,13 @@ public class Room extends Place {
     }
 
     /**
-     *
+     * @return The temperature of this {@code Room}
+     */
+    public double getTemperature() {
+        return this.temperature;
+    }
+
+    /**
      * @return {@code true} if away light mode is set in this {@code Room}
      */
     public boolean isAwayLight() {
@@ -161,6 +168,22 @@ public class Room extends Place {
                 light.setOn(flag);
             }
         }
+    }
+
+    /**
+     * @return {@code true} if the HVAC is on in this {@code Room}
+     */
+    public boolean isHVACon() {
+        return this.HVACon;
+    }
+
+    /**
+     * Sets this {@code Room}'s air conditioner state to that specified.
+     *
+     * @param state The new state of the {@code Room}'s HVAC air conditioner
+     */
+    public void setHVAC(Boolean state) {
+        this.HVACon = state;
     }
 
     @Override

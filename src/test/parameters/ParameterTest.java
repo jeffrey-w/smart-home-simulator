@@ -93,22 +93,21 @@ class ParameterTest {
     void testSetTemperature() {
         Parameters parameters = new Parameters();
 
-        // temperatures
-        int min_temp = -200;
-        int max_temp = 200;
-        int temp = 50;
+        // Test temperatures
+        double min_temp = -200;
+        double max_temp = 200;
+        double temp = 50;
 
-        // invalid temperature tests -> should throw an error and the temperature should stay at default
-        //  Block of code to try
-        assertThrows(IllegalArgumentException.class, () -> parameters.setTemperature(min_temp));
-        assertEquals(parameters.getTemperature(), 15);
+        // Invalid temperature tests -> should throw an error and the temperature should stay at default
+        assertThrows(IllegalArgumentException.class, () -> parameters.setExternalTemperature(min_temp));
+        assertEquals(parameters.getExternalTemperature(), 15);
 
-        assertThrows(IllegalArgumentException.class, () -> parameters.setTemperature(max_temp));
-        assertEquals(parameters.getTemperature(), 15);
+        assertThrows(IllegalArgumentException.class, () -> parameters.setExternalTemperature(max_temp));
+        assertEquals(parameters.getExternalTemperature(), 15);
 
-        // valid temperature test
-        parameters.setTemperature(temp);
-        assertEquals(parameters.getTemperature(), 50);
+        // Valid temperature test
+        parameters.setExternalTemperature(temp);
+        assertEquals(parameters.getExternalTemperature(), 50);
     }
 
     @Test

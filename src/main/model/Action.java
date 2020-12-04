@@ -72,7 +72,6 @@ public enum Action {
 
     },
 
-    // toggle open/close door
     TOGGLE_DOOR {
         @Override
         public boolean isChildPermissible() {

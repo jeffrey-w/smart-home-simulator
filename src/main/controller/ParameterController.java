@@ -297,8 +297,8 @@ public class ParameterController {
         public void stateChanged(final ChangeEvent e) {
             Dashboard dashboard = parent.getDashboard();
             int temperature = dashboard.getTemperatureInput();
-            parent.getParameters().setTemperature(temperature);
-            dashboard.setTemperature(String.valueOf(temperature));
+            parent.getParameters().setExternalTemperature(temperature);
+            dashboard.setExternalTemperature(String.valueOf(temperature));
         }
 
     }

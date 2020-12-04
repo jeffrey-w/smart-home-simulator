@@ -59,8 +59,8 @@ public class Dashboard extends JFrame {
     static final int CONTENT_PANE_WIDTH = WINDOW_WIDTH - PARAMETER_PANE_WIDTH;
     static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd");
 
+    // Action color-coded legend
     private static final EnumMap<MessageType, Color> MESSAGE_COLORS = new EnumMap<>(MessageType.class);
-
     static {
         MESSAGE_COLORS.put(MessageType.WARNING, Color.YELLOW);
         MESSAGE_COLORS.put(MessageType.ERROR, Color.RED);
@@ -68,6 +68,7 @@ public class Dashboard extends JFrame {
 
     private int inputLoc;
 
+    // Dashboard panels
     final ParameterPanel parameters = new ParameterPanel();
     final ParameterEditor editor = new ParameterEditor();
     final ActionPanel actions = new ActionPanel();
@@ -145,13 +146,13 @@ public class Dashboard extends JFrame {
     }
 
     /**
-     * Sets the {@code temperature} level displayed to the user to that specified.
+     * Sets the external {@code temperature} (outside the simulated house) level displayed to the user to that specified.
      *
      * @param temperature The specified temperature
      * @throws NullPointerException If the specified {@code temperature} is {@code null}
      */
-    public void setTemperature(String temperature) {
-        parameters.setTemperature(temperature);
+    public void setExternalTemperature(String temperature) {
+        parameters.setExternalTemperature(temperature);
     }
 
     /**

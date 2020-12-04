@@ -2,6 +2,7 @@ package main.model.parameters;
 
 import main.model.Manipulable;
 import main.model.elements.Room;
+import main.model.elements.TemperatureControlZone;
 import main.model.parameters.permissions.*;
 
 import java.time.Instant;
@@ -25,9 +26,9 @@ public class Parameters {
     /**
      * The temperature the application is initialized to upon start up.
      */
-    public static final int DEFAULT_TEMPERATURE = 15;
-    public static final int MIN_TEMPERATURE = -100;
-    public static final int MAX_TEMPERATURE = 100;
+    public static final double DEFAULT_TEMPERATURE = 15;
+    public static final double MIN_TEMPERATURE = -100;
+    public static final double MAX_TEMPERATURE = 100;
 
     /**
      * The default values for away light beginning and end.
@@ -41,12 +42,13 @@ public class Parameters {
     private final Map<String, Permission> actors;
     private String location;
     private Date date;
-    private int temperature;
+    private double externalTemperature;
     private boolean on;
     private boolean autoLight;
     private final AwayMode awayMode;
     private Map<String, Permission> permissions;
     private final Clock clock = new Clock();
+    private Map<String, TemperatureControlZone> zones;
 
     /**
      * Constructs a new {@code Parameters} object.
@@ -56,7 +58,7 @@ public class Parameters {
         actors = new HashMap<>();
         location = null;
         date = Date.from(Instant.now());
-        temperature = DEFAULT_TEMPERATURE;
+        externalTemperature = DEFAULT_TEMPERATURE;
         on = false;
         awayMode = new AwayMode();
         permissions = new HashMap<>();
@@ -133,10 +135,10 @@ public class Parameters {
     }
 
     /**
-     * @return The current temperature set by the user
+     * @return The current external temperature (everything outside the {@code House} set by the user
      */
-    public int getTemperature() {
-        return temperature;
+    public double getExternalTemperature() {
+        return externalTemperature;
     }
 
     /**
@@ -177,17 +179,17 @@ public class Parameters {
     }
 
     /**
-     * Sets the current {@code temperature} of the simulation to that specified.
+     * Sets the current {@code externalTemperature} of the simulation to that specified.
      *
-     * @param temperature The specified temperature
+     * @param temperature The newly specified external temperature
      * @throws IllegalArgumentException If the specified {@code temperature} is above {@value #MAX_TEMPERATURE} or below
      * {@value #MIN_TEMPERATURE}
      */
-    public void setTemperature(int temperature) {
+    public void setExternalTemperature(double temperature) {
         if (temperature < MIN_TEMPERATURE || temperature > MAX_TEMPERATURE) {
             throw new IllegalArgumentException("You've specified an invalid temperature.");
         }
-        this.temperature = temperature;
+        this.externalTemperature = temperature;
     }
 
     /**
@@ -339,6 +341,38 @@ public class Parameters {
      */
     public void setAwayLightEnd(LocalTime end) {
         awayMode.setAwayLightEnd(end);
+    }
+
+    /**
+     * Adds a {@code TemperatureControlZone}
+     *
+     * @param id The {@code TemperatureControlZone} identifier
+     * @param zone The {@code TemperatureControlZone}
+     */
+    public void addZone(String id, TemperatureControlZone zone) {
+        zones.putIfAbsent(id, zone);
+    }
+
+    /**
+     * Removes a @code TemperatureControlZone}
+     *
+     * @param id The {@code TemperatureControlZone} identifier
+     */
+    public void removeZone(String id) {
+        zones.remove(id);
+    }
+
+    /**
+     * @param room The inquired {@code Room}
+     * @return The {@code TemperatureControlZone} that contains the given {@code Room}
+     */
+    public TemperatureControlZone getTemperatureControlZone(Room room) {
+        for(TemperatureControlZone zone : zones.values()) {
+            if(zone.getRooms().contains(room)) {
+                return zone;
+            }
+        }
+        throw new NoSuchElementException();
     }
 
 }

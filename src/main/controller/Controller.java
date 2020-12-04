@@ -3,6 +3,7 @@ package main.controller;
 import main.model.Module;
 import main.model.elements.House;
 import main.model.elements.Room;
+import main.model.elements.TemperatureControlZone;
 import main.model.parameters.Parameters;
 import main.view.Dashboard;
 
@@ -50,10 +51,13 @@ public class Controller {
     public Controller() {
         startClock();
         addModules();
+
         ParameterController parameterController = new ParameterController(this);
         dashboard.addPermissions(parameters.getPermissions().values());
-        dashboard.setTemperature(String.valueOf(parameters.getTemperature()));
+        dashboard.setExternalTemperature(String.valueOf(parameters.getExternalTemperature()));
         dashboard.setDate(parameters.getDate());
+
+        // Add listeners
         dashboard.addSimulationListener(new SimulationListener());
         dashboard.addLoadHouseListener(parameterController.new LoadHouseListener());
         dashboard.addEditProfilesListener(parameterController.new ManageProfilesListener());
@@ -66,6 +70,7 @@ public class Controller {
         dashboard.addTimeXListener(parameterController.new TimeXListener());
         dashboard.addTimeUpdateListener(parameterController.new TimeUpdateListener());
         dashboard.addActionSelectionListener(new ActionSelectionListener());
+
         dashboard.drawHouse(house);
     }
 
@@ -74,12 +79,33 @@ public class Controller {
             int[] fields = parameters.getClockTime();
             LocalTime time = LocalTime.of(fields[0], fields[1], fields[2]); // TODO avoid magic constants
             dashboard.setTime(fields);
+
+            // Toggle lights on AwayMode
             if (parameters.isAwayMode()) {
                 for (Room room : house) {
                     room.toggleLights(room.isAwayLight() && isBetween(time, parameters.getAwayLightStart(),
                             parameters.getAwayLightEnd()));
                 }
                 redrawHouse();
+            }
+
+            // Fluctuate temperature
+            for(Room room: house) {
+                double roomTemp = room.getTemperature();
+                double equilibriumTemp = getEquilibriumTemp(room);
+
+                double differenceTemp = roomTemp - equilibriumTemp;
+
+                if(Double.compare(roomTemp, equilibriumTemp) != 0) {
+                    if(differenceTemp > 0) {
+                        room.setTemperature(room.getTemperature() + 0.1);
+                    } else {
+                        room.setTemperature(room.getTemperature() - 0.1);
+                    }
+                } else {
+                    room.setHVAC(!room.isHVACon());
+                }
+
             }
         })).start();
     }
@@ -91,6 +117,7 @@ public class Controller {
     private void addModules() {
         modules.put(Module.SHC.getName(), new CoreModuleController(this, dashboard.addModule(Module.SHC)));
         modules.put(Module.SHP.getName(), new SecurityModuleController(this, dashboard.addModule(Module.SHP)));
+        modules.put(Module.SHH.getName(), new HeatingModuleController(this, dashboard.addModule(Module.SHH)));
     }
 
     /*
@@ -131,7 +158,6 @@ public class Controller {
     /*
      * Utility methods for subordinate controllers.
      */
-
     Parameters getParameters() {
         return parameters;
     }
@@ -165,6 +191,10 @@ public class Controller {
             dashboard.updateRoom(location, house.getRoom(location));
         }
         dashboard.redrawHouse();
+    }
+
+    public double getEquilibriumTemp(Room room) {
+        return (room.isHVACon() ? parameters.getTemperatureControlZone(room).getDesiredTemperature() : parameters.getExternalTemperature());
     }
 
 }
