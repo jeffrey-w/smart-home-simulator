@@ -33,11 +33,12 @@ public class HouseLayoutPanel extends JPanel {
     public static final int LIGHTS_ON = 2;
     public static final int WINDOWS_OPEN = 3;
     public static final int WINDOWS_BLOCKED = 4;
-    public static final int NUMBER_OF_PEOPLE = 5;
-    private static final int NUMBER_OF_STATES = 6;
+    public static final int HVAC_ON = 5;
+    public static final int NUMBER_OF_PEOPLE = 6;
+    private static final int NUMBER_OF_STATES = 7;
     private static final int ROOM_DIM = 0x80;
     private static final int OFFSET = 4;
-    private static final int STATE_DIM = 0x10;
+    private static final int STATE_DIM = 8;
     private static final String NULL_HOUSE_MESSAGE = "No house loaded.";
 
     private static final String[] STATE_LEGEND = {
@@ -46,6 +47,7 @@ public class HouseLayoutPanel extends JPanel {
             "Lights On",
             "Open Windows",
             "Blocked Windows",
+            "HVAC On",
             "People Present"
     };
 
@@ -55,6 +57,7 @@ public class HouseLayoutPanel extends JPanel {
             Color.YELLOW,
             Color.GREEN,
             Color.GRAY,
+            Color.MAGENTA,
             Color.PINK
     };
 
@@ -121,6 +124,9 @@ public class HouseLayoutPanel extends JPanel {
                 break;
             case WINDOWS_BLOCKED:
                 info.states[state] = room.getNumberOfWindowsBlocked();
+                break;
+            case HVAC_ON:
+                info.states[state] = room.isHVACon() ? 1 : 0;
                 break;
             case NUMBER_OF_PEOPLE:
                 info.states[state] = room.getNumberOfPeople();

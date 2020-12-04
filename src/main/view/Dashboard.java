@@ -74,7 +74,7 @@ public class Dashboard extends JFrame {
     final ActionPanel actions = new ActionPanel();
     final HouseLayoutPanel layout = new HouseLayoutPanel();
     final JTextPane console = new JTextPane();
-    final ProfileViewer profileViewer = new ProfileViewer();
+    final ParameterViewer profileViewer = new ParameterViewer("Edit Profiles");
 
     /**
      * Creates the dashboard, which is to contain the {@code ParameterPanel}, a console, the {@code HouseLayout}. This
@@ -225,7 +225,7 @@ public class Dashboard extends JFrame {
     /**
      * @return The {@code ProfileViewer} for this {@code Dashboard}
      */
-    public ProfileViewer getProfileViewer() {
+    public ParameterViewer getProfileViewer() {
         return profileViewer;
     }
 
@@ -262,7 +262,7 @@ public class Dashboard extends JFrame {
      * @param listener The specified event handler
      */
     public void addManageProfilesListener(ActionListener listener) {
-        profileViewer.addManageProfileListener(listener);
+        profileViewer.addActionListener(listener);
     }
 
     /**

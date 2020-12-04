@@ -107,22 +107,24 @@ public class Controller {
             }
 
             // Fluctuate temperature
-            for (Room room : house) {
-                double roomTemp = room.getTemperature();
-                double equilibriumTemp = getEquilibriumTemp(room);
+            if (house != null) {
+                for(Room room: house) {
+                    double roomTemp = room.getTemperature();
+                    double equilibriumTemp = getEquilibriumTemp(room);
 
-                double differenceTemp = roomTemp - equilibriumTemp;
+                    double differenceTemp = roomTemp - equilibriumTemp;
 
-                if ((Double.compare(roomTemp, equilibriumTemp + 0.25) != 0 || Double.compare(roomTemp, equilibriumTemp - 0.25) != 0)) {
-                    if (differenceTemp > 0) {
-                        room.setTemperature(room.getTemperature() + (room.isHVACon() ? 0.1 : 0.05));
+                    if((Double.compare(roomTemp, equilibriumTemp+0.25) != 0 || Double.compare(roomTemp, equilibriumTemp-0.25) != 0)) {
+                        if(differenceTemp > 0) {
+                            room.setTemperature(room.getTemperature() + (room.isHVACon() ? 0.1 : 0.05));
+                        } else {
+                            room.setTemperature(room.getTemperature() - (room.isHVACon() ? 0.1 : 0.05));
+                        }
                     } else {
-                        room.setTemperature(room.getTemperature() - (room.isHVACon() ? 0.1 : 0.05));
+                        room.setHVAC(!room.isHVACon());
                     }
-                } else {
-                    room.setHVAC(!room.isHVACon());
-                }
 
+                }
             }
         })).start();
     }
