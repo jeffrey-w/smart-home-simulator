@@ -35,7 +35,6 @@ public enum Action {
             String room = (String) multiValueManipulable.getValue();
             int temperature = (int) multiValueManipulable.getValueAt(0).getValue();
             house.getRoom(room).setTemperature(temperature);
-            parameters.overrideTemperatureOf(room);
             return room + " temperature has been set to " + temperature + ".";
         }
 
