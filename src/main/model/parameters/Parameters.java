@@ -375,5 +375,9 @@ public class Parameters {
         throw new NoSuchElementException();
     }
 
+    // TODO
+    public boolean isTemperatureOverridden(String location) {
+        return true;
+    }
 }
 

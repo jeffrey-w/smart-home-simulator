@@ -62,7 +62,7 @@ public class AwayLightChooser extends JFrame {
      * @return The selected start time for away light mode
      */
     public LocalTime getStart() {
-        Calendar calendar = new GregorianCalendar();
+        Calendar calendar = Calendar.getInstance();
         calendar.setTime((Date) startSpinner.getModel().getValue());
         return LocalTime.of(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
     }
@@ -71,7 +71,7 @@ public class AwayLightChooser extends JFrame {
      * @return The selected end time for away light mode
      */
     public LocalTime getEnd() {
-        Calendar calendar = new GregorianCalendar();
+        Calendar calendar = Calendar.getInstance();
         calendar.setTime((Date) endSpinner.getModel().getValue());
         return LocalTime.of(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
     }

@@ -69,7 +69,7 @@ public class Clock {
         int m = time[MINUTES];
         int s = time[SECONDS];
 
-        referenceTime = (h * SECONDS_PER_HOUR) + (m * SECONDS_PER_MINUTE) + s;
+        referenceTime = ((long) h * SECONDS_PER_HOUR) + ((long) m * SECONDS_PER_MINUTE) + s;
     }
 
 }

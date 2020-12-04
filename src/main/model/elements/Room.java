@@ -186,13 +186,22 @@ public class Room extends Place {
         this.HVACon = state;
     }
 
+    // TODO
+    public void toggleWindows(boolean flag) {
+        for (Window window : windows) {
+            if (window != null) {
+                window.setOpen(flag); // TODO throws IllegalStateException
+            }
+        }
+    }
+
     @Override
     public boolean equals(final Object obj) {
         if (!(obj instanceof Room)) {
             return false;
         }
         Room room = (Room) obj;
-        return (temperature == room.temperature) && Arrays.equals(doors, room.doors) && Arrays
+        return (Double.compare(temperature, room.temperature) == 0) && Arrays.equals(doors, room.doors) && Arrays
                 .equals(lights, room.lights) && Arrays.equals(windows, room.windows);
     }
 
@@ -200,11 +209,10 @@ public class Room extends Place {
     public int hashCode() {
         int prime = 31;
         int result = 1;
-        result = prime * result + (int) temperature;
+        result = prime * result + Double.hashCode(temperature);
         result = prime * result + Arrays.hashCode(doors);
         result = prime * result + Arrays.hashCode(lights);
         result = prime * result + Arrays.hashCode(windows);
         return result;
     }
-
 }

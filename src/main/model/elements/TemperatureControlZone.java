@@ -4,9 +4,9 @@ import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Set;
 
-
 /**
- *
+ * A {@code TemperatureControlZone} contains many {@code Room}s and can adjust the temperature of all contained {@code Room}s.
+ * The user can add and remove {@code Room}s from a {@code TemperatureControlZone}.
  *
  * @author Émilie Martin
  */

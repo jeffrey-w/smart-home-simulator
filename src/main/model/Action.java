@@ -1,9 +1,6 @@
 package main.model;
 
-import main.model.elements.Door;
-import main.model.elements.House;
-import main.model.elements.Light;
-import main.model.elements.Window;
+import main.model.elements.*;
 import main.model.parameters.Clock;
 import main.model.parameters.Parameters;
 import main.model.parameters.permissions.Permission;
@@ -21,7 +18,7 @@ import java.util.Set;
  */
 public enum Action {
 
-    CHANGE_TEMPERATURE {
+    CHANGE_TEMPERATURE { // TODO
         @Override
         public boolean isChildPermissible() {
             return false;
@@ -34,7 +31,12 @@ public enum Action {
 
         @Override
         public String doAction(Manipulable manipulable, Parameters parameters, House house) {
-            return null; // TODO
+            MultiValueManipulable multiValueManipulable = (MultiValueManipulable) manipulable;
+            String room = (String) multiValueManipulable.getValue();
+            int temperature = (int) multiValueManipulable.getValueAt(0).getValue();
+            house.getRoom(room).setTemperature(temperature);
+            parameters.overrideTemperatureOf(room);
+            return room + " temperature has been set to " + temperature + ".";
         }
 
         @Override
@@ -283,6 +285,108 @@ public enum Action {
         @Override
         public String toString() {
             return "Set Away Mode Delay";
+        }
+    },
+
+    READ_TEMPERATURES { // TODO
+        @Override
+        public boolean isChildPermissible() {
+            return true;
+        }
+
+        @Override
+        public boolean isGuestPermissible() {
+            return true;
+        }
+
+        @Override
+        public String doAction(Manipulable manipulable, Parameters parameters, House house) {
+            int index = 0;
+            StringBuilder builder = new StringBuilder("Temperatures\n");
+            for (String location : house.getLocations()) {
+                Room room = house.getRoom(location);
+                builder.append(location);
+                builder.append(": ");
+                builder.append(room.getTemperature());
+                if (parameters.isTemperatureOverridden(location)) {
+                    builder.append(" [Overridden]");
+                }
+                if (++index < house.getSize()) {
+                    builder.append('\n');
+                }
+            }
+            return builder.toString();
+        }
+
+        @Override
+        public String toString() {
+            return "Read Temperatures";
+        }
+    },
+
+    CREATE_TEMPERATURE_CONTROL_ZONE { // TODO
+        @Override
+        public boolean isChildPermissible() {
+            return false;
+        }
+
+        @Override
+        public boolean isGuestPermissible() {
+            return false;
+        }
+
+        @Override
+        public String doAction(Manipulable manipulable, Parameters parameters, House house) {
+            return null;
+        }
+
+        @Override
+        public String toString() {
+            return "Create Temperature Control Zone";
+        }
+    },
+
+    MANAGE_TEMPERATURE_CONTROL_ZONES { // TODO
+        @Override
+        public boolean isChildPermissible() {
+            return false;
+        }
+
+        @Override
+        public boolean isGuestPermissible() {
+            return false;
+        }
+
+        @Override
+        public String doAction(Manipulable manipulable, Parameters parameters, House house) {
+            return null;
+        }
+
+        @Override
+        public String toString() {
+            return "Manage Temperature Control Zones";
+        }
+    },
+
+    SET_DEFAULT_TEMPERATURE { // TODO
+        @Override
+        public boolean isChildPermissible() {
+            return false;
+        }
+
+        @Override
+        public boolean isGuestPermissible() {
+            return false;
+        }
+
+        @Override
+        public String doAction(Manipulable manipulable, Parameters parameters, House house) {
+            return null;
+        }
+
+        @Override
+        public String toString() {
+            return "Set Default Temperature";
         }
     };
 

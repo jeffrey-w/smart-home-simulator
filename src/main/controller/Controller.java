@@ -3,8 +3,8 @@ package main.controller;
 import main.model.Module;
 import main.model.elements.House;
 import main.model.elements.Room;
-import main.model.elements.TemperatureControlZone;
 import main.model.parameters.Parameters;
+import main.util.SeasonChecker;
 import main.view.Dashboard;
 
 import javax.swing.*;
@@ -15,6 +15,8 @@ import java.awt.event.MouseEvent;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
+
+import static main.util.SeasonChecker.isIn;
 
 /**
  * The {@code Controller} class provides the interface between runtime simulation objects and the UI elements to
@@ -87,6 +89,18 @@ public class Controller {
                             parameters.getAwayLightEnd()));
                 }
                 redrawHouse();
+            } else {
+                if (isSummer()) {
+                    if (house.hasTemperatureAberration(parameters.getExternalTemperature()) && house.hasObstructedWindow()) {
+                        sendToConsole(
+                                "A blocked window has prevented SHH from opening or closing the windows in this house.",
+                                Dashboard.MessageType.ERROR);
+                    } else {
+                        for (Room room : house) {
+                            room.toggleWindows(room.getTemperature() > parameters.getExternalTemperature());
+                        }
+                    }
+                }
             }
 
             // Fluctuate temperature
@@ -96,11 +110,11 @@ public class Controller {
 
                 double differenceTemp = roomTemp - equilibriumTemp;
 
-                if(Double.compare(roomTemp, equilibriumTemp) != 0) {
+                if((Double.compare(roomTemp, equilibriumTemp+0.25) != 0 || Double.compare(roomTemp, equilibriumTemp-0.25) != 0)) {
                     if(differenceTemp > 0) {
-                        room.setTemperature(room.getTemperature() + 0.1);
+                        room.setTemperature(room.getTemperature() + (room.isHVACon() ? 0.1 : 0.05));
                     } else {
-                        room.setTemperature(room.getTemperature() - 0.1);
+                        room.setTemperature(room.getTemperature() - (room.isHVACon() ? 0.1 : 0.05));
                     }
                 } else {
                     room.setHVAC(!room.isHVACon());
@@ -195,6 +209,10 @@ public class Controller {
 
     public double getEquilibriumTemp(Room room) {
         return (room.isHVACon() ? parameters.getTemperatureControlZone(room).getDesiredTemperature() : parameters.getExternalTemperature());
+    }
+
+    boolean isSummer() {
+        return isIn(parameters.getDate(), SeasonChecker.Season.SUMMER);
     }
 
 }

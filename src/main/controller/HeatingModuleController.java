@@ -1,9 +1,13 @@
 package main.controller;
 
-import main.model.elements.Room;
+import main.model.Action;
+import main.model.Manipulable;
+import main.model.MultiValueManipulable;
+import main.model.ValueManipulable;
 import main.view.Dashboard;
 import main.view.ModuleView;
 
+import javax.swing.*;
 
 /**
  * The {@code HeatingModuleController} class provides services regarding delivering HVAC-related
@@ -14,6 +18,7 @@ import main.view.ModuleView;
  * @author Émilie Martin
  */
 public class HeatingModuleController extends AbstractModuleController {
+    private static final Manipulable EMPTY_MANIPULABLE = new ValueManipulable<>(new Object());
 
     /**
      * Constructs a new {@code HeatingModuleController} object with the specified {@code parent} and {@code view}.
@@ -28,10 +33,30 @@ public class HeatingModuleController extends AbstractModuleController {
 
     @Override
     public void control() {
-        if(canAct()) {
-            // SMTH
+        if (canAct()) {
+            switch (view.getSelectedAction()) {
+                case CHANGE_TEMPERATURE:
+                    MultiValueManipulable manipulable = new MultiValueManipulable(parent.getParameters().getLocation());
+                    try {
+                        manipulable.addValue(Integer.parseInt(JOptionPane
+                                .showInputDialog(parent.getDashboard(), "Enter a temperature.", "Change Temperature",
+                                        JOptionPane.PLAIN_MESSAGE)));
+                    } catch (NumberFormatException e) {
+                        parent.sendToConsole("Please enter an integer.", Dashboard.MessageType.ERROR);
+                        return;
+                    }
+                    performActionOn(Action.CHANGE_TEMPERATURE, manipulable);
+                    break;
+                case READ_TEMPERATURES:
+                    performActionOn(Action.READ_TEMPERATURES, EMPTY_MANIPULABLE);
+                    break;
+            }
         } else {
-            parent.sendToConsole("Please select a permission to choose an action.", Dashboard.MessageType.ERROR);
+            String message = "Please select a permission and location to choose an action.";
+            if (parent.getHouse() == null) {
+                message += " You must first load a house to select a location.";
+            }
+            parent.sendToConsole(message, Dashboard.MessageType.ERROR);
         }
     }
 
