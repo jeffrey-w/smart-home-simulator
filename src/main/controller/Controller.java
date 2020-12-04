@@ -3,6 +3,7 @@ package main.controller;
 import main.model.Module;
 import main.model.elements.House;
 import main.model.elements.Room;
+import main.model.parameters.Clock;
 import main.model.parameters.Parameters;
 import main.util.SeasonChecker;
 import main.view.Dashboard;
@@ -46,6 +47,8 @@ public class Controller {
     private final Parameters parameters = new Parameters();
     private final Map<String, ModuleController> modules = new HashMap<>();
     private final Dashboard dashboard = new Dashboard();
+    public static final int MORNING_START = 5, DAY_START = 11, NIGHTSTART = 19;
+    public static final int PERIOD1 = 0, PERIOD2 = 1, PERIOD3 = 2;
 
     /**
      * Constructs a new {@code Controller} object.
@@ -104,14 +107,14 @@ public class Controller {
             }
 
             // Fluctuate temperature
-            for(Room room: house) {
+            for (Room room : house) {
                 double roomTemp = room.getTemperature();
                 double equilibriumTemp = getEquilibriumTemp(room);
 
                 double differenceTemp = roomTemp - equilibriumTemp;
 
-                if((Double.compare(roomTemp, equilibriumTemp+0.25) != 0 || Double.compare(roomTemp, equilibriumTemp-0.25) != 0)) {
-                    if(differenceTemp > 0) {
+                if ((Double.compare(roomTemp, equilibriumTemp + 0.25) != 0 || Double.compare(roomTemp, equilibriumTemp - 0.25) != 0)) {
+                    if (differenceTemp > 0) {
                         room.setTemperature(room.getTemperature() + (room.isHVACon() ? 0.1 : 0.05));
                     } else {
                         room.setTemperature(room.getTemperature() - (room.isHVACon() ? 0.1 : 0.05));
@@ -208,11 +211,30 @@ public class Controller {
     }
 
     public double getEquilibriumTemp(Room room) {
-        return (room.isHVACon() ? parameters.getTemperatureControlZone(room).getDesiredTemperature() : parameters.getExternalTemperature());
+        return (room.isHVACon() ? parameters.getTemperatureControlZone(room).getDesiredTemperature(getPeriod(parameters.getClockTime())) : parameters.getExternalTemperature());
     }
 
     boolean isSummer() {
         return isIn(parameters.getDate(), SeasonChecker.Season.SUMMER);
+    }
+
+    /**
+     * Gets the perios of day based on the time of the day
+     * @param clockTime The time of the day
+     * @return The period ID that the time falls in
+     */
+    int getPeriod(int[] clockTime) {
+        int hour = clockTime[Clock.HOURS];
+        if (hour > MORNING_START && hour < DAY_START) {
+            //morning
+            return PERIOD1;
+        } else if (hour > DAY_START && hour < NIGHTSTART) {
+            //day
+            return PERIOD2;
+        } else {
+            //night
+            return PERIOD3;
+        }
     }
 
 }
