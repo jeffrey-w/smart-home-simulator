@@ -380,7 +380,7 @@ public enum Action {
         }
     },
 
-    SET_DEFAULT_TEMPERATURE { // TODO
+    SET_DEFAULT_TEMPERATURE {
         @Override
         public boolean isChildPermissible() {
             return false;
@@ -394,8 +394,8 @@ public enum Action {
         @Override
         public String doAction(Manipulable manipulable, Parameters parameters, House house) {
             MultiValueManipulable multiValueManipulable = (MultiValueManipulable) manipulable;
-            int defWinterTempZone = (int) multiValueManipulable.getValueAt(0).getValue();
-            int defSummerTempZone = (int) multiValueManipulable.getValueAt(1).getValue();
+            double defWinterTempZone = (double) multiValueManipulable.getValueAt(0).getValue();
+            double defSummerTempZone = (double) multiValueManipulable.getValueAt(1).getValue();
             parameters.setDefaultWinterTemperatureZone(defWinterTempZone);
             parameters.setDefaultSummerTemperatureZone(defSummerTempZone);
             return "zones temperature has been set to " + defWinterTempZone + " for winter and " + defSummerTempZone + " for summer.";

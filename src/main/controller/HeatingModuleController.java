@@ -52,12 +52,12 @@ public class HeatingModuleController extends AbstractModuleController {
                     performActionOn(Action.READ_TEMPERATURES, EMPTY_MANIPULABLE);
                     break;
                 case SET_DEFAULT_TEMPERATURE:
-                    MultiValueManipulable defTempManipulable = new MultiValueManipulable(parent.getParameters().getTemperature()); // FIXME : dont really need the getTemp ?
+                    MultiValueManipulable defTempManipulable = new MultiValueManipulable(0); // FIXME : pass placeholder for now
                     try {
-                        int defWinterTempZone = Integer.parseInt(JOptionPane
+                        double defWinterTempZone = Double.parseDouble(JOptionPane
                                 .showInputDialog(parent.getDashboard(), "Enter a default winter temperature.", "Change Default Winter Temperature",
                                         JOptionPane.PLAIN_MESSAGE));
-                        int defSummerTempZone = Integer.parseInt(JOptionPane
+                        double defSummerTempZone = Double.parseDouble(JOptionPane
                                 .showInputDialog(parent.getDashboard(), "Enter a default summer temperature.", "Change Default Summer Temperature",
                                         JOptionPane.PLAIN_MESSAGE));
                         defTempManipulable.addValue(defWinterTempZone);

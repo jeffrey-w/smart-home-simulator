@@ -129,12 +129,27 @@ public class Controller {
             }
 
             // check home temperature -> if <= 0 -> alert users about pipe burst potential
-            if(Double.compare(parameters.getTemperature(), 0) <= 0){
-                sendToConsole(
-                        "WARNING : Temperature inside home is below 0C, pipes might burst.",
-                        Dashboard.MessageType.WARNING);
+            if (house != null) {
+                double averageHouseTemperature = 0;
+                double sumHouseTemperature = 0;
+                for (Room room : house) {
+                    double roomTemp = room.getTemperature();
+
+                    sumHouseTemperature = sumHouseTemperature + roomTemp;
+                }
+                averageHouseTemperature = sumHouseTemperature / house.getSize();
+
+                if(Double.compare(averageHouseTemperature, 0) <= 0){
+                    sendToConsole(
+                            "WARNING : Temperature inside home is below 0C, pipes might burst.",
+                            Dashboard.MessageType.WARNING);
+                }
             }
 
+            // redraw the house to see temperature
+            if(house != null){
+                redrawHouse();
+            }
         })).start();
     }
 

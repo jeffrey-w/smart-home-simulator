@@ -29,11 +29,8 @@ public class Parameters {
     public static final double DEFAULT_TEMPERATURE = 15;
     public static final double MIN_TEMPERATURE = -100;
     public static final double MAX_TEMPERATURE = 100;
-    public static final int DEFAULT_TEMPERATURE = 15;
-    public static final int MIN_TEMPERATURE = -100;
-    public static final int MAX_TEMPERATURE = 100;
-    public static final int DEFAULT_WINTER_TEMPERATURE_ZONE = 25;
-    public static final int DEFAULT_SUMMER_TEMPERATURE_ZONE = 15;
+    public static final double DEFAULT_WINTER_TEMPERATURE_ZONE = 25;
+    public static final double DEFAULT_SUMMER_TEMPERATURE_ZONE = 15;
 
     /**
      * The default values for away light beginning and end.
@@ -48,9 +45,9 @@ public class Parameters {
     private String location;
     private Date date;
     private double externalTemperature;
-    private int temperature;
-    private int defWinterTempZone;
-    private int defSummerTempZone;
+    private double temperature;
+    private double defWinterTempZone;
+    private double defSummerTempZone;
     private boolean on;
     private boolean autoLight;
     private final AwayMode awayMode;
@@ -362,6 +359,7 @@ public class Parameters {
      */
     public void addZone(String id, TemperatureControlZone zone) {
         zones.putIfAbsent(id, zone);
+    }
     public void overrideTemperatureOf(String room) {
         // TODO
     }
@@ -393,19 +391,19 @@ public class Parameters {
         return true;
     }
 
-    public int getDefaultWinterTemperatureZone() {
+    public double getDefaultWinterTemperatureZone() {
         return defWinterTempZone;
     }
 
-    public int getDefaultSummerTemperatureZone() {
+    public double getDefaultSummerTemperatureZone() {
         return defSummerTempZone;
     }
 
-    public void setDefaultWinterTemperatureZone(int temp) {
+    public void setDefaultWinterTemperatureZone(double temp) {
         defWinterTempZone = temp;
     }
 
-    public void setDefaultSummerTemperatureZone(int temp) {
+    public void setDefaultSummerTemperatureZone(double temp) {
         defSummerTempZone = temp;
     }
 }

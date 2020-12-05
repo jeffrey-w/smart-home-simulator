@@ -20,12 +20,12 @@ public class HouseLayoutPanel extends JPanel {
     private static class RoomInfo {
 
         final Point coordinates;
+        public double m_temperature;
         final int[] states = new int[NUMBER_OF_STATES];
 
         RoomInfo(int x, int y) {
             coordinates = new Point(x, y);
         }
-
     }
 
     public static final int DOORS_OPEN = 0;
@@ -39,6 +39,7 @@ public class HouseLayoutPanel extends JPanel {
     private static final int ROOM_DIM = 0x80;
     private static final int OFFSET = 4;
     private static final int STATE_DIM = 8;
+    private static final int TEMP_OFFSET = 20;
     private static final String NULL_HOUSE_MESSAGE = "No house loaded.";
 
     private static final String[] STATE_LEGEND = {
@@ -103,6 +104,10 @@ public class HouseLayoutPanel extends JPanel {
             throw new NoSuchElementException("That location does not exist");
         }
         RoomInfo info = rooms.get(location);
+
+        // set temperature string to be drawn on layout
+        info.m_temperature = Math.round(room.getTemperature() * 100.0) / 100.0;
+
         for (int i = 0; i < NUMBER_OF_STATES; i++) {
             updateState(room, info, i);
         }
@@ -151,6 +156,7 @@ public class HouseLayoutPanel extends JPanel {
                 g.drawRect(x, y, ROOM_DIM, ROOM_DIM);
                 g.drawString(location, x + (ROOM_DIM - g.getFontMetrics().stringWidth(location) >>> 1),
                         y + (ROOM_DIM >>> 1));
+
                 if (showStates) {
                     Color color = g.getColor();
                     for (int state : entry.getValue().states) {
@@ -168,6 +174,11 @@ public class HouseLayoutPanel extends JPanel {
                         g.fillOval(getWidth() - OFFSET - STATE_DIM, OFFSET, STATE_DIM, STATE_DIM);
                     }
                     g.setColor(color);
+
+                    // draw the temperature on layout
+                    String temperature = Double.toString(entry.getValue().m_temperature) + " °C";
+                    g.drawString(temperature , x + (ROOM_DIM - g.getFontMetrics().stringWidth(temperature) >>> 1),
+                            y + (ROOM_DIM >>> 1) + TEMP_OFFSET);
                 }
             }
         }
