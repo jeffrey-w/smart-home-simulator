@@ -111,4 +111,11 @@ public class TemperatureControlZone {
         return overridden.containsKey(room);
     }
 
+    /**
+     * Provides the desired temperatures for this {@code TemperatureControlZone} for the different periods in the day.
+     * @return The desired temperatures for this {@code TemperatureControlZone}
+     */
+    public Double[] getDesiredTemperatures() {
+        return desiredTemperature;
+    }
 }

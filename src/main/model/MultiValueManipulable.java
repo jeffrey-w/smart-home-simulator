@@ -30,7 +30,6 @@ public class MultiValueManipulable extends ValueManipulable<Object> {
      * Adds the specified {@code value} to this {@code MultiValueManipulable}.
      *
      * @param value The specified value
-     * @return The index at which the specified {@code value} may be accessed
      */
     public void addValue(Object value) {
         valueManipulables.add(new ValueManipulable<>(value));

@@ -12,9 +12,7 @@ public class SeasonCheck {
         WINTER
     }
 
-    ;
-
-    private static final Season seasons[] = {
+    private static final Season[] seasons = {
             Season.WINTER, Season.WINTER, Season.SPRING, Season.SPRING, Season.SUMMER, Season.SUMMER,
             Season.SUMMER, Season.SUMMER, Season.FALL, Season.FALL, Season.WINTER, Season.WINTER
     };

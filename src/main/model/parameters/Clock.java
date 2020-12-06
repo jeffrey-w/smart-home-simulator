@@ -72,7 +72,10 @@ public class Clock {
         referenceTime = ((long) h * SECONDS_PER_HOUR) + ((long) m * SECONDS_PER_MINUTE) + s;
     }
 
-    // TODO
+    /**
+     *
+     * @return The speed of this {@code Clock}
+     */
     public int getMultiplier() {
         return multiplier;
     }

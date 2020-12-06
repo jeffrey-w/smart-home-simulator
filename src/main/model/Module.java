@@ -69,7 +69,7 @@ public final class Module {
      * @param item the specified item
      * @param action the specified {@code Action}
      * @throws IllegalArgumentException If the specified {@code item} is not a non-empty string of word characters(i.e.
-     * [a-z, A-Z, 0-9, _, ]) and whitespae
+     * [a-z, A-Z, 0-9, _, ]) and whitespace
      * @throws NullPointerException If the specified {@code action} is {@code null}
      */
     public void addCommand(String item, Action action) {

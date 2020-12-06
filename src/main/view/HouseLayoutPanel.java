@@ -176,7 +176,7 @@ public class HouseLayoutPanel extends JPanel {
                     g.setColor(color);
 
                     // draw the temperature on layout
-                    String temperature = Double.toString(entry.getValue().m_temperature) + " °C";
+                    String temperature = entry.getValue().m_temperature + " °C";
                     g.drawString(temperature , x + (ROOM_DIM - g.getFontMetrics().stringWidth(temperature) >>> 1),
                             y + (ROOM_DIM >>> 1) + TEMP_OFFSET);
                 }

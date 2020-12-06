@@ -76,10 +76,12 @@ public class HeatingModuleController extends AbstractModuleController {
                                 }
                             case "Edit":
                                 String id = viewer.getSelectedValue();
+                                Double[] temps = {null, null, null};
                                 if (id != null) {
                                     in = parent.getParameters().getZone(id).getRooms();
+                                    temps = parent.getParameters().getZone(id).getDesiredTemperatures();
                                 }
-                                ZoneEditor zoneEditor = new ZoneEditor(in, out);
+                                ZoneEditor zoneEditor = new ZoneEditor(in, out, temps);
                                 zoneEditor.setZoneName(id);
                                 zoneEditor.addActionCommand(f -> {
                                     MultiValueManipulable manipulable =

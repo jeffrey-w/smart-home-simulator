@@ -327,7 +327,7 @@ public enum Action {
         }
     },
 
-    MANAGE_TEMPERATURE_CONTROL_ZONES { // TODO
+    MANAGE_TEMPERATURE_CONTROL_ZONES {
 
         @Override
         public boolean isChildPermissible() {
@@ -367,6 +367,9 @@ public enum Action {
                 }
                 if (tempThree != null) {
                     zone.setPeriodTemp(2, tempThree);
+                }
+                for (String room : zone.getRooms()) {
+                    zone.removeRoom(room);
                 }
                 for (String room : rooms) {
                     zone.addRoom(room);

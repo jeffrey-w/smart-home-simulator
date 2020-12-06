@@ -186,7 +186,10 @@ public class Room extends Place {
         this.HVACon = state;
     }
 
-    // TODO
+    /**
+     * Changes the open status of every {@code Window} in this {@code Room} to the specified value.
+     * @param flag The specified value
+     */
     public void toggleWindows(boolean flag) {
         for (Window window : windows) {
             if (window != null) {

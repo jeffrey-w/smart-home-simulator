@@ -26,7 +26,7 @@ public class ZoneEditor extends JFrame {
     final JButton remove = new JButton(">");
     final JButton ok = new JButton("Ok");
 
-    public ZoneEditor(Collection<String> in, Collection<String> out) {
+    public ZoneEditor(Collection<String> in, Collection<String> out, Double[] temps) {
         super("Edit Zone");
         JPanel attributes = new JPanel(new SpringLayout());
         JPanel rooms = new JPanel(new GridLayout(1, 3));
@@ -61,7 +61,7 @@ public class ZoneEditor extends JFrame {
         populateModelWith(this.out, out);
         tempTwo.setEnabled(false);
         tempThree.setEnabled(false);
-        setupCheckBoxes();
+        setupCheckBoxes(temps);
         setupButtons();
     }
 
@@ -73,22 +73,27 @@ public class ZoneEditor extends JFrame {
         }
     }
 
-    private void setupCheckBoxes() {
+    private void setupCheckBoxes(Double[] temps) {
         selectOne.setSelected(true);
         selectOne.setEnabled(false);
+        if (temps[0] != null) {
+            tempOne.setValue(temps[0]);
+        }
+        if (temps[1] != null) {
+            tempTwo.setValue(temps[1]);
+            tempTwo.setEnabled(true);
+            selectTwo.setSelected(true);
+        }
+        if (temps[2] != null) {
+            tempThree.setValue(temps[2]);
+            tempThree.setEnabled(true);
+            selectThree.setSelected(true);
+        }
         selectTwo.addChangeListener(e -> {
-            if (selectTwo.isSelected()) {
-                tempTwo.setEnabled(true);
-            } else {
-                tempTwo.setEnabled(false);
-            }
+            tempTwo.setEnabled(selectTwo.isSelected());
         });
         selectThree.addChangeListener(e -> {
-            if (selectThree.isSelected()) {
-                tempThree.setEnabled(true);
-            } else {
-                tempThree.setEnabled(false);
-            }
+            tempThree.setEnabled(selectThree.isSelected());
         });
     }
 
@@ -97,20 +102,12 @@ public class ZoneEditor extends JFrame {
         remove.setEnabled(false);
         inList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
-                if (inList.getSelectedIndex() == -1) {
-                    remove.setEnabled(false);
-                } else {
-                    remove.setEnabled(true);
-                }
+                remove.setEnabled(inList.getSelectedIndex() != -1);
             }
         });
         outList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
-                if (outList.getSelectedIndex() == -1) {
-                    add.setEnabled(false);
-                } else {
-                    add.setEnabled(true);
-                }
+                add.setEnabled(outList.getSelectedIndex() != -1);
             }
         });
         add.addActionListener(e -> {

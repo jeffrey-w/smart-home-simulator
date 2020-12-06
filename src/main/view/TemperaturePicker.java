@@ -8,9 +8,9 @@ import java.awt.event.ActionListener;
 
 public class TemperaturePicker extends JFrame {
 
-    JSpinner summer = new JSpinner(ParameterEditor.tempModel());
-    JSpinner winter = new JSpinner(ParameterEditor.tempModel());
-    JButton ok = new JButton("Ok");
+    final JSpinner summer = new JSpinner(ParameterEditor.tempModel());
+    final JSpinner winter = new JSpinner(ParameterEditor.tempModel());
+    final JButton ok = new JButton("Ok");
 
     public TemperaturePicker() {
         super("Default Temperatures");

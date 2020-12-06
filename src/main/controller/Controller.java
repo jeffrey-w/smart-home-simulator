@@ -84,62 +84,60 @@ public class Controller {
         dashboard.drawHouse(house);
     }
 
-    private boolean checkWindows = false; // TODO move this
-
-    private void startClock() { // TODO get rid of extra calls to redrawHouse
+    private void startClock() {
         (new Timer(1000, e -> {
             int[] fields = parameters.getClockTime();
             LocalTime time = LocalTime.of(fields[0], fields[1], fields[2]); // TODO avoid magic constants
             dashboard.setTime(fields);
-            // TODO check if simulation is on
-            // Toggle lights on AwayMode
-            if (parameters.isAwayMode()) {
-                for (Room room : house) {
-                    room.toggleLights(room.isAwayLight() && isBetween(time, parameters.getAwayLightStart(),
-                            parameters.getAwayLightEnd()));
-                }
-                redrawHouse();
-            } else {
-                if (isSummer(parameters.getDate())) {
-                    if (monitorWindows && house.hasTemperatureAberration(parameters.getExternalTemperature()) && house
-                            .hasObstructedWindow()) {
-                        sendToConsole(
-                                "A blocked window has prevented SHH from opening or closing the windows in this house.",
-                                Dashboard.MessageType.ERROR);
-                        monitorWindows = false;
-                    } else {
-                        for (Room room : house) {
-                            room.toggleWindows(room.getTemperature() > parameters.getExternalTemperature());
+            if (parameters.isOn()) {
+                // Toggle lights on AwayMode
+                if (parameters.isAwayMode()) {
+                    for (Room room : house) {
+                        room.toggleLights(room.isAwayLight() && isBetween(time, parameters.getAwayLightStart(),
+                                parameters.getAwayLightEnd()));
+                    }
+                } else {
+                    if (isSummer(parameters.getDate())) {
+                        if (monitorWindows && house.hasTemperatureAberration(parameters.getExternalTemperature()) && house
+                                .hasObstructedWindow()) {
+                            sendToConsole(
+                                    "A blocked window has prevented SHH from opening or closing the windows in this house.",
+                                    Dashboard.MessageType.ERROR);
+                            monitorWindows = false;
+                        } else {
+                            for (Room room : house) {
+                                room.toggleWindows(room.getTemperature() > parameters.getExternalTemperature());
+                            }
                         }
                     }
                 }
-            }
 
-            // Fluctuate temperature
-            if (parameters.isOn()) {
-                for (String location : house.getLocations()) {
-                    Room room = house.getRoom(location);
-                    double roomTemp = room.getTemperature();
-                    double equilibriumTemp = getEquilibriumTemp(location);
-                    int sign;
+                // Fluctuate temperature
+                if (parameters.isOn()) {
+                    for (String location : house.getLocations()) {
+                        Room room = house.getRoom(location);
+                        double roomTemp = room.getTemperature();
+                        double equilibriumTemp = getEquilibriumTemp(location);
+                        int sign;
 
-                    if (!isWithinTolerance(roomTemp, equilibriumTemp)) {
-                        sign = (int) Math.signum(equilibriumTemp - roomTemp);
-                        room.setTemperature(
-                                roomTemp + (room.isHVACon() ? HVAC_ON_STEP : HVAC_OFF_STEP) * parameters
-                                        .getTimeMultiplier() * sign);
-                    } else {
-                        room.setHVAC(!room.isHVACon());
-                        sign = (int) Math.signum(getEquilibriumTemp(location) - roomTemp);
-                        room.setTemperature(equilibriumTemp + TEMP_TOLERANCE * sign);
+                        if (!isWithinTolerance(roomTemp, equilibriumTemp)) {
+                            sign = (int) Math.signum(equilibriumTemp - roomTemp);
+                            room.setTemperature(
+                                    roomTemp + (room.isHVACon() ? HVAC_ON_STEP : HVAC_OFF_STEP) * parameters
+                                            .getTimeMultiplier() * sign);
+                        } else {
+                            room.setHVAC(!room.isHVACon());
+                            sign = (int) Math.signum(getEquilibriumTemp(location) - roomTemp);
+                            room.setTemperature(equilibriumTemp + TEMP_TOLERANCE * sign);
+                        }
+
                     }
-
                 }
             }
 
             // check home temperature -> if <= 0 -> alert users about pipe burst potential
             if (house != null) {
-                double averageHouseTemperature = 0;
+                double averageHouseTemperature;
                 double sumHouseTemperature = 0;
                 for (Room room : house) {
                     double roomTemp = room.getTemperature();
