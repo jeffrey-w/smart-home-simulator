@@ -5,9 +5,7 @@ import main.model.elements.House;
 import main.model.elements.Room;
 import main.model.parameters.Clock;
 import main.model.parameters.Parameters;
-import main.util.SeasonChecker;
 import main.view.Dashboard;
-import main.util.SeasonCheck;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -18,7 +16,8 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
-import static main.util.SeasonChecker.isIn;
+import static main.util.SeasonCheck.isSummer;
+import static main.util.SeasonCheck.isWinter;
 
 /**
  * The {@code Controller} class provides the interface between runtime simulation objects and the UI elements to
@@ -28,6 +27,12 @@ import static main.util.SeasonChecker.isIn;
  * @author Émilie Martin
  */
 public class Controller {
+
+    private static final double HVAC_ON_STEP = 0.1;
+    private static final double HVAC_OFF_STEP = 0.05;
+    private static final double TEMP_TOLERANCE = 0.25;
+    public static final int MORNING_START = 5, DAY_START = 11, NIGHT_START = 19;
+    public static final int PERIOD1 = 0, PERIOD2 = 1, PERIOD3 = 2;
 
     // This is the entry point into the program
     public static void main(String[] args) {
@@ -48,8 +53,6 @@ public class Controller {
     private final Parameters parameters = new Parameters();
     private final Map<String, ModuleController> modules = new HashMap<>();
     private final Dashboard dashboard = new Dashboard();
-    public static final int MORNING_START = 5, DAY_START = 11, NIGHTSTART = 19;
-    public static final int PERIOD1 = 0, PERIOD2 = 1, PERIOD3 = 2;
 
     /**
      * Constructs a new {@code Controller} object.
@@ -80,12 +83,12 @@ public class Controller {
         dashboard.drawHouse(house);
     }
 
-    private void startClock() {
+    private void startClock() { // TODO get rid of extra calls to redrawHouse
         (new Timer(1000, e -> {
             int[] fields = parameters.getClockTime();
             LocalTime time = LocalTime.of(fields[0], fields[1], fields[2]); // TODO avoid magic constants
             dashboard.setTime(fields);
-
+            // TODO check if simulation is on
             // Toggle lights on AwayMode
             if (parameters.isAwayMode()) {
                 for (Room room : house) {
@@ -94,8 +97,9 @@ public class Controller {
                 }
                 redrawHouse();
             } else {
-                if (isSummer()) {
-                    if (house.hasTemperatureAberration(parameters.getExternalTemperature()) && house.hasObstructedWindow()) {
+                if (isSummer(parameters.getDate())) {
+                    if (house.hasTemperatureAberration(parameters.getExternalTemperature()) && house
+                            .hasObstructedWindow()) {
                         sendToConsole(
                                 "A blocked window has prevented SHH from opening or closing the windows in this house.",
                                 Dashboard.MessageType.ERROR);
@@ -108,21 +112,22 @@ public class Controller {
             }
 
             // Fluctuate temperature
-            if (house != null) {
-                for(Room room: house) {
+            if (parameters.isOn()) {
+                for (String location : house.getLocations()) {
+                    Room room = house.getRoom(location);
                     double roomTemp = room.getTemperature();
-                    double equilibriumTemp = getEquilibriumTemp(room);
+                    double equilibriumTemp = getEquilibriumTemp(location);
+                    int sign;
 
-                    double differenceTemp = roomTemp - equilibriumTemp;
-
-                    if((Double.compare(roomTemp, equilibriumTemp+0.25) != 0 || Double.compare(roomTemp, equilibriumTemp-0.25) != 0)) {
-                        if(differenceTemp > 0) {
-                            room.setTemperature(room.getTemperature() + (room.isHVACon() ? 0.1 : 0.05));
-                        } else {
-                            room.setTemperature(room.getTemperature() - (room.isHVACon() ? 0.1 : 0.05));
-                        }
+                    if (!isWithinTolerance(roomTemp, equilibriumTemp)) {
+                        sign = (int) Math.signum(equilibriumTemp - roomTemp);
+                        room.setTemperature(
+                                roomTemp + (room.isHVACon() ? HVAC_ON_STEP : HVAC_OFF_STEP) * parameters
+                                        .getTimeMultiplier() * sign);
                     } else {
                         room.setHVAC(!room.isHVACon());
+                        sign = (int) Math.signum(getEquilibriumTemp(location) - roomTemp);
+                        room.setTemperature(equilibriumTemp + TEMP_TOLERANCE * sign);
                     }
 
                 }
@@ -139,7 +144,7 @@ public class Controller {
                 }
                 averageHouseTemperature = sumHouseTemperature / house.getSize();
 
-                if(Double.compare(averageHouseTemperature, 0) <= 0){
+                if (Double.compare(averageHouseTemperature, 0) <= 0) {
                     sendToConsole(
                             "WARNING : Temperature inside home is below 0C, pipes might burst.",
                             Dashboard.MessageType.WARNING);
@@ -147,10 +152,49 @@ public class Controller {
             }
 
             // redraw the house to see temperature
-            if(house != null){
+            if (house != null) {
                 redrawHouse();
             }
         })).start();
+    }
+
+    public double getEquilibriumTemp(String room) {
+        if (parameters.isAwayMode()) {
+            if (isSummer(parameters.getDate())) {
+                return parameters.getDefaultSummerTemperature();
+            }
+            else if (isWinter(parameters.getDate())) {
+                return parameters.getDefaultWinterTemperature();
+            }
+        }
+        if (parameters.isTemperatureOverridden(room) || house.getRoom(room).isHVACon()) {
+            return parameters.getTemperatureControlZone(room).getDesiredTemperatureFor(room, getPeriod());
+        }
+        return parameters.getExternalTemperature();
+    }
+
+    /**
+     * Gets the periods of day based on the time of the day
+     *
+     * @return The period ID that the time falls in
+     */
+    private int getPeriod() {
+        int[] clockTime = parameters.getClockTime();
+        int hour = clockTime[Clock.HOURS];
+        if (hour > MORNING_START && hour < DAY_START) {
+            //morning
+            return PERIOD1;
+        } else if (hour > DAY_START && hour < NIGHT_START) {
+            //day
+            return PERIOD2;
+        } else {
+            //night
+            return PERIOD3;
+        }
+    }
+
+    private boolean isWithinTolerance(double actual, double spec) {
+        return Double.compare(actual, spec - TEMP_TOLERANCE) >= 0 && Double.compare(actual, spec + TEMP_TOLERANCE) <= 0;
     }
 
     private boolean isBetween(LocalTime time, LocalTime origin, LocalTime bound) {
@@ -171,15 +215,19 @@ public class Controller {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (house != null) {
-                parameters.setOn(((JToggleButton) e.getSource()).isSelected());
-                dashboard.toggleOnButton();
-                dashboard.showStates(parameters.isOn());
-                getCoreModuleController().toggleAutoLight();
-                redrawHouse();
-                sendToConsole("Simulation has " + (parameters.isOn() ? "begun." : "ended."),
-                        Dashboard.MessageType.NORMAL);
-                if (parameters.isOn() && parameters.isAwayMode() && house.isOccupied()) {
-                    getSecurityModuleController().startAwayModeCountdown();
+                if (!getHeatingModuleController().unzonedRooms().isEmpty()) {
+                    sendToConsole("All rooms must belong to a heating zone before starting the simulation." , Dashboard.MessageType.ERROR);
+                } else {
+                    parameters.setOn(((JToggleButton) e.getSource()).isSelected());
+                    dashboard.toggleOnButton();
+                    dashboard.showStates(parameters.isOn());
+                    getCoreModuleController().toggleAutoLight();
+                    redrawHouse();
+                    sendToConsole("Simulation has " + (parameters.isOn() ? "begun." : "ended."),
+                            Dashboard.MessageType.NORMAL);
+                    if (parameters.isOn() && parameters.isAwayMode() && house.isOccupied()) {
+                        getSecurityModuleController().startAwayModeCountdown();
+                    }
                 }
             } else {
                 sendToConsole("Please load a house to start the simulation.", Dashboard.MessageType.ERROR);
@@ -225,6 +273,10 @@ public class Controller {
         return ((SecurityModuleController) modules.get(Module.SHP.getName()));
     }
 
+    HeatingModuleController getHeatingModuleController() {
+        return ((HeatingModuleController) modules.get(Module.SHH.getName()));
+    }
+
     void sendToConsole(String message, Dashboard.MessageType type) {
         dashboard.sendToConsole(message, type, true);
     }
@@ -234,34 +286,6 @@ public class Controller {
             dashboard.updateRoom(location, house.getRoom(location));
         }
         dashboard.redrawHouse();
-    }
-
-    public double getEquilibriumTemp(Room room) {
-        return (room.isHVACon() ? parameters.getTemperatureControlZone(room).getDesiredTemperature(getPeriod(parameters.getClockTime())) : parameters.getExternalTemperature());
-    }
-
-    boolean isSummer() {
-        return SeasonCheck.getSeason(parameters.getDate()) == SeasonCheck.Season.SUMMER;
-//        return isIn(parameters.getDate(), SeasonChecker.Season.SUMMER);
-    }
-
-    /**
-     * Gets the perios of day based on the time of the day
-     * @param clockTime The time of the day
-     * @return The period ID that the time falls in
-     */
-    int getPeriod(int[] clockTime) {
-        int hour = clockTime[Clock.HOURS];
-        if (hour > MORNING_START && hour < DAY_START) {
-            //morning
-            return PERIOD1;
-        } else if (hour > DAY_START && hour < NIGHTSTART) {
-            //day
-            return PERIOD2;
-        } else {
-            //night
-            return PERIOD3;
-        }
     }
 
 }
