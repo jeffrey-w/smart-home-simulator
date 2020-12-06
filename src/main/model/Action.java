@@ -196,7 +196,9 @@ public enum Action {
             if (house.getNumberOfPeople() > 0 && !parameters.isAwayMode()) {
                 return "Away mode can only be set when no one is home";
             }
-            house.closeOpenables();
+            if (!parameters.isAwayMode()) {
+                house.closeOpenables();
+            }
             parameters.setAwayMode(!parameters.isAwayMode());
             return parameters.isAwayMode() ? "Away mode has been turned on" : "Away mode has been turned off";
         }
@@ -349,7 +351,16 @@ public enum Action {
                 Double tempThree = (Double) multiValueManipulable.getValueAt(2).getValue();
                 @SuppressWarnings("unchecked")
                 Collection<String> rooms = (Collection<String>) multiValueManipulable.getValueAt(3).getValue();
-                TemperatureControlZone zone = parameters.addZone(id);
+                TemperatureControlZone zone;
+                try {
+                    zone = parameters.addZone(id);
+                } catch (IllegalArgumentException e) {
+                    if (e.getMessage().equals("A zone with that name already exists.")) {
+                        zone = parameters.getZone(id);
+                    } else {
+                        throw e;
+                    }
+                }
                 zone.setPeriodTemp(0, tempOne);
                 if (tempTwo != null) {
                     zone.setPeriodTemp(1, tempTwo);
