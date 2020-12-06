@@ -161,14 +161,14 @@ public class Controller {
     }
 
     public double getEquilibriumTemp(String room) {
-        if (parameters.isAwayMode()) {
+        if (parameters.isAwayMode() && house.getRoom(room).isHVACon()) {
             if (isSummer(parameters.getDate())) {
                 return parameters.getDefaultSummerTemperature();
             } else if (isWinter(parameters.getDate())) {
                 return parameters.getDefaultWinterTemperature();
             }
         }
-        if (parameters.isTemperatureOverridden(room) || house.getRoom(room).isHVACon()) {
+        if (parameters.isTemperatureOverridden(room) && house.getRoom(room).isHVACon()) {
             return parameters.getTemperatureControlZone(room).getDesiredTemperatureFor(room, getPeriod());
         }
         return parameters.getExternalTemperature();
