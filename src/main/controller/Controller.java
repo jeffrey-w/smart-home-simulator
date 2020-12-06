@@ -98,10 +98,12 @@ public class Controller {
                     }
                 } else {
                     if (isSummer(parameters.getDate())) {
-                        if (monitorWindows && house.hasTemperatureAberration(parameters.getExternalTemperature()) && house
+                        if (monitorWindows && house.hasTemperatureAberration(parameters.getExternalTemperature())
+                                && house
                                 .hasObstructedWindow()) {
                             sendToConsole(
-                                    "A blocked window has prevented SHH from opening or closing the windows in this house.",
+                                    "A blocked window has prevented SHH from opening or closing the windows in this "
+                                            + "house.",
                                     Dashboard.MessageType.ERROR);
                             monitorWindows = false;
                         } else {
@@ -160,15 +162,24 @@ public class Controller {
         })).start();
     }
 
-    public double getEquilibriumTemp(String room) {
-        if (parameters.isAwayMode() && house.getRoom(room).isHVACon()) {
+    private double getEquilibriumTemp(String room) {
+        Room r = house.getRoom(room);
+        if (parameters.isAwayMode() && r.isHVACon()) {
             if (isSummer(parameters.getDate())) {
                 return parameters.getDefaultSummerTemperature();
             } else if (isWinter(parameters.getDate())) {
                 return parameters.getDefaultWinterTemperature();
             }
         }
-        if (parameters.isTemperatureOverridden(room) && house.getRoom(room).isHVACon()) {
+        if (parameters.isTemperatureOverridden(room) || r.isHVACon()) {
+            double desired = parameters.getTemperatureControlZone(room).getDesiredTemperatureFor(room, getPeriod());
+            if (Double.compare(desired, parameters.getExternalTemperature()) == 0
+                    || parameters.isTemperatureOverridden(room) && isWithinTolerance(r.getTemperature(), desired)) {
+                if (r.isHVACon()) {
+                    r.setHVAC(false);
+                }
+                return parameters.getExternalTemperature();
+            }
             return parameters.getTemperatureControlZone(room).getDesiredTemperatureFor(room, getPeriod());
         }
         return parameters.getExternalTemperature();

@@ -15,7 +15,7 @@ import java.util.Objects;
  */
 public class Room extends Place {
 
-    private static final double DEFAULT_ROOM_TEMPERATURE = 25.00;
+    private static final double DEFAULT_ROOM_TEMPERATURE = 20.00;
 
     private double temperature;
     private boolean awayLight;
@@ -36,6 +36,7 @@ public class Room extends Place {
         this.doors = Objects.requireNonNull(doors); // TODO consider making defensive copies in a future release
         this.lights = Objects.requireNonNull(lights);
         this.windows = Objects.requireNonNull(windows);
+        this.HVACon = true;
     }
 
     /**
