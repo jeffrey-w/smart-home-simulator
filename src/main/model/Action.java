@@ -395,8 +395,8 @@ public enum Action {
         @Override
         public String doAction(Manipulable manipulable, Parameters parameters, House house) {
             MultiValueManipulable multiValueManipulable = (MultiValueManipulable) manipulable;
-            double defSummerTempZone = (double) multiValueManipulable.getValue();
-            double defWinterTempZone = (double) multiValueManipulable.getValueAt(0).getValue();
+            double defSummerTempZone = (Double) multiValueManipulable.getValue();
+            double defWinterTempZone = (Double) multiValueManipulable.getValueAt(0).getValue();
             parameters.setDefaultWinterTemperature(defWinterTempZone);
             parameters.setDefaultSummerTemperature(defSummerTempZone);
             return "Default temperature has been set to " + defWinterTempZone + " for winter and " + defSummerTempZone
