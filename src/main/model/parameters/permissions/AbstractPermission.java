@@ -1,6 +1,7 @@
 package main.model.parameters.permissions;
 
 import main.model.Action;
+import main.util.PermissionDeniedException;
 
 import java.util.Objects;
 
@@ -14,7 +15,7 @@ public abstract class AbstractPermission implements Permission {
     @Override
     public Action authorize(Action action) {
         if (!allowed().contains(Objects.requireNonNull(action))) {
-            throw new IllegalArgumentException(
+            throw new PermissionDeniedException(
                     "This action is not permissible with the level of permission you currently have.");
         }
         return action;
