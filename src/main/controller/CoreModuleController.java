@@ -39,6 +39,9 @@ public class CoreModuleController extends AbstractModuleController {
                 performActionOn(action, new ValueManipulable<>(!parameters.isAutoLight()));
                 toggleAutoLight();
             } else {
+                if (action.equals(Action.TOGGLE_BLOCK_WINDOW)) {
+                    parent.setMonitorWindows(true);
+                }
                 ItemChooser chooser = ItemChooser.of(getItemsForSelection());
                 chooser.addActionListener(f -> {
                     performActionOn(action, chooser.getSelectedItem());
