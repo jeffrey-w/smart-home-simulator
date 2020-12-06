@@ -41,7 +41,6 @@ public final class Module {
      * Functionality related to heating.
      */
     public static final Module SHH = (new ModuleBuilder())
-            .addCommandFor("Zones", Action.CREATE_TEMPERATURE_CONTROL_ZONE)
             .addCommandFor("Zones", Action.MANAGE_TEMPERATURE_CONTROL_ZONES)
             .addCommandFor("Temperature", Action.READ_TEMPERATURES)
             .addCommandFor("Temperature", Action.CHANGE_TEMPERATURE)
