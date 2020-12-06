@@ -4,9 +4,9 @@ import main.model.elements.*;
 import main.model.parameters.Clock;
 import main.model.parameters.Parameters;
 import main.model.parameters.permissions.Permission;
-import main.util.SeasonCheck;
 
 import java.time.LocalTime;
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -18,32 +18,6 @@ import java.util.Set;
  * @see Permission
  */
 public enum Action {
-
-    CHANGE_TEMPERATURE { // TODO
-        @Override
-        public boolean isChildPermissible() {
-            return false;
-        }
-
-        @Override
-        public boolean isGuestPermissible() {
-            return false;
-        }
-
-        @Override
-        public String doAction(Manipulable manipulable, Parameters parameters, House house) {
-            MultiValueManipulable multiValueManipulable = (MultiValueManipulable) manipulable;
-            String room = (String) multiValueManipulable.getValue();
-            int temperature = (int) multiValueManipulable.getValueAt(0).getValue();
-            house.getRoom(room).setTemperature(temperature);
-            return room + " temperature has been set to " + temperature + ".";
-        }
-
-        @Override
-        public String toString() {
-            return "Change Temperature";
-        }
-    },
 
     TOGGLE_LOCK_DOOR {
         @Override
@@ -223,18 +197,6 @@ public enum Action {
                 return "Away mode can only be set when no one is home";
             }
             house.closeOpenables();
-
-            // set default temperatures depending on time period (winter / summer)
-            SeasonCheck.Season season = SeasonCheck.getSeason(parameters.getDate());
-            if (season == SeasonCheck.Season.SUMMER) {
-                // TODO : set zone temperatures
-                System.out.println("zone temp set to -> " + parameters.getDefaultSummerTemperatureZone());
-            }
-            else if (season == SeasonCheck.Season.WINTER) {
-                // TODO : set zone temperatures
-                System.out.println("zone temp set to -> " + parameters.getDefaultWinterTemperatureZone());
-            }
-
             parameters.setAwayMode(!parameters.isAwayMode());
             return parameters.isAwayMode() ? "Away mode has been turned on" : "Away mode has been turned off";
         }
@@ -300,7 +262,7 @@ public enum Action {
         }
     },
 
-    READ_TEMPERATURES { // TODO
+    READ_TEMPERATURES {
         @Override
         public boolean isChildPermissible() {
             return true;
@@ -319,7 +281,7 @@ public enum Action {
                 Room room = house.getRoom(location);
                 builder.append(location);
                 builder.append(": ");
-                builder.append(room.getTemperature());
+                builder.append(String.format("%.2f", room.getTemperature()));
                 if (parameters.isTemperatureOverridden(location)) {
                     builder.append(" [Overridden]");
                 }
@@ -336,7 +298,7 @@ public enum Action {
         }
     },
 
-    CREATE_TEMPERATURE_CONTROL_ZONE { // TODO
+    CHANGE_TEMPERATURE {
         @Override
         public boolean isChildPermissible() {
             return false;
@@ -349,16 +311,22 @@ public enum Action {
 
         @Override
         public String doAction(Manipulable manipulable, Parameters parameters, House house) {
-            return null;
+            MultiValueManipulable multiValueManipulable = (MultiValueManipulable) manipulable;
+            String room = (String) multiValueManipulable.getValue();
+            double temperature = (double) multiValueManipulable.getValueAt(0).getValue();
+            parameters.getTemperatureControlZone(room).overrideTempFor(room, temperature);
+            house.getRoom(room).setHVAC(true);
+            return room + " temperature has been set to " + temperature + ".";
         }
 
         @Override
         public String toString() {
-            return "Create Temperature Control Zone";
+            return "Change Temperature";
         }
     },
 
     MANAGE_TEMPERATURE_CONTROL_ZONES { // TODO
+
         @Override
         public boolean isChildPermissible() {
             return false;
@@ -371,7 +339,29 @@ public enum Action {
 
         @Override
         public String doAction(Manipulable manipulable, Parameters parameters, House house) {
-            return null;
+            MultiValueManipulable multiValueManipulable = (MultiValueManipulable) manipulable;
+            if (multiValueManipulable.getValue() == null) {
+                parameters.removeZone((String) multiValueManipulable.getValueAt(0).getValue());
+            } else {
+                String id = (String) multiValueManipulable.getValue();
+                Double tempOne = (Double) multiValueManipulable.getValueAt(0).getValue();
+                Double tempTwo = (Double) multiValueManipulable.getValueAt(1).getValue();
+                Double tempThree = (Double) multiValueManipulable.getValueAt(2).getValue();
+                @SuppressWarnings("unchecked")
+                Collection<String> rooms = (Collection<String>) multiValueManipulable.getValueAt(3).getValue();
+                TemperatureControlZone zone = parameters.addZone(id);
+                zone.setPeriodTemp(0, tempOne);
+                if (tempTwo != null) {
+                    zone.setPeriodTemp(1, tempTwo);
+                }
+                if (tempThree != null) {
+                    zone.setPeriodTemp(2, tempThree);
+                }
+                for (String room : rooms) {
+                    zone.addRoom(room);
+                }
+            }
+            return "Temperature control zones updated.";
         }
 
         @Override
@@ -394,11 +384,12 @@ public enum Action {
         @Override
         public String doAction(Manipulable manipulable, Parameters parameters, House house) {
             MultiValueManipulable multiValueManipulable = (MultiValueManipulable) manipulable;
+            double defSummerTempZone = (double) multiValueManipulable.getValue();
             double defWinterTempZone = (double) multiValueManipulable.getValueAt(0).getValue();
-            double defSummerTempZone = (double) multiValueManipulable.getValueAt(1).getValue();
-            parameters.setDefaultWinterTemperatureZone(defWinterTempZone);
-            parameters.setDefaultSummerTemperatureZone(defSummerTempZone);
-            return "zones temperature has been set to " + defWinterTempZone + " for winter and " + defSummerTempZone + " for summer.";
+            parameters.setDefaultWinterTemperature(defWinterTempZone);
+            parameters.setDefaultSummerTemperature(defSummerTempZone);
+            return "Default temperature has been set to " + defWinterTempZone + " for winter and " + defSummerTempZone
+                    + " for summer.";
         }
 
         @Override
