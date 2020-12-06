@@ -40,6 +40,8 @@ public abstract class AbstractModuleController implements ModuleController {
                     Dashboard.MessageType.NORMAL);
         } catch (PermissionDeniedException e) {
             parent.sendToConsole(e.getMessage(), Dashboard.MessageType.ERROR);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
