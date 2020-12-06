@@ -198,7 +198,7 @@ public class Room extends Place {
                 } catch (IllegalStateException e) {
                     continue;
                 }
-                setHVAC(flag);
+                setHVAC(!flag);
             }
         }
     }
