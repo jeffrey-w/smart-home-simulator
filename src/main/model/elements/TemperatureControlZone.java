@@ -1,82 +1,74 @@
 package main.model.elements;
 
-import java.util.Collections;
-import java.util.IdentityHashMap;
-import java.util.Set;
+import java.util.*;
 
 /**
- * A {@code TemperatureControlZone} contains many {@code Room}s and can adjust the temperature of all contained {@code Room}s.
- * The user can add and remove {@code Room}s from a {@code TemperatureControlZone}.
+ * A {@code TemperatureControlZone} contains many rooms and can adjust the temperature of all contained rooms. The user
+ * can add and remove rooms from a {@code TemperatureControlZone}.
  *
  * @author Émilie Martin
  * @author Ayman Shehri
  */
 public class TemperatureControlZone {
 
-    private static double DEFAULT_DESIRED_TEMPERATURE = 15.00;
-    private final Set<Room> rooms;
-    private static double[] desiredTemperature;
-    private static boolean[] activePeriods;
+    private static final double DEFAULT_DESIRED_TEMPERATURE = 25.00;
+    private static final int NUM_PERIODS = 3;
 
+    private static int validatePeriod(int period) {
+        if (period < 0 || period >= NUM_PERIODS) {
+            throw new IllegalArgumentException("That is not a valid period.");
+        }
+        return period;
+    }
+
+    private final Set<String> rooms;
+    private final Map<String, Double> overridden;
+    private final Double[] desiredTemperature;
 
     /**
-     * Constructs a {@code TemperatureControlZone} with no {@code Room}s.
+     * Constructs a {@code TemperatureControlZone} with no rooms.
      */
     public TemperatureControlZone() {
-        this.rooms = Collections.newSetFromMap(new IdentityHashMap<>());
-        desiredTemperature = new double[]{DEFAULT_DESIRED_TEMPERATURE, DEFAULT_DESIRED_TEMPERATURE, DEFAULT_DESIRED_TEMPERATURE};
-        activePeriods = new boolean[]{true, false, false};
+        rooms = new HashSet<>();
+        overridden = new HashMap<>();
+        desiredTemperature = new Double[] {DEFAULT_DESIRED_TEMPERATURE, null, null};
     }
 
     /**
-     * @return The {@code Room}s contained within this {@code TemperatureControlZone}
+     * @return The rooms contained within this {@code TemperatureControlZone}
      */
-    public Set<Room> getRooms() {
+    public Set<String> getRooms() {
         return this.rooms;
     }
 
     /**
-     * Adds a {@code Room} to this {@code TemperatureControlZone}.
+     * Adds a {@code room} to this {@code TemperatureControlZone}.
      *
-     * @param zone The {@code TemperatureControlZone} to be modified
      * @param room The {@code Room} to be added to the specified {@code TemperatureControlZone}
      */
-    public void addRoom(String zone, Room room) {
+    public void addRoom(String room) {
         rooms.add(room);
     }
 
     /**
-     * Removes a {@code Room} from this {@code TemperatureControlZone}.
+     * Removes a {@code room} from this {@code TemperatureControlZone}.
      *
      * @param room The {@code Room} to be removed from the specified {@code TemperatureControlZone}
      */
-    public void removeRoom(Room room) {
+    public void removeRoom(String room) {
         rooms.remove(room);
     }
 
     /**
      * @param period The current period
-     * @return The ideal temperature of the room
+     * @return The ideal temperature of this {@code TemperatureControlZone}
      */
-    public double getDesiredTemperature(int period) {
-        if (activePeriods[period]) {
-            return desiredTemperature[period];
-        } else {
-            //return the temperature for previous period
-            return getDesiredTemperature(period - 1);
+    public double getDesiredTemperatureFor(String room, int period) {
+        Double desiredTemperature = overridden.get(room);
+        while (desiredTemperature == null) {
+            desiredTemperature = this.desiredTemperature[period--];
         }
-    }
-
-    /**
-     * Sets the temperature of a chosen {@code Room} to that specified
-     *
-     * @param room        The specified {@code Room}
-     * @param temperature The new temperature of the {@code Room}
-     */
-    public void setRoomTemperature(Room room, double temperature) {
-        if (rooms.contains(room)) {
-            room.setTemperature(temperature);
-        }
+        return desiredTemperature;
     }
 
     /**
@@ -86,49 +78,37 @@ public class TemperatureControlZone {
      * @param temp The new desired temperature
      */
     public void setPeriodTemp(int period, double temp) {
-        desiredTemperature[period] = temp;
+        desiredTemperature[validatePeriod(period)] = temp;
     }
 
     /**
-     * Gets the desired temperature for the specified period
+     * Signifies that the desired temperature for the specified {@code room} should be overridden to the specified
+     * {@code temp}.
      *
-     * @param period the period in question
-     * @return The desired temperature for the specified period
+     * @param room The specified {@code Room}
+     * @param temp The specified temperature
+     * @throws NoSuchElementException If the specified {@code room} is not in this {@code TemperatureControlZone}
      */
-    public double getPeriodTemp(int period) {
-        return desiredTemperature[period];
+    public void overrideTempFor(String room, double temp) {
+        if (!rooms.contains(room)) {
+            throw new NoSuchElementException("That room is not in this zone.");
+        }
+        overridden.put(room, temp);
     }
 
     /**
-     * Sets the status of a period to that specified
+     * Determines whether or not the specified {@code room} has had its desired temperature overridden.
      *
-     * @param period The period to be changed
-     * @param isActive The status to be set
+     * @param room The specified {@code Room}
+     * @return {@code true} if the specified {@code room} has had its desired temperature overridden
+     * @throws NoSuchElementException If the specified {@code room} does not belong to this {@code
+     * TemperatureControlZone}
      */
-    public void setPeriodStatus(int period, boolean isActive) {
-        activePeriods[period] = isActive;
-    }
-
-    /**
-     * Gets the set temperature for all periods
-     *
-     * @return An array that holds the desired temperature for all periods
-     */
-    public double[] getAllPeriodsTemp() {
-        return desiredTemperature;
-    }
-
-    /**
-     * Sets the desired temperature of all periods
-     *
-     * @param first The desired temperature for the first period
-     * @param second The desired temperature for the second period
-     * @param third The desired temperature for the third period
-     */
-    public void setAllPeriodsTemp(double first, double second, double third) {
-        desiredTemperature[0] = first;
-        desiredTemperature[1] = second;
-        desiredTemperature[2] = third;
+    public boolean isOverridden(String room) {
+        if (!rooms.contains(room)) {
+            throw new NoSuchElementException("That room is not in this zone.");
+        }
+        return overridden.containsKey(room);
     }
 
 }
