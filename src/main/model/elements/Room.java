@@ -190,7 +190,12 @@ public class Room extends Place {
     public void toggleWindows(boolean flag) {
         for (Window window : windows) {
             if (window != null) {
-                window.setOpen(flag); // TODO throws IllegalStateException
+                try {
+                    window.setOpen(flag);
+                } catch (IllegalStateException e) {
+                    continue;
+                }
+                setHVAC(flag);
             }
         }
     }
