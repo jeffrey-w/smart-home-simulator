@@ -53,6 +53,7 @@ public class Controller {
     private final Parameters parameters = new Parameters();
     private final Map<String, ModuleController> modules = new HashMap<>();
     private final Dashboard dashboard = new Dashboard();
+    private boolean monitorWindows = true;
 
     /**
      * Constructs a new {@code Controller} object.
@@ -83,6 +84,8 @@ public class Controller {
         dashboard.drawHouse(house);
     }
 
+    private boolean checkWindows = false; // TODO move this
+
     private void startClock() { // TODO get rid of extra calls to redrawHouse
         (new Timer(1000, e -> {
             int[] fields = parameters.getClockTime();
@@ -98,11 +101,12 @@ public class Controller {
                 redrawHouse();
             } else {
                 if (isSummer(parameters.getDate())) {
-                    if (house.hasTemperatureAberration(parameters.getExternalTemperature()) && house
+                    if (monitorWindows && house.hasTemperatureAberration(parameters.getExternalTemperature()) && house
                             .hasObstructedWindow()) {
                         sendToConsole(
                                 "A blocked window has prevented SHH from opening or closing the windows in this house.",
                                 Dashboard.MessageType.ERROR);
+                        monitorWindows = false;
                     } else {
                         for (Room room : house) {
                             room.toggleWindows(room.getTemperature() > parameters.getExternalTemperature());
@@ -162,8 +166,7 @@ public class Controller {
         if (parameters.isAwayMode()) {
             if (isSummer(parameters.getDate())) {
                 return parameters.getDefaultSummerTemperature();
-            }
-            else if (isWinter(parameters.getDate())) {
+            } else if (isWinter(parameters.getDate())) {
                 return parameters.getDefaultWinterTemperature();
             }
         }
@@ -207,6 +210,10 @@ public class Controller {
         modules.put(Module.SHH.getName(), new HeatingModuleController(this, dashboard.addModule(Module.SHH)));
     }
 
+    void setMonitorWindows(boolean flag) {
+        monitorWindows = flag;
+    }
+
     /*
      * Event handlers.
      */
@@ -216,7 +223,8 @@ public class Controller {
         public void actionPerformed(ActionEvent e) {
             if (house != null) {
                 if (!getHeatingModuleController().unzonedRooms().isEmpty()) {
-                    sendToConsole("All rooms must belong to a heating zone before starting the simulation." , Dashboard.MessageType.ERROR);
+                    sendToConsole("All rooms must belong to a heating zone before starting the simulation.",
+                            Dashboard.MessageType.ERROR);
                 } else {
                     parameters.setOn(((JToggleButton) e.getSource()).isSelected());
                     dashboard.toggleOnButton();
