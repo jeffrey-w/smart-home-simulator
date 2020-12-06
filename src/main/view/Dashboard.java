@@ -192,8 +192,8 @@ public class Dashboard extends JFrame {
     /**
      * @return The temperature the user has selected for the outside of their simulated {@code House}
      */
-    public Integer getTemperatureInput() {
-        return (Integer) editor.temperature.getValue();
+    public Double getTemperatureInput() {
+        return (Double) editor.temperature.getValue();
     }
 
     /**
