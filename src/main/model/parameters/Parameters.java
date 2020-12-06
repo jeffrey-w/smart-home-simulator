@@ -29,8 +29,8 @@ public class Parameters {
     public static final double DEFAULT_TEMPERATURE = 15;
     public static final double MIN_TEMPERATURE = -100;
     public static final double MAX_TEMPERATURE = 100;
-    public static final double DEFAULT_WINTER_TEMPERATURE_ZONE = 25;
-    public static final double DEFAULT_SUMMER_TEMPERATURE_ZONE = 15;
+    public static final double DEFAULT_WINTER_TEMPERATURE = 25;
+    public static final double DEFAULT_SUMMER_TEMPERATURE = 15;
 
     /**
      * The default values for away light beginning and end.
@@ -45,9 +45,8 @@ public class Parameters {
     private String location;
     private Date date;
     private double externalTemperature;
-    private double temperature;
-    private double defWinterTempZone;
-    private double defSummerTempZone;
+    private double defWinterTemp;
+    private double defSummerTemp;
     private boolean on;
     private boolean autoLight;
     private final AwayMode awayMode;
@@ -64,12 +63,12 @@ public class Parameters {
         location = null;
         date = Date.from(Instant.now());
         externalTemperature = DEFAULT_TEMPERATURE;
-        temperature = DEFAULT_TEMPERATURE;
-        defWinterTempZone = DEFAULT_WINTER_TEMPERATURE_ZONE;
-        defSummerTempZone = DEFAULT_SUMMER_TEMPERATURE_ZONE;
+        defWinterTemp = DEFAULT_WINTER_TEMPERATURE;
+        defSummerTemp = DEFAULT_SUMMER_TEMPERATURE;
         on = false;
         awayMode = new AwayMode();
         permissions = new HashMap<>();
+        zones = new HashMap<>();
         fillPermissionMap();
     }
 
@@ -94,11 +93,11 @@ public class Parameters {
     /**
      * Adds a new actor to the simulation with the specified {@code name} and {@code permission}.
      *
-     * @param name       A unique identifier
+     * @param name A unique identifier
      * @param permission The {@code Permission} level of the newly added actor
      * @throws IllegalArgumentException If the specified {@code name} is not a non-empty string of word characters (i.e.
-     *                                  [a-z, A-Z, 0-9, _]) and whitespace
-     * @throws NullPointerException     If the specified {@code permission} is {@code null}
+     * [a-z, A-Z, 0-9, _]) and whitespace
+     * @throws NullPointerException If the specified {@code permission} is {@code null}
      */
     public void addActor(String name, Permission permission) {
         actors.put(validateName(name), Objects.requireNonNull(permission, "Please select a permission level."));
@@ -170,7 +169,7 @@ public class Parameters {
      *
      * @param location The specified location
      * @throws IllegalArgumentException If the specified {@code location} is not a non-empty string of word characters
-     *                                  (i.e. [a-z, A-Z, 0-9, _]) and whitespace
+     * (i.e. [a-z, A-Z, 0-9, _]) and whitespace
      */
     public void setLocation(String location) {
         this.location = location == null ? null : validateName(location);
@@ -191,7 +190,7 @@ public class Parameters {
      *
      * @param temperature The newly specified external temperature
      * @throws IllegalArgumentException If the specified {@code temperature} is above {@value #MAX_TEMPERATURE} or below
-     *                                  {@value #MIN_TEMPERATURE}
+     * {@value #MIN_TEMPERATURE}
      */
     public void setExternalTemperature(double temperature) {
         if (temperature < MIN_TEMPERATURE || temperature > MAX_TEMPERATURE) {
@@ -355,13 +354,18 @@ public class Parameters {
      * Adds a {@code TemperatureControlZone}
      *
      * @param id The {@code TemperatureControlZone} identifier
-     * @param zone The {@code TemperatureControlZone}
+     * @return The newly added {@code TemperatureControlZone}
+     * @throws IllegalArgumentException If the specified {@code id} is not a non-empty string of word characters (i.e.
+     * [a-z, A-Z, 0-9, _]) and whitespace, or if another {@code TemperatureControlZone} by that name already exists
+     * @throws NullPointerException If the specified {@code id} is {@code} null
      */
-    public void addZone(String id, TemperatureControlZone zone) {
-        zones.putIfAbsent(id, zone);
-    }
-    public void overrideTemperatureOf(String room) {
-        // TODO
+    public TemperatureControlZone addZone(String id) {
+        if (zones.containsKey(validateName(id))) {
+            throw new IllegalArgumentException("A zone with that name already exists.");
+        }
+        TemperatureControlZone zone = new TemperatureControlZone();
+        zones.putIfAbsent(validateName(id), zone);
+        return zone;
     }
 
     /**
@@ -374,36 +378,52 @@ public class Parameters {
     }
 
     /**
-     * @param room The inquired {@code Room}
-     * @return The {@code TemperatureControlZone} that contains the given {@code Room}
+     * @param room The inquired {@code room}
+     * @return The {@code TemperatureControlZone} that contains the given {@code room}
      */
-    public TemperatureControlZone getTemperatureControlZone(Room room) {
-        for(TemperatureControlZone zone : zones.values()) {
-            if(zone.getRooms().contains(room)) {
+    public TemperatureControlZone getTemperatureControlZone(String room) { // TODO fix this
+        for (TemperatureControlZone zone : zones.values()) {
+            if (zone.getRooms().contains(room)) {
                 return zone;
             }
         }
         throw new NoSuchElementException();
     }
 
-    // TODO
+    // TODO COMMENTS
     public boolean isTemperatureOverridden(String location) {
-        return true;
+        try {
+            return getTemperatureControlZone(location).isOverridden(location);
+        } catch (NoSuchElementException e) {
+            return false;
+        }
     }
 
-    public double getDefaultWinterTemperatureZone() {
-        return defWinterTempZone;
+    public double getDefaultWinterTemperature() {
+        return defWinterTemp;
     }
 
-    public double getDefaultSummerTemperatureZone() {
-        return defSummerTempZone;
+    public double getDefaultSummerTemperature() {
+        return defSummerTemp;
     }
 
-    public void setDefaultWinterTemperatureZone(double temp) {
-        defWinterTempZone = temp;
+    public void setDefaultWinterTemperature(double temp) {
+        defWinterTemp = temp;
     }
 
-    public void setDefaultSummerTemperatureZone(double temp) {
-        defSummerTempZone = temp;
+    public void setDefaultSummerTemperature(double temp) {
+        defSummerTemp = temp;
+    }
+
+    public int getTimeMultiplier() {
+        return clock.getMultiplier();
+    }
+
+    public Collection<String> getZones() {
+        return zones.keySet();
+    }
+
+    public TemperatureControlZone getZone(String id) {
+        return zones.get(id); // TODO validation
     }
 }
