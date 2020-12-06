@@ -27,7 +27,7 @@ public class ParameterEditor extends JPanel {
     private static final int FIELD_COLUMNS = 2;
     private static final int FIELD_Y_PADDING = 0x40;
 
-    static final SpinnerNumberModel TEMP_MODEL =
+    private static final SpinnerNumberModel TEMP_MODEL =
             new SpinnerNumberModel(Parameters.DEFAULT_TEMPERATURE, Parameters.MIN_TEMPERATURE,
                     Parameters.MAX_TEMPERATURE, 1);
     private static final SpinnerDateModel DATE_MODEL =
@@ -38,6 +38,11 @@ public class ParameterEditor extends JPanel {
 
     static JLabel labelFactory(String text) {
         return new JLabel(text + ":", SwingConstants.RIGHT);
+    }
+
+    static SpinnerNumberModel tempModel() {
+        return new SpinnerNumberModel(Parameters.DEFAULT_TEMPERATURE, Parameters.MIN_TEMPERATURE,
+                Parameters.MAX_TEMPERATURE, 1);
     }
 
     final JButton loadHouse = new JButton("Load House");
