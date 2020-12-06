@@ -72,4 +72,8 @@ public class Clock {
         referenceTime = ((long) h * SECONDS_PER_HOUR) + ((long) m * SECONDS_PER_MINUTE) + s;
     }
 
+    // TODO
+    public int getMultiplier() {
+        return multiplier;
+    }
 }
