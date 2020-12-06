@@ -9,9 +9,9 @@ import main.util.JSONFilter;
 import main.util.PermissionManager;
 import main.util.TextFilter;
 import main.view.Dashboard;
+import main.view.ParameterViewer;
 import main.view.PermissionEditor;
 import main.view.ProfileEditor;
-import main.view.ParameterViewer;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -296,7 +296,7 @@ public class ParameterController {
         @Override
         public void stateChanged(final ChangeEvent e) {
             Dashboard dashboard = parent.getDashboard();
-            int temperature = dashboard.getTemperatureInput();
+            double temperature = dashboard.getTemperatureInput();
             parent.getParameters().setExternalTemperature(temperature);
             dashboard.setExternalTemperature(String.valueOf(temperature));
         }
