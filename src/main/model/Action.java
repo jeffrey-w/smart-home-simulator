@@ -315,7 +315,7 @@ public enum Action {
         public String doAction(Manipulable manipulable, Parameters parameters, House house) {
             MultiValueManipulable multiValueManipulable = (MultiValueManipulable) manipulable;
             String room = (String) multiValueManipulable.getValue();
-            double temperature = (double) multiValueManipulable.getValueAt(0).getValue();
+            double temperature = (Double) multiValueManipulable.getValueAt(0).getValue();
             parameters.getTemperatureControlZone(room).overrideTempFor(room, temperature);
             house.getRoom(room).setHVAC(true);
             return room + " temperature has been set to " + temperature + ".";
