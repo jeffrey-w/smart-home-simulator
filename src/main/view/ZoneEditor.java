@@ -4,14 +4,17 @@ import main.view.viewtils.SpringUtilities;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ZoneEditor extends JFrame {
 
     final JTextField name = new JTextField();
-    final JSpinner tempOne = new JSpinner(ParameterEditor.TEMP_MODEL);
-    final JSpinner tempTwo = new JSpinner(ParameterEditor.TEMP_MODEL);
-    final JSpinner tempThree = new JSpinner(ParameterEditor.TEMP_MODEL);
+    final JSpinner tempOne = new JSpinner(ParameterEditor.tempModel());
+    final JSpinner tempTwo = new JSpinner(ParameterEditor.tempModel());
+    final JSpinner tempThree = new JSpinner(ParameterEditor.tempModel());
     final JCheckBox selectOne = new JCheckBox();
     final JCheckBox selectTwo = new JCheckBox();
     final JCheckBox selectThree = new JCheckBox();
@@ -120,4 +123,42 @@ public class ZoneEditor extends JFrame {
         });
     }
 
+    public void addActionCommand(ActionListener listener) {
+        ok.addActionListener(listener);
+    }
+
+    public String getZoneName() {
+        return name.getText();
+    }
+
+    public Double getTemp(int period) {
+        switch (period) {
+            case 0:
+                return (Double) tempOne.getValue();
+            case 1:
+                if (selectTwo.isSelected()) {
+                    return (Double) tempTwo.getValue();
+                }
+                return null;
+            case 2:
+                if (selectThree.isSelected()) {
+                    return (Double) tempThree.getValue();
+                }
+                return null;
+            default:
+                throw new IllegalArgumentException("Invalid period selection.");
+        }
+    }
+
+    public Collection<String> getRooms() {
+        Set<String> rooms = new HashSet<>();
+        for (int i = 0; i < in.getSize(); i++) {
+            rooms.add(in.getElementAt(i));
+        }
+        return rooms;
+    }
+
+    public void setZoneName(String id) {
+        name.setText(id);
+    }
 }
