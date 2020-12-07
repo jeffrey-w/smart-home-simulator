@@ -173,7 +173,7 @@ public class Controller {
         }
         if (parameters.isTemperatureOverridden(room) || r.isHVACon()) {
             double desired = parameters.getTemperatureControlZone(room).getDesiredTemperatureFor(room, getPeriod());
-            if (Double.compare(desired, parameters.getExternalTemperature()) == 0
+            if (r.getNumberOfWindowsOpen() > 0 || Double.compare(desired, parameters.getExternalTemperature()) == 0
                     || parameters.isTemperatureOverridden(room) && isWithinTolerance(r.getTemperature(), desired)) {
                 if (r.isHVACon()) {
                     r.setHVAC(false);
