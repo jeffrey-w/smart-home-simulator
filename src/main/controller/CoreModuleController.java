@@ -42,11 +42,13 @@ public class CoreModuleController extends AbstractModuleController {
                 if (action.equals(Action.TOGGLE_BLOCK_WINDOW)) {
                     parent.setMonitorWindows(true);
                 }
+
                 ItemChooser chooser = ItemChooser.of(getItemsForSelection());
                 chooser.addActionListener(f -> {
                     performActionOn(action, chooser.getSelectedItem());
                     chooser.dispose();
                 });
+
                 chooser.pack();
                 chooser.setLocationRelativeTo(parent.getDashboard());
                 chooser.setVisible(true);

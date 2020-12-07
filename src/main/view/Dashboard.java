@@ -213,12 +213,13 @@ public class Dashboard extends JFrame {
     public int[] getTimeInput() {
         Calendar calendar = new GregorianCalendar();
         calendar.setTime((Date) editor.time.getValue());
-        LocalTime time = LocalTime
-                .of(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND));
+        LocalTime time = LocalTime.of(
+            calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND)
+        );
         return new int[] {
-                time.getHour(),
-                time.getMinute(),
-                time.getSecond()
+            time.getHour(),
+            time.getMinute(),
+            time.getSecond()
         };
     }
 
@@ -413,21 +414,27 @@ public class Dashboard extends JFrame {
      */
     public void sendToConsole(String message, MessageType type, boolean newLine) {
         int len = console.getDocument().getLength();
+
         Color orig = console.getForeground();
         console.setEditable(true);
         console.setCaretPosition(len);
         console.setCharacterAttributes(attributesOf(type, orig), false);
         console.replaceSelection(message);
         console.setCharacterAttributes(attributesOf(MessageType.NORMAL, orig), false);
+
         if (newLine) {
             console.replaceSelection("\n> ");
         }
+
         Logger.info(message);
     }
 
     private static AttributeSet attributesOf(MessageType type, Color original) {
-        return StyleContext.getDefaultStyleContext().addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground,
-                MESSAGE_COLORS.getOrDefault(type, original));
+        return StyleContext.getDefaultStyleContext().addAttribute(
+            SimpleAttributeSet.EMPTY,
+            StyleConstants.Foreground,
+            MESSAGE_COLORS.getOrDefault(type, original)
+        );
     }
 
     /**

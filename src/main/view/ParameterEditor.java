@@ -27,22 +27,33 @@ public class ParameterEditor extends JPanel {
     private static final int FIELD_COLUMNS = 2;
     private static final int FIELD_Y_PADDING = 0x40;
 
-    private static final SpinnerNumberModel TEMP_MODEL =
-            new SpinnerNumberModel(Parameters.DEFAULT_TEMPERATURE, Parameters.MIN_TEMPERATURE,
-                    Parameters.MAX_TEMPERATURE, 1);
-    private static final SpinnerDateModel DATE_MODEL =
-            new SpinnerDateModel(Date.from(Instant.now()), null, null, Calendar.DAY_OF_YEAR);
-    private static final SpinnerNumberModel TIMEX_MODEL =
-            new SpinnerNumberModel(Parameters.DEFAULT_TIMEX, Parameters.MIN_TIMEX,
-                    Parameters.MAX_TIMEX, 1);
+    private static final SpinnerNumberModel TEMP_MODEL = new SpinnerNumberModel(
+        Parameters.DEFAULT_TEMPERATURE,
+        Parameters.MIN_TEMPERATURE,
+        Parameters.MAX_TEMPERATURE,
+        1
+    );
+    private static final SpinnerDateModel DATE_MODEL = new SpinnerDateModel(
+        Date.from(Instant.now()), null, null, Calendar.DAY_OF_YEAR
+    );
+    private static final SpinnerNumberModel TIMEX_MODEL = new SpinnerNumberModel(
+        Parameters.DEFAULT_TIMEX,
+        Parameters.MIN_TIMEX,
+        Parameters.MAX_TIMEX,
+1
+    );
 
     static JLabel labelFactory(String text) {
         return new JLabel(text + ":", SwingConstants.RIGHT);
     }
 
     static SpinnerNumberModel tempModel() {
-        return new SpinnerNumberModel(Parameters.DEFAULT_TEMPERATURE, Parameters.MIN_TEMPERATURE,
-                Parameters.MAX_TEMPERATURE, 1);
+        return new SpinnerNumberModel(
+            Parameters.DEFAULT_TEMPERATURE,
+            Parameters.MIN_TEMPERATURE,
+            Parameters.MAX_TEMPERATURE,
+    1
+        );
     }
 
     final JButton loadHouse = new JButton("Load House");
@@ -78,9 +89,10 @@ public class ParameterEditor extends JPanel {
         buttons.add(persistPermissions);
 
         // Set button panel display behavior
-        SpringUtilities
-                .makeGrid(buttons, BUTTON_ROWS, BUTTON_COLUMNS, BUTTON_OFFSET, BUTTON_OFFSET, BUTTON_X_PADDING,
-                        BUTTON_Y_PADDING);
+        SpringUtilities.makeGrid(
+            buttons, BUTTON_ROWS, BUTTON_COLUMNS, BUTTON_OFFSET, BUTTON_OFFSET,
+            BUTTON_X_PADDING, BUTTON_Y_PADDING
+        );
 
         // Add fields to field panel.
         fields.add(labelFactory("Permission"));

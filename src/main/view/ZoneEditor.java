@@ -9,35 +9,59 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ *
+ *
+ * @author Jeff Wilgus
+ */
 public class ZoneEditor extends JFrame {
 
     final JTextField name = new JTextField();
+
+    // Zones can be modified up to three times a day (3 periods/zone)
     final JSpinner tempOne = new JSpinner(ParameterEditor.tempModel());
     final JSpinner tempTwo = new JSpinner(ParameterEditor.tempModel());
     final JSpinner tempThree = new JSpinner(ParameterEditor.tempModel());
+
+    // Allows the user to check up to three periods per zone
     final JCheckBox selectOne = new JCheckBox();
     final JCheckBox selectTwo = new JCheckBox();
     final JCheckBox selectThree = new JCheckBox();
+
+    // List the house rooms (to be assigned to zones)
     final DefaultListModel<String> in = new DefaultListModel<>();
     final DefaultListModel<String> out = new DefaultListModel<>();
     final JList<String> inList = new JList<>(in);
     final JList<String> outList = new JList<>(out);
+
+    // Buttons for adding/removing rooms from zones and confirming the zone edits
     final JButton add = new JButton("<");
     final JButton remove = new JButton(">");
     final JButton ok = new JButton("Ok");
 
+    /**
+     * Constructs a {@code ZoneEditor}
+     *
+     * @param in
+     * @param out
+     * @param temps
+     */
     public ZoneEditor(Collection<String> in, Collection<String> out, Double[] temps) {
         super("Edit Zone");
         JPanel attributes = new JPanel(new SpringLayout());
         JPanel rooms = new JPanel(new GridLayout(1, 3));
         JPanel buttons = new JPanel();
+
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(512, 256)); // TODO
         setResizable(false);
+
         add(attributes, BorderLayout.NORTH);
         add(rooms);
         add(ok, BorderLayout.SOUTH);
+
+        // Temperature periods per zone
         attributes.add(new JLabel()); // Placeholder
         attributes.add(name);
         attributes.add(ParameterEditor.labelFactory("Name"));
@@ -51,11 +75,13 @@ public class ZoneEditor extends JFrame {
         attributes.add(selectThree);
         attributes.add(ParameterEditor.labelFactory("Period 3"));
         attributes.add(tempThree);
+
         buttons.add(add);
         buttons.add(remove);
         rooms.add(inList);
         rooms.add(buttons);
         rooms.add(outList);
+
         SpringUtilities.makeCompactGrid(attributes, 4, 3, 1, 1, 1, 1);
         populateModelWith(this.in, in);
         populateModelWith(this.out, out);
@@ -120,14 +146,26 @@ public class ZoneEditor extends JFrame {
         });
     }
 
+    /**
+     *
+     *
+     * @param listener
+     */
     public void addActionCommand(ActionListener listener) {
         ok.addActionListener(listener);
     }
 
+    /**
+     * @return The name of this {@code TemperatureControlZone}
+     */
     public String getZoneName() {
         return name.getText();
     }
 
+    /**
+     * @param period The specified period
+     * @return The {@code TemperatureControlZone} temperature depending on which period of day it is
+     */
     public Double getTemp(int period) {
         switch (period) {
             case 0:
@@ -147,6 +185,9 @@ public class ZoneEditor extends JFrame {
         }
     }
 
+    /**
+     * @return The {@code Room}s contained within a {@code TemperatureControlZone}
+     */
     public Collection<String> getRooms() {
         Set<String> rooms = new HashSet<>();
         for (int i = 0; i < in.getSize(); i++) {
@@ -155,6 +196,11 @@ public class ZoneEditor extends JFrame {
         return rooms;
     }
 
+    /**
+     * Sets the {@code TemperatureControlZone} to that specified
+     *
+     * @param id The {@code TemperatureControlZone} identifier
+     */
     public void setZoneName(String id) {
         name.setText(id);
     }

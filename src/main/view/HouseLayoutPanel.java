@@ -43,23 +43,23 @@ public class HouseLayoutPanel extends JPanel {
     private static final String NULL_HOUSE_MESSAGE = "No house loaded.";
 
     private static final String[] STATE_LEGEND = {
-            "Open Doors",
-            "Locked Doors",
-            "Lights On",
-            "Open Windows",
-            "Blocked Windows",
-            "HVAC On",
-            "People Present"
+        "Open Doors",
+        "Locked Doors",
+        "Lights On",
+        "Open Windows",
+        "Blocked Windows",
+        "HVAC On",
+        "People Present"
     };
 
     private static final Color[] STATE_COLORS = {
-            Color.BLUE,
-            Color.RED,
-            Color.YELLOW,
-            Color.GREEN,
-            Color.GRAY,
-            Color.MAGENTA,
-            Color.PINK
+        Color.BLUE,
+        Color.RED,
+        Color.YELLOW,
+        Color.GREEN,
+        Color.GRAY,
+        Color.MAGENTA,
+        Color.PINK
     };
 
     int x, y;
@@ -103,9 +103,10 @@ public class HouseLayoutPanel extends JPanel {
         if (!rooms.containsKey(location)) {
             throw new NoSuchElementException("That location does not exist");
         }
+
         RoomInfo info = rooms.get(location);
 
-        // set temperature string to be drawn on layout
+        // Set temperature string to be drawn on layout
         info.m_temperature = Math.round(room.getTemperature() * 100.0) / 100.0;
 
         for (int i = 0; i < NUMBER_OF_STATES; i++) {
@@ -152,10 +153,13 @@ public class HouseLayoutPanel extends JPanel {
             for (Map.Entry<String, RoomInfo> entry : rooms.entrySet()) {
                 int x = entry.getValue().coordinates.x, y = entry.getValue().coordinates.y;
                 int stateIndex = 0, stateOffset = OFFSET, legendOffset = OFFSET;
+
                 String location = entry.getKey();
                 g.drawRect(x, y, ROOM_DIM, ROOM_DIM);
-                g.drawString(location, x + (ROOM_DIM - g.getFontMetrics().stringWidth(location) >>> 1),
-                        y + (ROOM_DIM >>> 1));
+                g.drawString(location,
+                    x + (ROOM_DIM - g.getFontMetrics().stringWidth(location) >>> 1),
+                    y + (ROOM_DIM >>> 1)
+                );
 
                 if (showStates) {
                     Color color = g.getColor();
@@ -175,10 +179,12 @@ public class HouseLayoutPanel extends JPanel {
                     }
                     g.setColor(color);
 
-                    // draw the temperature on layout
+                    // Draw the temperature on layout
                     String temperature = entry.getValue().m_temperature + " °C";
-                    g.drawString(temperature , x + (ROOM_DIM - g.getFontMetrics().stringWidth(temperature) >>> 1),
-                            y + (ROOM_DIM >>> 1) + TEMP_OFFSET);
+                    g.drawString(temperature ,
+                        x + (ROOM_DIM - g.getFontMetrics().stringWidth(temperature) >>> 1),
+                        y + (ROOM_DIM >>> 1) + TEMP_OFFSET)
+                    ;
                 }
             }
         }

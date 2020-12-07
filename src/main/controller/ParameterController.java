@@ -53,10 +53,12 @@ public class ParameterController {
         public void actionPerformed(final ActionEvent e) {
             Dashboard dashboard = parent.getDashboard();
             House house;
+
             JFileChooser chooser = new JFileChooser();
             chooser.setFileFilter(JSON_FILTER);
             chooser.setAcceptAllFileFilterUsed(false);
             chooser.setCurrentDirectory(CURRENT_DIRECTORY);
+
             if (chooser.showOpenDialog(dashboard) == JFileChooser.APPROVE_OPTION) {
                 HouseReader reader = new HouseReader(chooser.getSelectedFile());
                 parent.setHouse(house = reader.readHouse());
@@ -95,36 +97,48 @@ public class ParameterController {
             switch (actionCommand) {
                 case "Add":
                 case "Edit": {
-                    ProfileEditor editor =
-                            new ProfileEditor(viewer.getSelectedValue(), parameters.getPermissions().values(),
-                                    house != null);
+                    ProfileEditor editor = new ProfileEditor(
+                        viewer.getSelectedValue(),
+                        parameters.getPermissions().values(),
+            house != null
+                    );
                     editor.setPermissions(parameters.permissionOf(editor.getRole()));
+
                     if (house != null) {
                         editor.addLocations(house.getLocations());
                         if (editor.getRole() != null && house.contains(editor.getRole())) {
                             editor.selectLocation(house.locationOf(editor.getRole()));
                         }
                     }
+
                     editor.addActionListener(f -> {
                         String name = editor.getRole();
                         Permission permission = editor.getSelectedPermission();
                         String location = editor.getSelectedLocation();
+
                         try {
                             parameters.addActor(name, permission);
                             if (location != null && house != null) {
                                 house.addPerson(name, permission, location);
-                                parent.sendToConsole(name + " has entered the " + location + ".",
-                                        Dashboard.MessageType.NORMAL);
+                                parent.sendToConsole(
+                            name + " has entered the " + location + ".",
+                                    Dashboard.MessageType.NORMAL
+                                );
                                 parent.getCoreModuleController().toggleAutoLight();
                                 parent.redrawHouse();
+
                                 if (parameters.isOn() && parameters.isAwayMode()) {
                                     parent.getSecurityModuleController().startAwayModeCountdown();
                                 }
                             } else {
                                 if (house != null && house.removePerson(name)) {
-                                    parent.sendToConsole(name + " has exited the house.", Dashboard.MessageType.NORMAL);
+                                    parent.sendToConsole(
+                                name + " has exited the house.",
+                                        Dashboard.MessageType.NORMAL
+                                    );
                                 }
                             }
+
                             if (!viewer.containsParameter(name)) {
                                 viewer.addParameter(name);
                             }
@@ -133,6 +147,7 @@ public class ParameterController {
                             parent.sendToConsole(exception.getMessage(), Dashboard.MessageType.ERROR);
                         }
                     });
+
                     editor.pack();
                     editor.setLocationRelativeTo(viewer);
                     editor.setVisible(true);
@@ -142,8 +157,10 @@ public class ParameterController {
                     parameters.removeActor(viewer.getSelectedValue());
                     if (house != null) {
                         house.removePerson(viewer.getSelectedValue());
-                        parent.sendToConsole(viewer.getSelectedValue() + " has exited the house.",
-                                Dashboard.MessageType.NORMAL);
+                        parent.sendToConsole(
+                    viewer.getSelectedValue() + " has exited the house.",
+                            Dashboard.MessageType.NORMAL
+                        );
                         parent.getCoreModuleController().toggleAutoLight();
                         parent.redrawHouse();
                     }
@@ -169,6 +186,7 @@ public class ParameterController {
                     JFileChooser chooser = new JFileChooser();
                     chooser.setFileFilter(TEXT_FILTER);
                     chooser.setCurrentDirectory(new File("."));
+
                     if (chooser.showOpenDialog(dashboard) == JFileChooser.APPROVE_OPTION) {
                         try {
                             parameters.setPermissions(PermissionManager.loadPermissions(chooser.getSelectedFile()));
@@ -196,6 +214,7 @@ public class ParameterController {
                             parent.sendToConsole(exception.getMessage(), Dashboard.MessageType.ERROR);
                         }
                     }
+
                     dashboard.togglePermissionButton();
                     break;
                 }
@@ -217,6 +236,7 @@ public class ParameterController {
             String location = parameters.getLocation();
             parameters.setPermission(permission);
             dashboard.setPermission(permission.toString());
+
             if (house != null && location != null) {
                 try {
                     house.addPerson("user", permission, location);
@@ -239,6 +259,7 @@ public class ParameterController {
             PermissionEditor editor = new PermissionEditor(parameters);
             editor.addTableModelListener(f -> {
                 DefaultTableModel table = (DefaultTableModel) f.getSource();
+
                 for (int i = 0; i < table.getRowCount(); i++) {
                     Action action = (Action) table.getValueAt(i, 0);
 
@@ -252,6 +273,7 @@ public class ParameterController {
                         }
                     }
                 }
+
                 if (dashboard.canLoadPermissions()) {
                     dashboard.togglePermissionButton();
                 }
@@ -273,6 +295,7 @@ public class ParameterController {
             String location = dashboard.getLocationInput();
             parameters.setLocation(location);
             dashboard.setLocation(location);
+
             try {
                 parent.getHouse().addPerson("user", parameters.getPermission(), location);
                 parent.sendToConsole("You have entered the " + location + ".", Dashboard.MessageType.NORMAL);
@@ -285,6 +308,7 @@ public class ParameterController {
                 exception.printStackTrace();
                 parent.sendToConsole(exception.getMessage(), Dashboard.MessageType.ERROR);
             }
+
             parent.getCoreModuleController().toggleAutoLight();
             parent.redrawHouse();
         }

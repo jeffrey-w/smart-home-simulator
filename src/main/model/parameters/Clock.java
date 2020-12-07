@@ -27,12 +27,15 @@ public class Clock {
     public Clock() {
         LocalTime now = LocalTime.now();
         Timer timer;
+
         clockTime = new int[NUM_FIELDS];
         referenceTime = now.getHour() * SECONDS_PER_HOUR + now.getMinute() * SECONDS_PER_MINUTE + now.getSecond();
         multiplier = 1;
+
         timer = new Timer(SECONDS_PER_MILLISECOND, e -> {
             referenceTime = referenceTime + multiplier; // increment clock
             clockTime[HOURS] = (int) referenceTime / SECONDS_PER_HOUR;
+
             if (clockTime[HOURS] < HOURS_PER_DAY) {
                 clockTime[MINUTES] = ((int) referenceTime % SECONDS_PER_HOUR) / SECONDS_PER_MINUTE;
                 clockTime[SECONDS] = (int) (referenceTime % SECONDS_PER_MINUTE);

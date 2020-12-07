@@ -225,9 +225,11 @@ public enum Action {
             MultiValueManipulable multiValueManipulable = (MultiValueManipulable) manipulable;
             @SuppressWarnings("unchecked") // We catch ClassCastExceptions upstream
             Set<String> locations = (Set<String>) multiValueManipulable.getValue();
+
             for (String location : house.getLocations()) {
                 house.getRoom(location).setAwayLight(locations.contains(location));
             }
+
             parameters.setAwayLightStart((LocalTime) multiValueManipulable.getValueAt(0).getValue());
             parameters.setAwayLightEnd((LocalTime) multiValueManipulable.getValueAt(1).getValue());
             return "Away light interval updated";
@@ -255,6 +257,7 @@ public enum Action {
             @SuppressWarnings("unchecked")
             ValueManipulable<Integer> valueManipulable = (ValueManipulable<Integer>) manipulable;
             parameters.setAwayDelay(valueManipulable.getValue() * Clock.SECONDS_PER_MILLISECOND);
+
             return "Away mode delay set for " + valueManipulable.getValue() + " seconds.";
         }
 
@@ -279,18 +282,22 @@ public enum Action {
         public String doAction(Manipulable manipulable, Parameters parameters, House house) {
             int index = 0;
             StringBuilder builder = new StringBuilder("Temperatures\n");
+
             for (String location : house.getLocations()) {
                 Room room = house.getRoom(location);
                 builder.append(location);
                 builder.append(": ");
                 builder.append(String.format("%.2f", room.getTemperature()));
+
                 if (parameters.isTemperatureOverridden(location)) {
                     builder.append(" [Overridden]");
                 }
+
                 if (++index < house.getSize()) {
                     builder.append('\n');
                 }
             }
+
             return builder.toString();
         }
 
@@ -316,8 +323,10 @@ public enum Action {
             MultiValueManipulable multiValueManipulable = (MultiValueManipulable) manipulable;
             String room = (String) multiValueManipulable.getValue();
             double temperature = (Double) multiValueManipulable.getValueAt(0).getValue();
+
             parameters.getTemperatureControlZone(room).overrideTempFor(room, temperature);
             house.getRoom(room).setHVAC(true);
+
             return room + " temperature has been set to " + temperature + ".";
         }
 
@@ -342,6 +351,7 @@ public enum Action {
         @Override
         public String doAction(Manipulable manipulable, Parameters parameters, House house) {
             MultiValueManipulable multiValueManipulable = (MultiValueManipulable) manipulable;
+
             if (multiValueManipulable.getValue() == null) {
                 parameters.removeZone((String) multiValueManipulable.getValueAt(0).getValue());
             } else {
@@ -352,6 +362,7 @@ public enum Action {
                 @SuppressWarnings("unchecked")
                 Collection<String> rooms = (Collection<String>) multiValueManipulable.getValueAt(3).getValue();
                 TemperatureControlZone zone;
+
                 try {
                     zone = parameters.addZone(id);
                 } catch (IllegalArgumentException e) {
@@ -361,13 +372,16 @@ public enum Action {
                         throw e;
                     }
                 }
+
                 zone.setPeriodTemp(0, tempOne);
+
                 if (tempTwo != null) {
                     zone.setPeriodTemp(1, tempTwo);
                 }
                 if (tempThree != null) {
                     zone.setPeriodTemp(2, tempThree);
                 }
+
                 for (String room : zone.getRooms()) {
                     zone.removeRoom(room);
                 }
@@ -398,10 +412,12 @@ public enum Action {
         @Override
         public String doAction(Manipulable manipulable, Parameters parameters, House house) {
             MultiValueManipulable multiValueManipulable = (MultiValueManipulable) manipulable;
+
             double defSummerTempZone = (Double) multiValueManipulable.getValue();
             double defWinterTempZone = (Double) multiValueManipulable.getValueAt(0).getValue();
             parameters.setDefaultWinterTemperature(defWinterTempZone);
             parameters.setDefaultSummerTemperature(defSummerTempZone);
+
             return "Default temperature has been set to " + defWinterTempZone + " for winter and " + defSummerTempZone
                     + " for summer.";
         }
@@ -413,10 +429,10 @@ public enum Action {
     };
 
     static final String[] PERMISSIONS = new String[] {
-            "Parent",
-            "Child",
-            "Guest",
-            "Stranger"
+        "Parent",
+        "Child",
+        "Guest",
+        "Stranger"
     };
 
     /**
@@ -424,9 +440,11 @@ public enum Action {
      */
     public boolean[] isPermissibleBy(Parameters parameters) {
         boolean[] isPermissible = new boolean[PERMISSIONS.length];
+
         for (int i = 0; i < isPermissible.length; i++) {
             isPermissible[i] = parameters.getPermissions().get(PERMISSIONS[i]).allowed().contains(this);
         }
+
         return isPermissible;
     }
 

@@ -99,8 +99,8 @@ public class House implements Iterable<Room> {
             for (String adjacentTwo : two.adjacents) {
                 if (adjacentOne.equals(adjacentTwo)) {
                     throw new IllegalArgumentException(
-                            "Rooms that are already connected through another room, cannot be connected to each other"
-                                    + ".");
+                        "Rooms that are already connected through another room, cannot be connected to each other."
+                    );
                 }
             }
         }
@@ -120,6 +120,7 @@ public class House implements Iterable<Room> {
      */
     public void addPerson(String name, Permission permission, String location) {
         String previousLocation = people.put(validateName(name), location);
+
         if (previousLocation != null) {
             if (previousLocation.equals(EXTERIOR_NAME)) {
                 Yard.getInstance().removePerson(name);
@@ -127,6 +128,7 @@ public class House implements Iterable<Room> {
                 rooms.get(previousLocation).room.removePerson(name);
             }
         }
+
         if (location != null && location.equals(EXTERIOR_NAME)) {
             Yard.getInstance().addPerson(name, permission);
         } else {
@@ -308,18 +310,23 @@ public class House implements Iterable<Room> {
         if (root == null) {
             throw new IllegalStateException("You must specify a root location.");
         }
+
         Deque<String> stack = new ArrayDeque<>();
         for (Node node : rooms.values()) {
             node.visited = false;
         }
+
         stack.push(root);
+
         while (!stack.isEmpty()) {
             String current = stack.pop();
             Node node = validateLocation(current);
+            
             if (!node.visited) {
                 action.accept(current, node.room);
                 node.visited = true;
             }
+
             for (String adjacent : node.adjacents) {
                 if (!rooms.get(adjacent).visited) {
                     stack.push(adjacent);

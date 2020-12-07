@@ -18,35 +18,35 @@ public final class Module {
      * Core functionality for a smart home simulator.
      */
     public static final Module SHC = (new ModuleBuilder())
-            .addCommandFor("Doors", Action.TOGGLE_DOOR)
-            .addCommandFor("Doors", Action.TOGGLE_LOCK_DOOR)
-            .addCommandFor("Lights", Action.TOGGLE_LIGHT)
-            .addCommandFor("Lights", Action.TOGGLE_AUTO_LIGHT)
-            .addCommandFor("Windows", Action.TOGGLE_WINDOW)
-            .addCommandFor("Windows", Action.TOGGLE_BLOCK_WINDOW)
-            .addName("SHC")
-            .build();
+        .addCommandFor("Doors", Action.TOGGLE_DOOR)
+        .addCommandFor("Doors", Action.TOGGLE_LOCK_DOOR)
+        .addCommandFor("Lights", Action.TOGGLE_LIGHT)
+        .addCommandFor("Lights", Action.TOGGLE_AUTO_LIGHT)
+        .addCommandFor("Windows", Action.TOGGLE_WINDOW)
+        .addCommandFor("Windows", Action.TOGGLE_BLOCK_WINDOW)
+        .addName("SHC")
+        .build();
 
     /**
      * Functionality related to security.
      */
     public static final Module SHP = (new ModuleBuilder())
-            .addCommandFor("Away Mode", Action.SET_AWAY_MODE)
-            .addCommandFor("Away Mode", Action.SET_AWAY_MODE_DELAY)
-            .addCommandFor("Away Mode", Action.SET_AWAY_MODE_LIGHTS)
-            .addName("SHP")
-            .build();
+        .addCommandFor("Away Mode", Action.SET_AWAY_MODE)
+        .addCommandFor("Away Mode", Action.SET_AWAY_MODE_DELAY)
+        .addCommandFor("Away Mode", Action.SET_AWAY_MODE_LIGHTS)
+        .addName("SHP")
+        .build();
 
     /**
      * Functionality related to heating.
      */
     public static final Module SHH = (new ModuleBuilder())
-            .addCommandFor("Zones", Action.MANAGE_TEMPERATURE_CONTROL_ZONES)
-            .addCommandFor("Temperature", Action.READ_TEMPERATURES)
-            .addCommandFor("Temperature", Action.CHANGE_TEMPERATURE)
-            .addCommandFor("Temperature", Action.SET_DEFAULT_TEMPERATURE)
-            .addName("SHH")
-            .build();
+        .addCommandFor("Zones", Action.MANAGE_TEMPERATURE_CONTROL_ZONES)
+        .addCommandFor("Temperature", Action.READ_TEMPERATURES)
+        .addCommandFor("Temperature", Action.CHANGE_TEMPERATURE)
+        .addCommandFor("Temperature", Action.SET_DEFAULT_TEMPERATURE)
+        .addName("SHH")
+        .build();
 
     private final String name;
     private final Map<String, Set<Action>> commands;

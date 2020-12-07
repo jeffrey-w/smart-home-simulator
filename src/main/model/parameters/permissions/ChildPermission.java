@@ -17,7 +17,8 @@ public class ChildPermission extends AbstractPermission {
 
     // Filter the array containing all Actions on the Action.isChildPermissible predicate.
     private static final Set<Action> ALLOWED = EnumSet.copyOf(
-            Arrays.stream(Action.values()).filter(Action::isChildPermissible).collect(Collectors.toSet()));
+        Arrays.stream(Action.values()).filter(Action::isChildPermissible).collect(Collectors.toSet())
+    );
 
     @Override
     public Set<Action> allowed() {

@@ -90,12 +90,15 @@ public class AwayLightChooser extends JFrame {
         super("Away Light Control");
         JPanel staticFields = new JPanel(new GridLayout(CELLS, 1));
         JPanel timeSpinners = new JPanel(new GridLayout(1, CELLS));
+
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(DIM, DIM));
         setResizable(false);
+
         startSpinner.setEditor(new JSpinner.DateEditor(startSpinner, "HH:mm"));
         endSpinner.setEditor(new JSpinner.DateEditor(endSpinner, "HH:mm"));
+
         timeSpinners.add(startSpinner);
         timeSpinners.add(endSpinner);
         staticFields.add(timeSpinners);

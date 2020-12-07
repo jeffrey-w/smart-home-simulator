@@ -30,7 +30,9 @@ public class PermissionEditor extends JFrame {
     final JTable table;
 
     /**
-     * Constructs a new {@code PermissionEditor} object.
+     * Constructs a new {@code PermissionEditor} object with the specified {@code Parameters}.
+     *
+     * @param parameters The specified parameters
      */
     public PermissionEditor(Parameters parameters) {
         super("Edit Permissions");

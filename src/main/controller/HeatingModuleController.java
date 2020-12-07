@@ -19,6 +19,7 @@ import java.util.Set;
  * zone so that all temperatures of that room are uniform.
  *
  * @author Émilie Martin
+ * @author Jeff Wilgus
  */
 public class HeatingModuleController extends AbstractModuleController {
 
@@ -42,9 +43,13 @@ public class HeatingModuleController extends AbstractModuleController {
                 case CHANGE_TEMPERATURE: {
                     MultiValueManipulable manipulable = new MultiValueManipulable(parent.getParameters().getLocation());
                     try {
-                        manipulable.addValue(Double.parseDouble(JOptionPane
-                                .showInputDialog(parent.getDashboard(), "Enter a temperature.", "Change Temperature",
-                                        JOptionPane.PLAIN_MESSAGE)));
+                        manipulable.addValue(
+                            Double.parseDouble(JOptionPane.showInputDialog(
+                                parent.getDashboard(),
+                        "Enter a temperature.",
+                            "Change Temperature",
+                                JOptionPane.PLAIN_MESSAGE)
+                        ));
                     } catch (NumberFormatException e) {
                         parent.sendToConsole("Please enter a number.", Dashboard.MessageType.ERROR);
                         return;
@@ -57,43 +62,52 @@ public class HeatingModuleController extends AbstractModuleController {
                     break;
                 case MANAGE_TEMPERATURE_CONTROL_ZONES:
                     if (parent.getParameters().isOn()) {
-                        parent.sendToConsole("You cannot manipulate heating zones while the simulation is on.",
-                                Dashboard.MessageType.ERROR);
+                        parent.sendToConsole(
+                            "You cannot manipulate heating zones while the simulation is on.",
+                            Dashboard.MessageType.ERROR
+                        );
                         return;
                     }
                     ParameterViewer viewer = new ParameterViewer("Temperature Control Zones");
+
                     for (String zone : parent.getParameters().getZones()) {
                         viewer.addParameter(zone);
                     }
+
                     viewer.addActionListener(e -> {
                         Collection<String> in = null, out = unzonedRooms();
                         switch (e.getActionCommand()) {
                             case "Add":
                                 if (out.isEmpty()) {
-                                    parent.sendToConsole("You have already zoned every room.",
-                                            Dashboard.MessageType.ERROR);
+                                    parent.sendToConsole(
+                                        "You have already zoned every room.",
+                                        Dashboard.MessageType.ERROR
+                                    );
                                     return;
                                 }
                             case "Edit":
                                 String id = viewer.getSelectedValue();
                                 Double[] temps = {null, null, null};
+
                                 if (id != null) {
                                     in = parent.getParameters().getZone(id).getRooms();
                                     temps = parent.getParameters().getZone(id).getDesiredTemperatures();
                                 }
+
                                 ZoneEditor zoneEditor = new ZoneEditor(in, out, temps);
                                 zoneEditor.setZoneName(id);
                                 zoneEditor.addActionCommand(f -> {
-                                    MultiValueManipulable manipulable =
-                                            new MultiValueManipulable(zoneEditor.getZoneName());
+                                    MultiValueManipulable manipulable = new MultiValueManipulable(zoneEditor.getZoneName());
                                     manipulable.addValue(zoneEditor.getTemp(0));
                                     manipulable.addValue(zoneEditor.getTemp(1));
                                     manipulable.addValue(zoneEditor.getTemp(2)); // TODO avoid magic constants
                                     manipulable.addValue(zoneEditor.getRooms());
                                     performActionOn(Action.MANAGE_TEMPERATURE_CONTROL_ZONES, manipulable);
+
                                     if (e.getActionCommand().equals(("Add"))) {
                                         viewer.addParameter(zoneEditor.getZoneName());
                                     }
+
                                     zoneEditor.dispose();
                                 });
                                 zoneEditor.pack();
@@ -108,18 +122,21 @@ public class HeatingModuleController extends AbstractModuleController {
                                 break;
                         }
                     });
+
                     viewer.pack();
                     viewer.setLocationRelativeTo(parent.getDashboard());
                     viewer.setVisible(true);
                     break;
                 case SET_DEFAULT_TEMPERATURE: {
                     TemperaturePicker picker = new TemperaturePicker();
+
                     picker.addActionListener(e -> {
                         MultiValueManipulable manipulable = new MultiValueManipulable(picker.getSummerTemperature());
                         manipulable.addValue(picker.getWinterTemperature());
                         performActionOn(Action.SET_DEFAULT_TEMPERATURE, manipulable);
                         picker.dispose();
                     });
+
                     picker.pack();
                     picker.setLocationRelativeTo(parent.getDashboard());
                     picker.setVisible(true);
