@@ -59,21 +59,22 @@ public class Dashboard extends JFrame {
     static final int CONTENT_PANE_WIDTH = WINDOW_WIDTH - PARAMETER_PANE_WIDTH;
     static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd");
 
+    // Action color-coded legend
     private static final EnumMap<MessageType, Color> MESSAGE_COLORS = new EnumMap<>(MessageType.class);
-
     static {
-        MESSAGE_COLORS.put(MessageType.WARNING, Color.YELLOW);
+        MESSAGE_COLORS.put(MessageType.WARNING, Color.MAGENTA);
         MESSAGE_COLORS.put(MessageType.ERROR, Color.RED);
     }
 
     private int inputLoc;
 
+    // Dashboard panels
     final ParameterPanel parameters = new ParameterPanel();
     final ParameterEditor editor = new ParameterEditor();
     final ActionPanel actions = new ActionPanel();
     final HouseLayoutPanel layout = new HouseLayoutPanel();
     final JTextPane console = new JTextPane();
-    final ProfileViewer profileViewer = new ProfileViewer();
+    final ParameterViewer profileViewer = new ParameterViewer("Edit Profiles");
 
     /**
      * Creates the dashboard, which is to contain the {@code ParameterPanel}, a console, the {@code HouseLayout}. This
@@ -145,13 +146,13 @@ public class Dashboard extends JFrame {
     }
 
     /**
-     * Sets the {@code temperature} level displayed to the user to that specified.
+     * Sets the external {@code temperature} (outside the simulated house) level displayed to the user to that specified.
      *
      * @param temperature The specified temperature
      * @throws NullPointerException If the specified {@code temperature} is {@code null}
      */
-    public void setTemperature(String temperature) {
-        parameters.setTemperature(temperature);
+    public void setExternalTemperature(String temperature) {
+        parameters.setExternalTemperature(temperature);
     }
 
     /**
@@ -191,8 +192,8 @@ public class Dashboard extends JFrame {
     /**
      * @return The temperature the user has selected for the outside of their simulated {@code House}
      */
-    public Integer getTemperatureInput() {
-        return (Integer) editor.temperature.getValue();
+    public Double getTemperatureInput() {
+        return (Double) editor.temperature.getValue();
     }
 
     /**
@@ -212,19 +213,20 @@ public class Dashboard extends JFrame {
     public int[] getTimeInput() {
         Calendar calendar = new GregorianCalendar();
         calendar.setTime((Date) editor.time.getValue());
-        LocalTime time = LocalTime
-                .of(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND));
+        LocalTime time = LocalTime.of(
+            calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND)
+        );
         return new int[] {
-                time.getHour(),
-                time.getMinute(),
-                time.getSecond()
+            time.getHour(),
+            time.getMinute(),
+            time.getSecond()
         };
     }
 
     /**
      * @return The {@code ProfileViewer} for this {@code Dashboard}
      */
-    public ProfileViewer getProfileViewer() {
+    public ParameterViewer getProfileViewer() {
         return profileViewer;
     }
 
@@ -261,7 +263,7 @@ public class Dashboard extends JFrame {
      * @param listener The specified event handler
      */
     public void addManageProfilesListener(ActionListener listener) {
-        profileViewer.addManageProfileListener(listener);
+        profileViewer.addActionListener(listener);
     }
 
     /**
@@ -412,21 +414,27 @@ public class Dashboard extends JFrame {
      */
     public void sendToConsole(String message, MessageType type, boolean newLine) {
         int len = console.getDocument().getLength();
+
         Color orig = console.getForeground();
         console.setEditable(true);
         console.setCaretPosition(len);
         console.setCharacterAttributes(attributesOf(type, orig), false);
         console.replaceSelection(message);
         console.setCharacterAttributes(attributesOf(MessageType.NORMAL, orig), false);
+
         if (newLine) {
             console.replaceSelection("\n> ");
         }
+
         Logger.info(message);
     }
 
     private static AttributeSet attributesOf(MessageType type, Color original) {
-        return StyleContext.getDefaultStyleContext().addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground,
-                MESSAGE_COLORS.getOrDefault(type, original));
+        return StyleContext.getDefaultStyleContext().addAttribute(
+            SimpleAttributeSet.EMPTY,
+            StyleConstants.Foreground,
+            MESSAGE_COLORS.getOrDefault(type, original)
+        );
     }
 
     /**

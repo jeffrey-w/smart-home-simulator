@@ -18,7 +18,7 @@ import java.awt.*;
  */
 public class PermissionEditor extends JFrame {
     private static final int DIM_X = 0x400;
-    private static final int DIM_Y = 0x100;
+    private static final int DIM_Y = 0x200;
 
     private static final String[] COLUMN_NAMES = {"Action", "Parent", "Child", "Guest", "Stranger"};
 
@@ -30,7 +30,9 @@ public class PermissionEditor extends JFrame {
     final JTable table;
 
     /**
-     * Constructs a new {@code PermissionEditor} object.
+     * Constructs a new {@code PermissionEditor} object with the specified {@code Parameters}.
+     *
+     * @param parameters The specified parameters
      */
     public PermissionEditor(Parameters parameters) {
         super("Edit Permissions");

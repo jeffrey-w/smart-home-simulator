@@ -19,7 +19,7 @@ public class ParameterPanel extends JPanel {
     final JToggleButton on = new JToggleButton("On");
     final JLabel permission = new JLabel();
     final JLabel location = new JLabel();
-    final JLabel temperature = new JLabel();
+    final JLabel externalTemperature = new JLabel();
     final JLabel date = new JLabel();
     final JLabel time = new JLabel();
 
@@ -35,7 +35,7 @@ public class ParameterPanel extends JPanel {
         add(avatar = new Avatar(null));
         add(permission);
         add(location);
-        add(temperature);
+        add(externalTemperature);
         add(date);
         add(time);
 
@@ -66,13 +66,13 @@ public class ParameterPanel extends JPanel {
     }
 
     /**
-     * Setter that allows the user to change the temperature
+     * Setter that allows the user to change the external temperature of the simulation.
      *
      * @param temperature The new temperature
      * @throws NullPointerException If the specified {@code temperature} is {@code null}
      */
-    void setTemperature(String temperature) {
-        this.temperature.setText("Temperature: " + Objects.requireNonNull(temperature) + " C");
+    void setExternalTemperature(String temperature) {
+        this.externalTemperature.setText("Temperature: " + Objects.requireNonNull(temperature) + " C");
     }
 
     /**

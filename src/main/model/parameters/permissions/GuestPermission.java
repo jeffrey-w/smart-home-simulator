@@ -17,7 +17,8 @@ public class GuestPermission extends AbstractPermission {
 
     // Filter the set of all Actions on the Action.isGuestPermissible predicate.
     private static final Set<Action> ALLOWED = EnumSet.copyOf(
-            Arrays.stream(Action.values()).filter(Action::isGuestPermissible).collect(Collectors.toSet()));
+        Arrays.stream(Action.values()).filter(Action::isGuestPermissible).collect(Collectors.toSet())
+    );
 
     @Override
     public Set<Action> allowed() {

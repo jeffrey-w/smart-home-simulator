@@ -62,7 +62,7 @@ public class AwayLightChooser extends JFrame {
      * @return The selected start time for away light mode
      */
     public LocalTime getStart() {
-        Calendar calendar = new GregorianCalendar();
+        Calendar calendar = Calendar.getInstance();
         calendar.setTime((Date) startSpinner.getModel().getValue());
         return LocalTime.of(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
     }
@@ -71,7 +71,7 @@ public class AwayLightChooser extends JFrame {
      * @return The selected end time for away light mode
      */
     public LocalTime getEnd() {
-        Calendar calendar = new GregorianCalendar();
+        Calendar calendar = Calendar.getInstance();
         calendar.setTime((Date) endSpinner.getModel().getValue());
         return LocalTime.of(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
     }
@@ -90,12 +90,15 @@ public class AwayLightChooser extends JFrame {
         super("Away Light Control");
         JPanel staticFields = new JPanel(new GridLayout(CELLS, 1));
         JPanel timeSpinners = new JPanel(new GridLayout(1, CELLS));
+
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(DIM, DIM));
         setResizable(false);
+
         startSpinner.setEditor(new JSpinner.DateEditor(startSpinner, "HH:mm"));
         endSpinner.setEditor(new JSpinner.DateEditor(endSpinner, "HH:mm"));
+
         timeSpinners.add(startSpinner);
         timeSpinners.add(endSpinner);
         staticFields.add(timeSpinners);

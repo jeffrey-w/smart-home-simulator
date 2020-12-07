@@ -39,10 +39,12 @@ public class ItemChooser extends JFrame {
 
     private ItemChooser() {
         super("Item Selection");
+
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(DIM, DIM));
         setResizable(false);
+
         add(list);
         add(ok, BorderLayout.SOUTH);
     }

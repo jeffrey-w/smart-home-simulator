@@ -2,6 +2,7 @@ package main.model.parameters;
 
 import main.model.Manipulable;
 import main.model.elements.Room;
+import main.model.elements.TemperatureControlZone;
 import main.model.parameters.permissions.*;
 
 import java.time.Instant;
@@ -25,9 +26,11 @@ public class Parameters {
     /**
      * The temperature the application is initialized to upon start up.
      */
-    public static final int DEFAULT_TEMPERATURE = 15;
-    public static final int MIN_TEMPERATURE = -100;
-    public static final int MAX_TEMPERATURE = 100;
+    public static final double DEFAULT_TEMPERATURE = 15;
+    public static final double MIN_TEMPERATURE = -100;
+    public static final double MAX_TEMPERATURE = 100;
+    public static final double DEFAULT_WINTER_TEMPERATURE = 25;
+    public static final double DEFAULT_SUMMER_TEMPERATURE = 15;
 
     /**
      * The default values for away light beginning and end.
@@ -41,12 +44,15 @@ public class Parameters {
     private final Map<String, Permission> actors;
     private String location;
     private Date date;
-    private int temperature;
+    private double externalTemperature;
+    private double defWinterTemp;
+    private double defSummerTemp;
     private boolean on;
     private boolean autoLight;
     private final AwayMode awayMode;
     private Map<String, Permission> permissions;
     private final Clock clock = new Clock();
+    private final Map<String, TemperatureControlZone> zones;
 
     /**
      * Constructs a new {@code Parameters} object.
@@ -56,10 +62,13 @@ public class Parameters {
         actors = new HashMap<>();
         location = null;
         date = Date.from(Instant.now());
-        temperature = DEFAULT_TEMPERATURE;
+        externalTemperature = DEFAULT_TEMPERATURE;
+        defWinterTemp = DEFAULT_WINTER_TEMPERATURE;
+        defSummerTemp = DEFAULT_SUMMER_TEMPERATURE;
         on = false;
         awayMode = new AwayMode();
         permissions = new HashMap<>();
+        zones = new HashMap<>();
         fillPermissionMap();
     }
 
@@ -133,10 +142,10 @@ public class Parameters {
     }
 
     /**
-     * @return The current temperature set by the user
+     * @return The current external temperature (everything outside the {@code House} set by the user
      */
-    public int getTemperature() {
-        return temperature;
+    public double getExternalTemperature() {
+        return externalTemperature;
     }
 
     /**
@@ -177,17 +186,17 @@ public class Parameters {
     }
 
     /**
-     * Sets the current {@code temperature} of the simulation to that specified.
+     * Sets the current {@code externalTemperature} of the simulation to that specified.
      *
-     * @param temperature The specified temperature
+     * @param temperature The newly specified external temperature
      * @throws IllegalArgumentException If the specified {@code temperature} is above {@value #MAX_TEMPERATURE} or below
      * {@value #MIN_TEMPERATURE}
      */
-    public void setTemperature(int temperature) {
+    public void setExternalTemperature(double temperature) {
         if (temperature < MIN_TEMPERATURE || temperature > MAX_TEMPERATURE) {
             throw new IllegalArgumentException("You've specified an invalid temperature.");
         }
-        this.temperature = temperature;
+        this.externalTemperature = temperature;
     }
 
     /**
@@ -341,5 +350,116 @@ public class Parameters {
         awayMode.setAwayLightEnd(end);
     }
 
-}
+    /**
+     * Adds a {@code TemperatureControlZone}
+     *
+     * @param id The {@code TemperatureControlZone} identifier
+     * @return The newly added {@code TemperatureControlZone}
+     * @throws IllegalArgumentException If the specified {@code id} is not a non-empty string of word characters (i.e.
+     * [a-z, A-Z, 0-9, _]) and whitespace, or if another {@code TemperatureControlZone} by that name already exists
+     * @throws NullPointerException If the specified {@code id} is {@code} null
+     */
+    public TemperatureControlZone addZone(String id) {
+        if (zones.containsKey(validateName(id))) {
+            throw new IllegalArgumentException("A zone with that name already exists.");
+        }
+        TemperatureControlZone zone = new TemperatureControlZone();
+        zones.putIfAbsent(validateName(id), zone);
+        return zone;
+    }
 
+    /**
+     * Removes a @code TemperatureControlZone}
+     *
+     * @param id The {@code TemperatureControlZone} identifier
+     */
+    public void removeZone(String id) {
+        zones.remove(id);
+    }
+
+    /**
+     * @param room The inquired {@code room}
+     * @return The {@code TemperatureControlZone} that contains the given {@code room}
+     */
+    public TemperatureControlZone getTemperatureControlZone(String room) {
+        for (TemperatureControlZone zone : zones.values()) {
+            if (zone.getRooms().contains(room)) {
+                return zone;
+            }
+        }
+        throw new NoSuchElementException();
+    }
+
+    /**
+     * Determines whether or not the specified {@code location} has had its desired temperature explicitly set instead
+     * of relying on the one specified by the {@code TemperatureControlZone} it is in.
+     *
+     * @param location The specified location
+     * @return {@code true} if the specified {@code location} has had its temperature overridden
+     */
+    public boolean isTemperatureOverridden(String location) {
+        try {
+            return getTemperatureControlZone(location).isOverridden(location);
+        } catch (NoSuchElementException e) {
+            return false;
+        }
+    }
+
+    /**
+     * @return The default {@code Home} temperature during winter
+     */
+    public double getDefaultWinterTemperature() {
+        return defWinterTemp;
+    }
+
+    /**
+     * @return The default {@code Home} temperature during summer
+     */
+    public double getDefaultSummerTemperature() {
+        return defSummerTemp;
+    }
+
+    /**
+     * Sets the default {@code Home} temperature during winter to the specified value.
+     *
+     * @param temp The specified value
+     */
+    public void setDefaultWinterTemperature(double temp) {
+        defWinterTemp = temp;
+    }
+
+    /**
+     * Sets the default {@code Home} temperature during summer to the specified value.
+     *
+     * @param temp The specified value
+     */
+    public void setDefaultSummerTemperature(double temp) {
+        defSummerTemp = temp;
+    }
+
+    /**
+     * @return The speed of this {@code Parameters}' {@code Clock}
+     */
+    public int getTimeMultiplier() {
+        return clock.getMultiplier();
+    }
+
+    /**
+     * @return The names of the {@code TemperatureControlZone}s that belong to these {@code Parameters}
+     */
+    public Collection<String> getZones() {
+        return zones.keySet();
+    }
+
+    /**
+     * Provides the {@code TemperatureControlZone} with the specified {@code id}, or {@code null} if no such zone exists
+     * in these {@code Parameters}
+     *
+     * @param id The specified id
+     * @return The {@code TemperatureControlZone} with the specified {@code id}
+     */
+    public TemperatureControlZone getZone(String id) {
+        return zones.get(id);
+    }
+
+}

@@ -1,6 +1,7 @@
 package main.model.parameters.permissions;
 
 import main.model.Action;
+import main.util.PermissionDeniedException;
 
 import java.util.Set;
 
@@ -19,8 +20,8 @@ public interface Permission {
      *
      * @param action The specified {@code Action}
      * @return The specified {@code Action}
-     * @throws IllegalArgumentException If {@code action} is disallowed at this {@code Permission} level
      * @throws NullPointerException If {@code action} is {@code null}
+     * @throws PermissionDeniedException If {@code action} is disallowed at this {@code Permission} level
      */
     Action authorize(Action action);
 

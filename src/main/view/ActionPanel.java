@@ -17,10 +17,17 @@ public class ActionPanel extends JTabbedPane {
 
     final List<JList<Action>> actions = new LinkedList<>();
 
+    /**
+     * Adds a {@code module} to the {@code ActionPanel}
+     *
+     * @param module The module to be added
+     * @return The {@code ModuleView}
+     */
     public ModuleView addModule(Module module) {
         ModuleView view = new ModuleView(module);
         actions.add(view.actions);
         addTab(module.getName(), view);
+
         return view;
     }
 

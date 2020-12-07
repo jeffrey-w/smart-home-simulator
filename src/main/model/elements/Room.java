@@ -15,13 +15,14 @@ import java.util.Objects;
  */
 public class Room extends Place {
 
-    private static final int DEFAULT_ROOM_TEMPERATURE = 25;
+    private static final double DEFAULT_ROOM_TEMPERATURE = 20.00;
 
-    private int temperature;
+    private double temperature;
     private boolean awayLight;
     private final Door[] doors;
     private final Light[] lights;
     private final Window[] windows;
+    private boolean HVACon;
 
     /**
      * Constructs a {@code Room} with the given {@code doors}, {@code lights}, and {@code windows}.
@@ -35,6 +36,7 @@ public class Room extends Place {
         this.doors = Objects.requireNonNull(doors); // TODO consider making defensive copies in a future release
         this.lights = Objects.requireNonNull(lights);
         this.windows = Objects.requireNonNull(windows);
+        this.HVACon = true;
     }
 
     /**
@@ -63,12 +65,18 @@ public class Room extends Place {
      *
      * @param temperature The specified temperature
      */
-    public void setTemperature(int temperature) { // TODO do bounds checking
+    public void setTemperature(double temperature) { // TODO do bounds checking
         this.temperature = temperature;
     }
 
     /**
-     *
+     * @return The temperature of this {@code Room}
+     */
+    public double getTemperature() {
+        return this.temperature;
+    }
+
+    /**
      * @return {@code true} if away light mode is set in this {@code Room}
      */
     public boolean isAwayLight() {
@@ -163,13 +171,46 @@ public class Room extends Place {
         }
     }
 
+    /**
+     * @return {@code true} if the HVAC is on in this {@code Room}
+     */
+    public boolean isHVACon() {
+        return this.HVACon;
+    }
+
+    /**
+     * Sets this {@code Room}'s air conditioner state to that specified.
+     *
+     * @param state The new state of the {@code Room}'s HVAC air conditioner
+     */
+    public void setHVAC(Boolean state) {
+        this.HVACon = state;
+    }
+
+    /**
+     * Changes the open status of every {@code Window} in this {@code Room} to the specified value.
+     * @param flag The specified value
+     */
+    public void toggleWindows(boolean flag) {
+        for (Window window : windows) {
+            if (window != null) {
+                try {
+                    window.setOpen(flag);
+                } catch (IllegalStateException e) {
+                    continue;
+                }
+                setHVAC(!flag);
+            }
+        }
+    }
+
     @Override
     public boolean equals(final Object obj) {
         if (!(obj instanceof Room)) {
             return false;
         }
         Room room = (Room) obj;
-        return (temperature == room.temperature) && Arrays.equals(doors, room.doors) && Arrays
+        return (Double.compare(temperature, room.temperature) == 0) && Arrays.equals(doors, room.doors) && Arrays
                 .equals(lights, room.lights) && Arrays.equals(windows, room.windows);
     }
 
@@ -177,11 +218,10 @@ public class Room extends Place {
     public int hashCode() {
         int prime = 31;
         int result = 1;
-        result = prime * result + temperature;
+        result = prime * result + Double.hashCode(temperature);
         result = prime * result + Arrays.hashCode(doors);
         result = prime * result + Arrays.hashCode(lights);
         result = prime * result + Arrays.hashCode(windows);
         return result;
     }
-
 }

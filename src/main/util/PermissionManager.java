@@ -26,8 +26,10 @@ public abstract class PermissionManager { // TODO redo comments
     public static Map<String, Permission> loadPermissions(File file)
             throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException,
             InstantiationException, FileNotFoundException {
+
         HashMap<String, Permission> permissions = new HashMap<>();
         Scanner scanner = new Scanner(file);
+
         while (scanner.hasNextLine()) {
             int index;
             String line = scanner.nextLine();
@@ -35,10 +37,12 @@ public abstract class PermissionManager { // TODO redo comments
             String[] actions = line.substring(index + 1).split(",");
             String permissionString = name + "Permission";
             Class<?> klass = Class.forName("main.model.parameters.permissions." + permissionString);
+
             Permission permission = (Permission) klass.getDeclaredConstructor().newInstance();
             for (Action action : permission.allowed()) {
                 permission.disallow(action);
             }
+
             for (String action : actions) {
                 try {
                     permission.allow(Action.valueOf(action));
@@ -61,19 +65,23 @@ public abstract class PermissionManager { // TODO redo comments
      */
     public static void savePermissions(Map<String, Permission> permissions, File file) throws IOException {
         BufferedWriter out = new BufferedWriter(new FileWriter(file));
+
         for (Map.Entry<String, Permission> item : permissions.entrySet()) {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(item.getKey());
             stringBuilder.append(":");
+
             for (Action action : item.getValue().allowed()) {
                 stringBuilder.append(action.name());
                 stringBuilder.append(",");
             }
-            //to remove the last comma in the string
-            String permissionAsString = stringBuilder.toString();
+
+            String permissionAsString = stringBuilder.toString(); // Remove the last comma in the string
+
             if (!item.getValue().allowed().isEmpty()) {
                 permissionAsString = permissionAsString.substring(0, stringBuilder.length() - 1);
             }
+
             out.write(permissionAsString);
             out.newLine();
         }

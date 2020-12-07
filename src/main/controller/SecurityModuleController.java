@@ -47,9 +47,14 @@ public class SecurityModuleController extends AbstractModuleController {
                 case SET_AWAY_MODE_DELAY:
                     ValueManipulable<Integer> valueManipulable;
                     try {
-                        valueManipulable = new ValueManipulable<>(Integer.parseInt(JOptionPane
-                                .showInputDialog(parent.getDashboard(), "Enter an away mode delay.", "Away mode Delay",
-                                        JOptionPane.PLAIN_MESSAGE)));
+                        valueManipulable = new ValueManipulable<>(
+                            Integer.parseInt(JOptionPane.showInputDialog(
+                                parent.getDashboard(),
+                        "Enter an away mode delay.",
+                            "Away mode Delay",
+                                JOptionPane.PLAIN_MESSAGE)
+                            )
+                        );
                     } catch (NumberFormatException e) {
                         parent.sendToConsole("Please enter a positive integer.", Dashboard.MessageType.ERROR);
                         return;
@@ -58,6 +63,7 @@ public class SecurityModuleController extends AbstractModuleController {
                     break;
                 case SET_AWAY_MODE_LIGHTS:
                     AwayLightChooser chooser = AwayLightChooser.of(parent.getHouse().getLocations());
+
                     chooser.addActionListener(f -> {
                         MultiValueManipulable multiValueManipulable =
                                 new MultiValueManipulable(chooser.getSelectedLocations());
@@ -66,12 +72,15 @@ public class SecurityModuleController extends AbstractModuleController {
                         performActionOn(Action.SET_AWAY_MODE_LIGHTS, multiValueManipulable);
                         chooser.dispose();
                     });
+
                     chooser.pack();
                     chooser.setLocationRelativeTo(parent.getDashboard());
                     chooser.setVisible(true);
+                    break;
                 case SET_AWAY_MODE:
                     performActionOn(view.getSelectedAction(), parent.getParameters().getAwayMode());
                     parent.redrawHouse();
+                    break;
             }
         } else {
             parent.sendToConsole("Please select a permission to choose an action.", Dashboard.MessageType.ERROR);
@@ -86,11 +95,15 @@ public class SecurityModuleController extends AbstractModuleController {
         final boolean[] cancel = {false, false};
         Timer timer = new Timer(parent.getParameters().getAwayDelay(), e -> {
             parent.getDashboard().addConsoleListener(null, null);
+
             if (cancel[0]) {
                 parent.sendToConsole("Crisis averted!", Dashboard.MessageType.WARNING);
             } else {
-                parent.sendToConsole((cancel[1] ? "" : "\n") + "Intruder detected, the authorities have been alerted!",
-                        Dashboard.MessageType.WARNING);
+                parent.sendToConsole(
+            (cancel[1] ? "" : "\n")
+                    + "Intruder detected, the authorities have been alerted!",
+                    Dashboard.MessageType.WARNING
+                );
             }
         });
         parent.getDashboard().addConsoleListener(new KeyAdapter() {

@@ -3,6 +3,7 @@ package main.controller;
 import main.model.Action;
 import main.model.Manipulable;
 import main.model.parameters.Parameters;
+import main.util.PermissionDeniedException;
 import main.view.Dashboard;
 import main.view.ModuleView;
 
@@ -37,8 +38,10 @@ public abstract class AbstractModuleController implements ModuleController {
             parent.sendToConsole(
                     manipulable.manipulate(parameters.getPermission().authorize(action), parameters, parent.getHouse()),
                     Dashboard.MessageType.NORMAL);
-        } catch (Exception e) {
+        } catch (PermissionDeniedException e) {
             parent.sendToConsole(e.getMessage(), Dashboard.MessageType.ERROR);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
