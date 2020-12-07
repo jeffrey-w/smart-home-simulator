@@ -232,16 +232,20 @@ public class Controller {
         public void actionPerformed(ActionEvent e) {
             if (house != null) {
                 if (!getHeatingModuleController().unzonedRooms().isEmpty()) {
-                    sendToConsole("All rooms must belong to a heating zone before starting the simulation.",
-                            Dashboard.MessageType.ERROR);
+                    sendToConsole(
+                        "All rooms must belong to a heating zone before starting the simulation.",
+                        Dashboard.MessageType.ERROR
+                    );
                 } else {
                     parameters.setOn(((JToggleButton) e.getSource()).isSelected());
                     dashboard.toggleOnButton();
                     dashboard.showStates(parameters.isOn());
                     getCoreModuleController().toggleAutoLight();
                     redrawHouse();
-                    sendToConsole("Simulation has " + (parameters.isOn() ? "begun." : "ended."),
-                            Dashboard.MessageType.NORMAL);
+                    sendToConsole(
+                        "Simulation has " + (parameters.isOn() ? "begun." : "ended."),
+                        Dashboard.MessageType.NORMAL
+                    );
                     if (parameters.isOn() && parameters.isAwayMode() && house.isOccupied()) {
                         getSecurityModuleController().startAwayModeCountdown();
                     }
