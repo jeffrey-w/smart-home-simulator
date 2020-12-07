@@ -93,18 +93,14 @@ public class Controller {
                 // Toggle lights on AwayMode
                 if (parameters.isAwayMode()) {
                     for (Room room : house) {
-                        room.toggleLights(
-                            room.isAwayLight()
-                            && isBetween(time, parameters.getAwayLightStart(), parameters.getAwayLightEnd())
-                        );
+                        room.toggleLights(room.isAwayLight() && isBetween(time, parameters.getAwayLightStart(),
+                                parameters.getAwayLightEnd()));
                     }
                 } else {
                     if (isSummer(parameters.getDate())) {
-                        if (
-                            monitorWindows
-                            && house.hasTemperatureAberration(parameters.getExternalTemperature())
-                            && house.hasObstructedWindow()
-                        ) {
+                        if (monitorWindows && house.hasTemperatureAberration(parameters.getExternalTemperature())
+                                && house
+                                .hasObstructedWindow()) {
                             sendToConsole(
                                     "A blocked window has prevented SHH from opening or closing the windows in this "
                                             + "house.",
@@ -129,10 +125,8 @@ public class Controller {
                         if (!isWithinTolerance(roomTemp, equilibriumTemp)) {
                             sign = (int) Math.signum(equilibriumTemp - roomTemp);
                             room.setTemperature(
-                                    roomTemp
-                                    + (room.isHVACon() ? HVAC_ON_STEP : HVAC_OFF_STEP)
-                                    * parameters.getTimeMultiplier() * sign
-                            );
+                                    roomTemp + (room.isHVACon() ? HVAC_ON_STEP : HVAC_OFF_STEP) * parameters
+                                            .getTimeMultiplier() * sign);
                         } else {
                             room.setHVAC(!room.isHVACon());
                             sign = (int) Math.signum(getEquilibriumTemp(location) - roomTemp);
@@ -143,26 +137,25 @@ public class Controller {
                 }
             }
 
-            // Check home temperature (if <= 0, alert users)
+            // check home temperature -> if <= 0 -> alert users about pipe burst potential
             if (house != null) {
                 double averageHouseTemperature;
                 double sumHouseTemperature = 0;
-
                 for (Room room : house) {
                     double roomTemp = room.getTemperature();
+
                     sumHouseTemperature = sumHouseTemperature + roomTemp;
                 }
-
                 averageHouseTemperature = sumHouseTemperature / house.getSize();
 
                 if (Double.compare(averageHouseTemperature, 0) <= 0) {
                     sendToConsole(
-                        "WARNING : Temperature inside home is below 0C, pipes might burst.",
-                        Dashboard.MessageType.WARNING);
+                            "WARNING : Temperature inside home is below 0C, pipes might burst.",
+                            Dashboard.MessageType.WARNING);
                 }
             }
 
-            // Redraw the house to see temperature
+            // redraw the house to see temperature
             if (house != null) {
                 redrawHouse();
             }
@@ -180,11 +173,8 @@ public class Controller {
         }
         if (parameters.isTemperatureOverridden(room) || r.isHVACon()) {
             double desired = parameters.getTemperatureControlZone(room).getDesiredTemperatureFor(room, getPeriod());
-            if (
-                Double.compare(desired, parameters.getExternalTemperature()) == 0
-                || parameters.isTemperatureOverridden(room)
-                && isWithinTolerance(r.getTemperature(), desired)
-            ) {
+            if (r.getNumberOfWindowsOpen() > 0 || Double.compare(desired, parameters.getExternalTemperature()) == 0
+                    || parameters.isTemperatureOverridden(room) && isWithinTolerance(r.getTemperature(), desired)) {
                 if (r.isHVACon()) {
                     r.setHVAC(false);
                 }
@@ -195,17 +185,22 @@ public class Controller {
         return parameters.getExternalTemperature();
     }
 
+    /**
+     * Gets the periods of day based on the time of the day
+     *
+     * @return The period ID that the time falls in
+     */
     private int getPeriod() {
         int[] clockTime = parameters.getClockTime();
         int hour = clockTime[Clock.HOURS];
         if (hour > MORNING_START && hour < DAY_START) {
-            // Morning
+            //morning
             return PERIOD1;
         } else if (hour > DAY_START && hour < NIGHT_START) {
-            // Evening
+            //day
             return PERIOD2;
         } else {
-            // Night
+            //night
             return PERIOD3;
         }
     }
