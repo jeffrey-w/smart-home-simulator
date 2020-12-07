@@ -7,7 +7,8 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- *
+ * The {@code ModuleView} class provides the UI elements for specifying simulation {@code Parameters} and {@code House}
+ * elements, and selecting {@code Actions}s to perform on them.
  *
  * @author Jeff Wilgus
  */
@@ -23,7 +24,7 @@ public class ModuleView extends JPanel {
     /**
      * Constructs a {@mode ModuleView}
      *
-     * @param module
+     * @param module The {@code Module} that this {@code ModuleView} will render
      */
     public ModuleView(Module module) {
         JScrollPane itemsPane = new JScrollPane(items);

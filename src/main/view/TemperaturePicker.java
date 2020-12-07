@@ -7,7 +7,8 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 /**
- *
+ * The {@code TemperaturePicker} class provides the UI elements for selecting default temperatures during {@code
+ * AwayMode}.
  *
  * @author Jeff Wilgus
  */
@@ -41,15 +42,17 @@ public class TemperaturePicker extends JFrame {
     }
 
     /**
+     * Registers an event handler on this {@code TemperaturePicker}
      *
-     *
-     * @param listener
+     * @param listener the specified event handler
      */
     public void addActionListener(ActionListener listener) {
         ok.addActionListener(listener);
     }
 
     /**
+     * Provides the temperature specified for summer.
+     *
      * @return The temperature set for the summer
      */
     public double getSummerTemperature() {
@@ -57,6 +60,8 @@ public class TemperaturePicker extends JFrame {
     }
 
     /**
+     * Provides the temperature specified for winter.
+     *
      * @return The temperature set for the winter
      */
     public double getWinterTemperature() {

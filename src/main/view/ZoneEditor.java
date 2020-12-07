@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- *
+ * The {@code ZoneEditor} class provides the UI elements for manipulating {@code TemperatureControlZone}s.
  *
  * @author Jeff Wilgus
  */
@@ -42,9 +42,10 @@ public class ZoneEditor extends JFrame {
     /**
      * Constructs a {@code ZoneEditor}
      *
-     * @param in
-     * @param out
-     * @param temps
+     * @param in The {@code Rooms} in the {@code TemperatureControlZone} rendered by this {@code ZoneEditor}
+     * @param out The {@code Rooms} not in the {@code TemperatureControlZone} rendered by this {@code ZoneEditor}
+     * @param temps The desired temperatures for each period of the {@code TemperatureControlZone} rendered by this
+     * {@code ZoneEditor}
      */
     public ZoneEditor(Collection<String> in, Collection<String> out, Double[] temps) {
         super("Edit Zone");
@@ -147,16 +148,16 @@ public class ZoneEditor extends JFrame {
     }
 
     /**
+     * Registers an event handler on this {@code ZoneEditor}.
      *
-     *
-     * @param listener
+     * @param listener the specified event handler
      */
     public void addActionCommand(ActionListener listener) {
         ok.addActionListener(listener);
     }
 
     /**
-     * @return The name of this {@code TemperatureControlZone}
+     * @return The name of the {@code TemperatureControlZone} rendered by this {@code ZoneEditor}
      */
     public String getZoneName() {
         return name.getText();
