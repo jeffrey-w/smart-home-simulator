@@ -2,6 +2,9 @@ package main.model.parameters;
 
 import main.model.AbstractManipulable;
 
+import java.time.LocalTime;
+import java.util.Objects;
+
 /**
  * The AwayMode is activated by the user when they leave the simulated house and no other user is in the house.
  * It allows the remote user to be alerted, should anyone suspicious be detected around or in the house.
@@ -11,11 +14,15 @@ import main.model.AbstractManipulable;
  */
 public class AwayMode extends AbstractManipulable {
 
-    private static boolean AWAY_MODE_ON = false;
-    private static int AWAY_MODE_DELAY = 10_000; // in seconds
+    private static final boolean AWAY_MODE_ON = false;
+    private static final int AWAY_MODE_DELAY = 10_000; // in seconds
+    public static final LocalTime DEFAULT_AWAY_LIGHT_START = LocalTime.of(18, 0);
+    public static final LocalTime DEFAULT_AWAY_LIGHT_END = LocalTime.of(0, 0);
 
     private boolean on;
     private int delay;
+    private LocalTime awayLightStart;
+    private LocalTime awayLightEnd;
 
     /**
      * Constructs an AwayMode object with the default parameters.
@@ -23,6 +30,8 @@ public class AwayMode extends AbstractManipulable {
     public AwayMode() {
         setAwayMode(AWAY_MODE_ON);
         setAwayModeDelay(AWAY_MODE_DELAY);
+        awayLightStart = DEFAULT_AWAY_LIGHT_START;
+        awayLightEnd = DEFAULT_AWAY_LIGHT_END;
     }
 
     /**
@@ -56,4 +65,37 @@ public class AwayMode extends AbstractManipulable {
     public void setAwayModeDelay(int delay) {
         this.delay = delay;
     }
+
+    /**
+     * @return The start of away light mode
+     */
+    public LocalTime getDefaultAwayLightStart() {
+        return awayLightStart;
+    }
+
+    /**
+     * @return The end of away light mode
+     */
+    public LocalTime getAwayLightEnd() {
+        return awayLightEnd;
+    }
+
+    /**
+     * Sets the {@code start} of away light mode to the time specified
+     * @param start The specified start of away light mode
+     * @throws NullPointerException if the specified {@code start} is {@code null}
+     */
+    public void setAwayLightStart(LocalTime start) {
+        awayLightStart = Objects.requireNonNull(start);
+    }
+
+    /**
+     * Sets the {@code end} of away light mode to the time specified
+     * @param end The specified end of away light mode
+     * @throws NullPointerException if the specified {@code end} is {@code null}
+     */
+    public void setAwayLightEnd(LocalTime end) {
+        awayLightEnd = Objects.requireNonNull(end);
+    }
+
 }

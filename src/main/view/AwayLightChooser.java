@@ -5,7 +5,6 @@ import main.model.elements.Room;
 import main.model.parameters.AwayMode;
 
 import javax.swing.*;
-import javax.swing.text.DateFormatter;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.time.LocalTime;
@@ -42,8 +41,8 @@ public class AwayLightChooser extends JFrame {
     }
 
     private final List<JCheckBox> locations = new LinkedList<>();
-    JSpinner startSpinner = new JSpinner(new SpinnerDateModel());
-    JSpinner endSpinner = new JSpinner(new SpinnerDateModel());
+    final JSpinner startSpinner = new JSpinner(new SpinnerDateModel());
+    final JSpinner endSpinner = new JSpinner(new SpinnerDateModel());
     private final JButton ok = new JButton("Ok");
 
     /**
@@ -63,7 +62,7 @@ public class AwayLightChooser extends JFrame {
      * @return The selected start time for away light mode
      */
     public LocalTime getStart() {
-        Calendar calendar = new GregorianCalendar();
+        Calendar calendar = Calendar.getInstance();
         calendar.setTime((Date) startSpinner.getModel().getValue());
         return LocalTime.of(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
     }
@@ -72,7 +71,7 @@ public class AwayLightChooser extends JFrame {
      * @return The selected end time for away light mode
      */
     public LocalTime getEnd() {
-        Calendar calendar = new GregorianCalendar();
+        Calendar calendar = Calendar.getInstance();
         calendar.setTime((Date) endSpinner.getModel().getValue());
         return LocalTime.of(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
     }
@@ -91,20 +90,17 @@ public class AwayLightChooser extends JFrame {
         super("Away Light Control");
         JPanel staticFields = new JPanel(new GridLayout(CELLS, 1));
         JPanel timeSpinners = new JPanel(new GridLayout(1, CELLS));
-        final JSpinner.DateEditor startEditor = new JSpinner.DateEditor(startSpinner, "HH:mm");
-        DateFormatter startFormatter = (DateFormatter) startEditor.getTextField().getFormatter();
-        final JSpinner.DateEditor endEditor = new JSpinner.DateEditor(endSpinner, "HH:mm");
-        DateFormatter endFormatter = (DateFormatter) endEditor.getTextField().getFormatter();
-        startFormatter.setAllowsInvalid(false);
-        startFormatter.setOverwriteMode(true);
-        endFormatter.setAllowsInvalid(false);
-        endFormatter.setOverwriteMode(true);
+
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(DIM, DIM));
         setResizable(false);
-        timeSpinners.add(startEditor);
-        timeSpinners.add(endEditor);
+
+        startSpinner.setEditor(new JSpinner.DateEditor(startSpinner, "HH:mm"));
+        endSpinner.setEditor(new JSpinner.DateEditor(endSpinner, "HH:mm"));
+
+        timeSpinners.add(startSpinner);
+        timeSpinners.add(endSpinner);
         staticFields.add(timeSpinners);
         staticFields.add(ok);
         add(staticFields, SOUTH);

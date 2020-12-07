@@ -19,13 +19,13 @@ public class HouseLayoutPanel extends JPanel {
 
     private static class RoomInfo {
 
-        Point coordinates;
-        int[] states = new int[NUMBER_OF_STATES];
+        final Point coordinates;
+        public double m_temperature;
+        final int[] states = new int[NUMBER_OF_STATES];
 
         RoomInfo(int x, int y) {
             coordinates = new Point(x, y);
         }
-
     }
 
     public static final int DOORS_OPEN = 0;
@@ -33,35 +33,39 @@ public class HouseLayoutPanel extends JPanel {
     public static final int LIGHTS_ON = 2;
     public static final int WINDOWS_OPEN = 3;
     public static final int WINDOWS_BLOCKED = 4;
-    public static final int NUMBER_OF_PEOPLE = 5;
-    private static final int NUMBER_OF_STATES = 6;
+    public static final int HVAC_ON = 5;
+    public static final int NUMBER_OF_PEOPLE = 6;
+    private static final int NUMBER_OF_STATES = 7;
     private static final int ROOM_DIM = 0x80;
     private static final int OFFSET = 4;
-    private static final int STATE_DIM = 0x10;
+    private static final int STATE_DIM = 8;
+    private static final int TEMP_OFFSET = 20;
     private static final String NULL_HOUSE_MESSAGE = "No house loaded.";
 
     private static final String[] STATE_LEGEND = {
-            "Open Doors",
-            "Locked Doors",
-            "Lights On",
-            "Open Windows",
-            "Blocked Windows",
-            "People Present"
+        "Open Doors",
+        "Locked Doors",
+        "Lights On",
+        "Open Windows",
+        "Blocked Windows",
+        "HVAC On",
+        "People Present"
     };
 
     private static final Color[] STATE_COLORS = {
-            Color.BLUE,
-            Color.RED,
-            Color.YELLOW,
-            Color.GREEN,
-            Color.GRAY,
-            Color.PINK
+        Color.BLUE,
+        Color.RED,
+        Color.YELLOW,
+        Color.GREEN,
+        Color.GRAY,
+        Color.MAGENTA,
+        Color.PINK
     };
 
     int x, y;
     int drawn = 0;
     boolean showStates = false;
-    Map<String, RoomInfo> rooms = new LinkedHashMap<>();
+    final Map<String, RoomInfo> rooms = new LinkedHashMap<>();
 
     /**
      * Provides a visual representation of the specified {@code house}.
@@ -99,7 +103,12 @@ public class HouseLayoutPanel extends JPanel {
         if (!rooms.containsKey(location)) {
             throw new NoSuchElementException("That location does not exist");
         }
+
         RoomInfo info = rooms.get(location);
+
+        // Set temperature string to be drawn on layout
+        info.m_temperature = Math.round(room.getTemperature() * 100.0) / 100.0;
+
         for (int i = 0; i < NUMBER_OF_STATES; i++) {
             updateState(room, info, i);
         }
@@ -122,6 +131,9 @@ public class HouseLayoutPanel extends JPanel {
             case WINDOWS_BLOCKED:
                 info.states[state] = room.getNumberOfWindowsBlocked();
                 break;
+            case HVAC_ON:
+                info.states[state] = room.isHVACon() ? 1 : 0;
+                break;
             case NUMBER_OF_PEOPLE:
                 info.states[state] = room.getNumberOfPeople();
                 break;
@@ -141,10 +153,14 @@ public class HouseLayoutPanel extends JPanel {
             for (Map.Entry<String, RoomInfo> entry : rooms.entrySet()) {
                 int x = entry.getValue().coordinates.x, y = entry.getValue().coordinates.y;
                 int stateIndex = 0, stateOffset = OFFSET, legendOffset = OFFSET;
+
                 String location = entry.getKey();
                 g.drawRect(x, y, ROOM_DIM, ROOM_DIM);
-                g.drawString(location, x + (ROOM_DIM - g.getFontMetrics().stringWidth(location) >>> 1),
-                        y + (ROOM_DIM >>> 1));
+                g.drawString(location,
+                    x + (ROOM_DIM - g.getFontMetrics().stringWidth(location) >>> 1),
+                    y + (ROOM_DIM >>> 1)
+                );
+
                 if (showStates) {
                     Color color = g.getColor();
                     for (int state : entry.getValue().states) {
@@ -162,6 +178,13 @@ public class HouseLayoutPanel extends JPanel {
                         g.fillOval(getWidth() - OFFSET - STATE_DIM, OFFSET, STATE_DIM, STATE_DIM);
                     }
                     g.setColor(color);
+
+                    // Draw the temperature on layout
+                    String temperature = entry.getValue().m_temperature + " °C";
+                    g.drawString(temperature ,
+                        x + (ROOM_DIM - g.getFontMetrics().stringWidth(temperature) >>> 1),
+                        y + (ROOM_DIM >>> 1) + TEMP_OFFSET)
+                    ;
                 }
             }
         }

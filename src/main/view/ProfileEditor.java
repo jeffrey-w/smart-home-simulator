@@ -7,6 +7,7 @@ import main.view.viewtils.SpringUtilities;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -22,19 +23,21 @@ public class ProfileEditor extends JFrame {
     private static final int COLUMNS = 2;
     private static final int Y_PADDING = 0x30;
 
-    JTextField role = new JTextField();
-    JComboBox<Permission> permission = ParameterEditor.permissionJComboBox();
-    JComboBox<String> location = new JComboBox<>();
-    JButton ok = new JButton("Ok");
+    final JTextField role = new JTextField();
+    final JComboBox<Permission> permissions = new JComboBox<>();
+    final JComboBox<String> location = new JComboBox<>();
+    final JButton ok = new JButton("Ok");
 
     /**
-     * Constructs a new {@code ProfileEditor} object for the specified {@code name}. The location of this profile is
+     * Constructs a new {@code ProfileEditor} object for the specified {@code name}. The specified {@code permissions}
+     * populate this {@code ProfileEditor}'s {@code Permission} selection list, and the location of this profile is
      * editable only if specified.
      *
      * @param name The name of the profile being edited; if {@code null}, a new profile will be added
+     * @param permissions The specified {@code Permission}s
      * @param enableLocation If {@code true}, this profile's location may be edited
      */
-    public ProfileEditor(String name, boolean enableLocation) {
+    public ProfileEditor(String name, Collection<Permission> permissions, boolean enableLocation) {
         // Set window title.
         super("Edit Profile");
 
@@ -55,12 +58,16 @@ public class ProfileEditor extends JFrame {
         fields.add(ParameterEditor.labelFactory("Role"));
         fields.add(this.role);
         fields.add(ParameterEditor.labelFactory("Permission"));
-        fields.add(permission);
+        fields.add(this.permissions);
         fields.add(ParameterEditor.labelFactory("Location"));
         fields.add(location);
 
         // Set field display behavior.
         SpringUtilities.makeCompactGrid(fields, ROWS, COLUMNS, 1, 1, 1, Y_PADDING);
+
+        for (Permission permission : permissions) {
+            this.permissions.addItem(permission);
+        }
 
         // A name is being edited, set the name and disable changing it.
         if (name != null) {
@@ -79,9 +86,11 @@ public class ProfileEditor extends JFrame {
      */
     public void addLocations(Set<String> locations) {
         this.location.addItem(null);
+
         for (String location : locations) {
             this.location.addItem(location);
         }
+
         location.addItem(House.EXTERIOR_NAME);
     }
 
@@ -105,7 +114,7 @@ public class ProfileEditor extends JFrame {
      * @return The selected permission
      */
     public Permission getSelectedPermission() {
-        return (Permission) permission.getSelectedItem();
+        return (Permission) permissions.getSelectedItem();
     }
 
     /**
@@ -127,10 +136,10 @@ public class ProfileEditor extends JFrame {
     /**
      * Sets the permission level of a user to that specified.
      *
-     * @param permission The given permission level
+     * @param permissions The given permission level
      */
-    public void setPermission(Permission permission) {
-        this.permission.setSelectedItem(permission);
+    public void setPermissions(Permission permissions) {
+        this.permissions.setSelectedItem(permissions);
     }
 
 }

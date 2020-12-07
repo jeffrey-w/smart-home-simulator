@@ -1,13 +1,12 @@
 package main.model;
 
-import main.model.elements.Door;
-import main.model.elements.House;
-import main.model.elements.Light;
-import main.model.elements.Window;
+import main.model.elements.*;
+import main.model.parameters.Clock;
 import main.model.parameters.Parameters;
 import main.model.parameters.permissions.Permission;
 
 import java.time.LocalTime;
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -19,28 +18,6 @@ import java.util.Set;
  * @see Permission
  */
 public enum Action {
-
-    CHANGE_TEMPERATURE {
-        @Override
-        public boolean isChildPermissible() {
-            return false;
-        }
-
-        @Override
-        public boolean isGuestPermissible() {
-            return false;
-        }
-
-        @Override
-        public String doAction(Manipulable manipulable, Parameters parameters, House house) {
-            return null; // TODO
-        }
-
-        @Override
-        public String toString() {
-            return "Change Temperature";
-        }
-    },
 
     TOGGLE_LOCK_DOOR {
         @Override
@@ -56,12 +33,12 @@ public enum Action {
         @Override
         public String doAction(Manipulable manipulable, Parameters parameters, House house) {
             Door door = (Door) manipulable;
-            if (door.isOpen()) {
-                return "Please close this door first.";
-            } else {
+            try {
                 door.setLocked(!door.isLocked());
-                return door.isLocked() ? "Door has been locked." : "Door has been unlocked";
+            } catch (IllegalStateException e) {
+                return e.getMessage();
             }
+            return door.isLocked() ? "Door has been locked." : "Door has been unlocked";
         }
 
         @Override
@@ -71,7 +48,6 @@ public enum Action {
 
     },
 
-    // toggle open/close door
     TOGGLE_DOOR {
         @Override
         public boolean isChildPermissible() {
@@ -86,12 +62,12 @@ public enum Action {
         @Override
         public String doAction(Manipulable manipulable, Parameters parameters, House house) {
             Door door = (Door) manipulable;
-            if (!door.isOpen() && door.isLocked()) {
-                return "Please unlock this door first.";
-            } else {
+            try {
                 door.setOpen(!door.isOpen());
-                return door.isOpen() ? "Door has been opened." : "Door has been closed";
+            } catch (IllegalStateException e) {
+                return e.getMessage();
             }
+            return door.isOpen() ? "Door has been opened." : "Door has been closed";
         }
 
         @Override
@@ -114,17 +90,42 @@ public enum Action {
         @Override
         public String doAction(Manipulable manipulable, Parameters parameters, House house) {
             Window window = (Window) manipulable;
-            if (window.isBlocked()) {
-                return "Please unblock this window first.";
-            } else {
+            try {
                 window.setOpen(!window.isOpen());
-                return window.isOpen() ? "Window has been opened." : "Window has been closed";
+            } catch (IllegalStateException e) {
+                return e.getMessage();
             }
+            return window.isOpen() ? "Window has been opened." : "Window has been closed";
         }
 
         @Override
         public String toString() {
             return "Open/Close Window";
+        }
+
+    },
+
+    TOGGLE_BLOCK_WINDOW {
+        @Override
+        public boolean isChildPermissible() {
+            return false;
+        }
+
+        @Override
+        public boolean isGuestPermissible() {
+            return false;
+        }
+
+        @Override
+        public String toString() {
+            return "Block/Unblock Window";
+        }
+
+        @Override
+        public String doAction(Manipulable manipulable, Parameters parameters, House house) {
+            Window window = (Window) manipulable;
+            window.setBlocked(!window.isBlocked());
+            return window.isBlocked() ? "Window has been blocked." : "Window has been unblocked";
         }
 
     },
@@ -176,31 +177,6 @@ public enum Action {
         }
     },
 
-    TOGGLE_BLOCK_WINDOW {
-        @Override
-        public boolean isChildPermissible() {
-            return false;
-        }
-
-        @Override
-        public boolean isGuestPermissible() {
-            return false;
-        }
-
-        @Override
-        public String toString() {
-            return "Block/Unblock Window";
-        }
-
-        @Override
-        public String doAction(Manipulable manipulable, Parameters parameters, House house) {
-            Window window = (Window) manipulable;
-            window.setBlocked(!window.isBlocked());
-            return window.isBlocked() ? "Window has been blocked." : "Window has been unblocked";
-        }
-
-    },
-
     SET_AWAY_MODE {
         @Override
         public boolean isChildPermissible() {
@@ -220,7 +196,9 @@ public enum Action {
             if (house.getNumberOfPeople() > 0 && !parameters.isAwayMode()) {
                 return "Away mode can only be set when no one is home";
             }
-            house.closeOpenables();
+            if (!parameters.isAwayMode()) {
+                house.closeOpenables();
+            }
             parameters.setAwayMode(!parameters.isAwayMode());
             return parameters.isAwayMode() ? "Away mode has been turned on" : "Away mode has been turned off";
         }
@@ -247,9 +225,11 @@ public enum Action {
             MultiValueManipulable multiValueManipulable = (MultiValueManipulable) manipulable;
             @SuppressWarnings("unchecked") // We catch ClassCastExceptions upstream
             Set<String> locations = (Set<String>) multiValueManipulable.getValue();
+
             for (String location : house.getLocations()) {
                 house.getRoom(location).setAwayLight(locations.contains(location));
             }
+
             parameters.setAwayLightStart((LocalTime) multiValueManipulable.getValueAt(0).getValue());
             parameters.setAwayLightEnd((LocalTime) multiValueManipulable.getValueAt(1).getValue());
             return "Away light interval updated";
@@ -260,6 +240,7 @@ public enum Action {
             return "Set Away Mode Lights";
         }
     },
+
     SET_AWAY_MODE_DELAY {
         @Override
         public boolean isChildPermissible() {
@@ -275,7 +256,8 @@ public enum Action {
         public String doAction(Manipulable manipulable, Parameters parameters, House house) {
             @SuppressWarnings("unchecked")
             ValueManipulable<Integer> valueManipulable = (ValueManipulable<Integer>) manipulable;
-            parameters.setAwayDelay(valueManipulable.getValue() * 1_000); // TODO use constant
+            parameters.setAwayDelay(valueManipulable.getValue() * Clock.SECONDS_PER_MILLISECOND);
+
             return "Away mode delay set for " + valueManipulable.getValue() + " seconds.";
         }
 
@@ -283,14 +265,187 @@ public enum Action {
         public String toString() {
             return "Set Away Mode Delay";
         }
+    },
+
+    READ_TEMPERATURES {
+        @Override
+        public boolean isChildPermissible() {
+            return true;
+        }
+
+        @Override
+        public boolean isGuestPermissible() {
+            return true;
+        }
+
+        @Override
+        public String doAction(Manipulable manipulable, Parameters parameters, House house) {
+            int index = 0;
+            StringBuilder builder = new StringBuilder("Temperatures\n");
+
+            for (String location : house.getLocations()) {
+                Room room = house.getRoom(location);
+                builder.append(location);
+                builder.append(": ");
+                builder.append(String.format("%.2f", room.getTemperature()));
+
+                if (parameters.isTemperatureOverridden(location)) {
+                    builder.append(" [Overridden]");
+                }
+
+                if (++index < house.getSize()) {
+                    builder.append('\n');
+                }
+            }
+
+            return builder.toString();
+        }
+
+        @Override
+        public String toString() {
+            return "Read Temperatures";
+        }
+    },
+
+    CHANGE_TEMPERATURE {
+        @Override
+        public boolean isChildPermissible() {
+            return false;
+        }
+
+        @Override
+        public boolean isGuestPermissible() {
+            return false;
+        }
+
+        @Override
+        public String doAction(Manipulable manipulable, Parameters parameters, House house) {
+            MultiValueManipulable multiValueManipulable = (MultiValueManipulable) manipulable;
+            String room = (String) multiValueManipulable.getValue();
+            double temperature = (Double) multiValueManipulable.getValueAt(0).getValue();
+
+            parameters.getTemperatureControlZone(room).overrideTempFor(room, temperature);
+            house.getRoom(room).setHVAC(true);
+
+            return room + " temperature has been set to " + temperature + ".";
+        }
+
+        @Override
+        public String toString() {
+            return "Change Temperature";
+        }
+    },
+
+    MANAGE_TEMPERATURE_CONTROL_ZONES {
+
+        @Override
+        public boolean isChildPermissible() {
+            return false;
+        }
+
+        @Override
+        public boolean isGuestPermissible() {
+            return false;
+        }
+
+        @Override
+        public String doAction(Manipulable manipulable, Parameters parameters, House house) {
+            MultiValueManipulable multiValueManipulable = (MultiValueManipulable) manipulable;
+
+            if (multiValueManipulable.getValue() == null) {
+                parameters.removeZone((String) multiValueManipulable.getValueAt(0).getValue());
+            } else {
+                String id = (String) multiValueManipulable.getValue();
+                Double tempOne = (Double) multiValueManipulable.getValueAt(0).getValue();
+                Double tempTwo = (Double) multiValueManipulable.getValueAt(1).getValue();
+                Double tempThree = (Double) multiValueManipulable.getValueAt(2).getValue();
+                @SuppressWarnings("unchecked")
+                Collection<String> rooms = (Collection<String>) multiValueManipulable.getValueAt(3).getValue();
+                TemperatureControlZone zone;
+
+                try {
+                    zone = parameters.addZone(id);
+                } catch (IllegalArgumentException e) {
+                    if (e.getMessage().equals("A zone with that name already exists.")) {
+                        zone = parameters.getZone(id);
+                    } else {
+                        throw e;
+                    }
+                }
+
+                zone.setPeriodTemp(0, tempOne);
+
+                if (tempTwo != null) {
+                    zone.setPeriodTemp(1, tempTwo);
+                }
+                if (tempThree != null) {
+                    zone.setPeriodTemp(2, tempThree);
+                }
+
+                for (String room : zone.getRooms()) {
+                    zone.removeRoom(room);
+                }
+                for (String room : rooms) {
+                    zone.addRoom(room);
+                }
+            }
+            return "Temperature control zones updated.";
+        }
+
+        @Override
+        public String toString() {
+            return "Manage Temperature Control Zones";
+        }
+    },
+
+    SET_DEFAULT_TEMPERATURE {
+        @Override
+        public boolean isChildPermissible() {
+            return false;
+        }
+
+        @Override
+        public boolean isGuestPermissible() {
+            return false;
+        }
+
+        @Override
+        public String doAction(Manipulable manipulable, Parameters parameters, House house) {
+            MultiValueManipulable multiValueManipulable = (MultiValueManipulable) manipulable;
+
+            double defSummerTempZone = (Double) multiValueManipulable.getValue();
+            double defWinterTempZone = (Double) multiValueManipulable.getValueAt(0).getValue();
+            parameters.setDefaultWinterTemperature(defWinterTempZone);
+            parameters.setDefaultSummerTemperature(defSummerTempZone);
+
+            return "Default temperature has been set to " + defWinterTempZone + " for winter and " + defSummerTempZone
+                    + " for summer.";
+        }
+
+        @Override
+        public String toString() {
+            return "Set Default Temperature";
+        }
+    };
+
+    static final String[] PERMISSIONS = new String[] {
+        "Parent",
+        "Child",
+        "Guest",
+        "Stranger"
     };
 
     /**
-     * @return The list of all permission levels of this action in the following order: { Parent permission, Child
-     * permission, Guest permission, Stranger permission }
+     * @return A summary of the permissibility of this {@code Action} by each {@code Permission} level
      */
-    public Boolean[] getPermissions() {
-        return new Boolean[] {true, this.isChildPermissible(), this.isGuestPermissible(), false};
+    public boolean[] isPermissibleBy(Parameters parameters) {
+        boolean[] isPermissible = new boolean[PERMISSIONS.length];
+
+        for (int i = 0; i < isPermissible.length; i++) {
+            isPermissible[i] = parameters.getPermissions().get(PERMISSIONS[i]).allowed().contains(this);
+        }
+
+        return isPermissible;
     }
 
     /**

@@ -19,15 +19,15 @@ public class House implements Iterable<Room> {
 
     private static class Node {
 
-        Room room;
+        final Room room;
 
-        Set<String> adjacents;
+        final Set<String> adjacents;
         boolean visited;
+
         Node(Room room) {
             this.room = Objects.requireNonNull(room);
             this.adjacents = new HashSet<>();
         }
-
         @Override
         public boolean equals(final Object obj) {
             if (!(obj instanceof Node)) {
@@ -37,8 +37,8 @@ public class House implements Iterable<Room> {
             return room.equals(node.room);
         }
 
-
     }
+
     /**
      * The maximum number of {@code Room}s that another {@code Room} may be adjacent to.
      */
@@ -50,9 +50,9 @@ public class House implements Iterable<Room> {
     public static final String EXTERIOR_NAME = "yard";
 
     private String root;
-
     private final Map<String, Node> rooms;
     private final Map<String, String> people;
+
     /**
      * Constructs a new {@code House} object with no {@code Room}s.
      */
@@ -68,12 +68,11 @@ public class House implements Iterable<Room> {
      * @param room The specified {@code Room}
      * @param location The specified location
      * @throws IllegalArgumentException If the specified {@code location} is not a non-empty string of word characters
-     * (i.e. [a-z, A-Z, 0-9, _])
+     * (i.e. [a-z, A-Z, 0-9, _]) and whitespace
      */
     public void addRoom(Room room, String location) {
         rooms.putIfAbsent(validateName(location), new Node(room));
     }
-
     /**
      * Signifies adjacency between the specified locations in this {@code House}.
      *
@@ -100,8 +99,8 @@ public class House implements Iterable<Room> {
             for (String adjacentTwo : two.adjacents) {
                 if (adjacentOne.equals(adjacentTwo)) {
                     throw new IllegalArgumentException(
-                            "Rooms that are already connected through another room, cannot be connected to each other"
-                                    + ".");
+                        "Rooms that are already connected through another room, cannot be connected to each other."
+                    );
                 }
             }
         }
@@ -115,12 +114,13 @@ public class House implements Iterable<Room> {
      * @param permission The specified {@code Permission}
      * @param location The specified location
      * @throws IllegalArgumentException If the specified {@code name} is not a non-empty string of word characters (i.e.
-     * [a-z, A-Z, 0-9, _, ])
+     * [a-z, A-Z, 0-9, _, ]) and whitespace
      * @throws NoSuchElementException If the specified {@code location} does not exist in this {@code House}
      * @throws NullPointerException If the specified {@code permission} is {@code null}
      */
     public void addPerson(String name, Permission permission, String location) {
         String previousLocation = people.put(validateName(name), location);
+
         if (previousLocation != null) {
             if (previousLocation.equals(EXTERIOR_NAME)) {
                 Yard.getInstance().removePerson(name);
@@ -128,6 +128,7 @@ public class House implements Iterable<Room> {
                 rooms.get(previousLocation).room.removePerson(name);
             }
         }
+
         if (location != null && location.equals(EXTERIOR_NAME)) {
             Yard.getInstance().addPerson(name, permission);
         } else {
@@ -224,6 +225,19 @@ public class House implements Iterable<Room> {
     }
 
     /**
+     * @param temperature The provided temperature
+     * @return {@code true} if any room in the house has a higher temperature than the one provided
+     */
+    public boolean hasTemperatureAberration(double temperature) {
+        for (Room room : this) {
+            if (Double.compare(room.getTemperature(), temperature) > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Determines whether or not this {@code House} has any people in it.
      *
      * @return {@code true} if any people are in this {@code House}
@@ -296,18 +310,23 @@ public class House implements Iterable<Room> {
         if (root == null) {
             throw new IllegalStateException("You must specify a root location.");
         }
+
         Deque<String> stack = new ArrayDeque<>();
         for (Node node : rooms.values()) {
             node.visited = false;
         }
+
         stack.push(root);
+
         while (!stack.isEmpty()) {
             String current = stack.pop();
             Node node = validateLocation(current);
+            
             if (!node.visited) {
                 action.accept(current, node.room);
                 node.visited = true;
             }
+
             for (String adjacent : node.adjacents) {
                 if (!rooms.get(adjacent).visited) {
                     stack.push(adjacent);
@@ -321,6 +340,13 @@ public class House implements Iterable<Room> {
             return rooms.get(location);
         }
         throw new NoSuchElementException("That location does not exist");
+    }
+
+    /**
+     * @return The number of {@code Room}s in the {@code House}
+     */
+    public int getSize() {
+        return rooms.size();
     }
 
     @Override

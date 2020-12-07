@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DoorTest {
 
@@ -27,16 +26,16 @@ class DoorTest {
         1,1 = false
          */
         // opened | locked = 0,0 = true
-        assertTrue(!(door.isOpen() && door.isLocked()));
+        assertFalse(door.isOpen() && door.isLocked());
 
         // opened | locked = 0,1 = true
         door.manipulate(Action.TOGGLE_DOOR, null, null);
-        assertTrue(!(door.isOpen() && door.isLocked()));
+        assertFalse(door.isOpen() && door.isLocked());
 
         // opened | locked = 0,1 = true
         door.manipulate(Action.TOGGLE_DOOR, null, null);
         door.manipulate(Action.TOGGLE_LOCK_DOOR, null, null);
-        assertTrue(!(door.isOpen() && door.isLocked()));
+        assertFalse(door.isOpen() && door.isLocked());
 
         // opened | locked = 1,1 = true
         door.manipulate(Action.TOGGLE_DOOR, null, null);

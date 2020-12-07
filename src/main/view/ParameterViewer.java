@@ -12,23 +12,23 @@ import java.util.Set;
  * @author Jeff Wilgus
  * @author Ayman Shehri
  */
-public class ProfileViewer extends JFrame {
+public class ParameterViewer extends JFrame {
 
     private static final int DIMENSION = 0x100;
 
-    DefaultListModel<String> profiles = new DefaultListModel<>();
-    JList<String> list = new JList<>(profiles);
-    JButton add = new JButton("Add");
-    JButton edit = new JButton("Edit");
-    JButton remove = new JButton("Remove");
+    final DefaultListModel<String> parameters = new DefaultListModel<>();
+    final JList<String> list = new JList<>(parameters);
+    final JButton add = new JButton("Add");
+    final JButton edit = new JButton("Edit");
+    final JButton remove = new JButton("Remove");
 
     /**
      * Constructs a new {@code ProfileViewer} object with the profiles from the specified {@code parameters} and the
      * locations from the specified {@code house}.
      */
-    public ProfileViewer() {
+    public ParameterViewer(String title) {
         // Set window title.
-        super("Edit Profiles");
+        super(title);
 
         // Containers for profile list and buttons.
         JScrollPane scrollPane = new JScrollPane(list);
@@ -70,64 +70,65 @@ public class ProfileViewer extends JFrame {
     }
 
     /**
-     * Populate system profiles with given profiles
+     * Populates this {@code ParameterViewer} with specified {@code names}.
      *
-     * @param names The list of profiles to populate the system with
+     * @param names The specified names
      */
     public void populateList(Set<String> names) {
         for (String name : names) {
-            profiles.addElement(name);
+            parameters.addElement(name);
         }
     }
 
     /**
-     * Clears the list of profiles currently registered by the system.
+     * Clears the list of names currently registered by this {@code ParameterViewer}.
      */
     public void clear() {
-        profiles.clear();
+        parameters.clear();
     }
 
     /**
-     * Add profile management action listeners to allow the simulation user to add, edit or remove profiles.
+     * Registers an event handler on this {@code ParameterViewer} to manipulate the parameters it lists.
      *
      * @param listener The specified event handler
      */
-    public void addManageProfileListener(ActionListener listener) {
+    public void addActionListener(ActionListener listener) {
         add.addActionListener(listener);
         edit.addActionListener(listener);
         remove.addActionListener(listener);
     }
 
     /**
-     * @param name The profile we are verifying
-     * @return {@code true} if the specified profile exists in the system
+     * @param name The parameter we are verifying
+     * @return {@code true} if the specified parameter is listed by this {@code ParameterViewer}
      */
-    public boolean containsProfile(String name) {
-        return profiles.contains(name);
+    public boolean containsParameter(String name) {
+        return parameters.contains(name);
     }
 
     /**
-     * Add a given profile to the simulation system.
+     * Adds the specified parameter to this {@code ParameterViewer}.
      *
-     * @param name The name of the profile to be added
+     * @param name The name of the parameter to be added
      */
-    public void addProfile(String name) {
-        profiles.addElement(name);
+    public void addParameter(String name) {
+        parameters.addElement(name);
     }
 
     /**
-     * @return The selected Profile value
+     * @return The selected parameter value
      */
     public String getSelectedValue() {
         return list.getSelectedValue();
     }
 
     /**
-     * Remove a given profile from the simulation system.
+     * Remove a given parameter from this {@code ParameterViewer}.
      *
      * @param name The name of the profile to be removed
      */
-    public void removeProfile(String name) {
-        profiles.removeElement(name);
+    public void removeParameter(String name) {
+        parameters.removeElement(name);
     }
+
 }

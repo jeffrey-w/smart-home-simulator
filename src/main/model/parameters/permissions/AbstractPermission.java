@@ -1,6 +1,7 @@
 package main.model.parameters.permissions;
 
 import main.model.Action;
+import main.util.PermissionDeniedException;
 
 import java.util.Objects;
 
@@ -14,31 +15,20 @@ public abstract class AbstractPermission implements Permission {
     @Override
     public Action authorize(Action action) {
         if (!allowed().contains(Objects.requireNonNull(action))) {
-            throw new IllegalArgumentException("This action is not permissible with the level of permission you currently have.");
+            throw new PermissionDeniedException(
+                    "This action is not permissible with the level of permission you currently have.");
         }
         return action;
     }
 
-    /**
-     * Allows a user to increase the number of actionable permissions they have.
-     *
-     * @param action The action to be added to their permissions
-     */
-    public void addPermission(Action action) {
-        if(!allowed().contains(action)) {
-            allowed().add(action);
-        }
+    @Override
+    public void allow(Action action) {
+        allowed().add(action);
     }
 
-    /**
-     * Allows a user to decrease the number of actionable permissions they have.
-     *
-     * @param action The action to be removed from their permissions
-     */
-    public void removePermission(Action action) {
-        if(allowed().contains(action)) {
-            allowed().remove(action);
-        }
+    @Override
+    public void disallow(Action action) {
+        allowed().remove(action);
     }
 
     @Override

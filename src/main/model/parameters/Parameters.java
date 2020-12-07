@@ -2,12 +2,9 @@ package main.model.parameters;
 
 import main.model.Manipulable;
 import main.model.elements.Room;
-import main.model.parameters.permissions.Permission;
-import main.model.tools.Clock;
+import main.model.elements.TemperatureControlZone;
 import main.model.parameters.permissions.*;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.util.*;
@@ -29,47 +26,33 @@ public class Parameters {
     /**
      * The temperature the application is initialized to upon start up.
      */
-    public static final int DEFAULT_TEMPERATURE = 15;
-    public static final int MIN_TEMPERATURE = -100;
-    public static final int MAX_TEMPERATURE = 100;
+    public static final double DEFAULT_TEMPERATURE = 15;
+    public static final double MIN_TEMPERATURE = -100;
+    public static final double MAX_TEMPERATURE = 100;
+    public static final double DEFAULT_WINTER_TEMPERATURE = 25;
+    public static final double DEFAULT_SUMMER_TEMPERATURE = 15;
 
     /**
      * The default values for away light beginning and end.
      */
-    public static final LocalTime DEFAULT_AWAY_LIGHT_START = LocalTime.of(18, 0);
-    public static final LocalTime DEFAULT_AWAY_LIGHT_END = LocalTime.of(0, 0);
 
     public static final int DEFAULT_TIMEX = 1;
     public static final int MIN_TIMEX = 1;
     public static final int MAX_TIMEX = 999;
 
-    public static final int DEFAULT_HOURS = 0;
-    public static final int MIN_HOURS = 0;
-    public static final int MAX_HOURS = 23;
-
-    public static final int DEFAULT_MINS = 0;
-    public static final int MIN_MINS = 0;
-    public static final int MAX_MINS = 59;
-
-    public static final int DEFAULT_SECS = 0;
-    public static final int MIN_SECS = 0;
-    public static final int MAX_SECS = 59;
-
-    // starting the clock
-    private static final Clock clock = new Clock();
-
     private Permission permission;
     private final Map<String, Permission> actors;
     private String location;
     private Date date;
-    private int temperature;
+    private double externalTemperature;
+    private double defWinterTemp;
+    private double defSummerTemp;
     private boolean on;
     private boolean autoLight;
-    private AwayMode awayMode;
-    private int[] clockTime;
+    private final AwayMode awayMode;
     private Map<String, Permission> permissions;
-    private LocalTime awayLightStart;
-    private LocalTime awayLightEnd;
+    private final Clock clock = new Clock();
+    private final Map<String, TemperatureControlZone> zones;
 
     /**
      * Constructs a new {@code Parameters} object.
@@ -79,16 +62,14 @@ public class Parameters {
         actors = new HashMap<>();
         location = null;
         date = Date.from(Instant.now());
-        temperature = DEFAULT_TEMPERATURE;
+        externalTemperature = DEFAULT_TEMPERATURE;
+        defWinterTemp = DEFAULT_WINTER_TEMPERATURE;
+        defSummerTemp = DEFAULT_SUMMER_TEMPERATURE;
         on = false;
         awayMode = new AwayMode();
-        // setting the time and time multiplier
-        startUpdateClock(); // start the listener to update time given the clock time
-        clockTime = clock.getClockTime();
         permissions = new HashMap<>();
+        zones = new HashMap<>();
         fillPermissionMap();
-        awayLightStart = DEFAULT_AWAY_LIGHT_START;
-        awayLightEnd = DEFAULT_AWAY_LIGHT_END;
     }
 
     /**
@@ -106,7 +87,7 @@ public class Parameters {
      * @return The permission of the specified type
      */
     public Permission getPermissionOf(String type) {
-        return(permissions.get(type));
+        return (permissions.get(type));
     }
 
     /**
@@ -115,7 +96,7 @@ public class Parameters {
      * @param name A unique identifier
      * @param permission The {@code Permission} level of the newly added actor
      * @throws IllegalArgumentException If the specified {@code name} is not a non-empty string of word characters (i.e.
-     * [a-z, A-Z, 0-9, _])
+     * [a-z, A-Z, 0-9, _]) and whitespace
      * @throws NullPointerException If the specified {@code permission} is {@code null}
      */
     public void addActor(String name, Permission permission) {
@@ -147,13 +128,6 @@ public class Parameters {
     }
 
     /**
-     * @return The List of the actors added to the simulation along with their permission
-     */
-    public Map<String, Permission> getActors() {
-        return actors;
-    }
-
-    /**
      * @return The location of the user controlling the simulation
      */
     public String getLocation() {
@@ -168,10 +142,10 @@ public class Parameters {
     }
 
     /**
-     * @return The current temperature set by the user
+     * @return The current external temperature (everything outside the {@code House} set by the user
      */
-    public int getTemperature() {
-        return temperature;
+    public double getExternalTemperature() {
+        return externalTemperature;
     }
 
     /**
@@ -195,7 +169,7 @@ public class Parameters {
      *
      * @param location The specified location
      * @throws IllegalArgumentException If the specified {@code location} is not a non-empty string of word characters
-     * (i.e. [a-z, A-Z, 0-9, _])
+     * (i.e. [a-z, A-Z, 0-9, _]) and whitespace
      */
     public void setLocation(String location) {
         this.location = location == null ? null : validateName(location);
@@ -212,17 +186,17 @@ public class Parameters {
     }
 
     /**
-     * Sets the current {@code temperature} of the simulation to that specified.
+     * Sets the current {@code externalTemperature} of the simulation to that specified.
      *
-     * @param temperature The specified temperature
+     * @param temperature The newly specified external temperature
      * @throws IllegalArgumentException If the specified {@code temperature} is above {@value #MAX_TEMPERATURE} or below
      * {@value #MIN_TEMPERATURE}
      */
-    public void setTemperature(int temperature) {
+    public void setExternalTemperature(double temperature) {
         if (temperature < MIN_TEMPERATURE || temperature > MAX_TEMPERATURE) {
             throw new IllegalArgumentException("You've specified an invalid temperature.");
         }
-        this.temperature = temperature;
+        this.externalTemperature = temperature;
     }
 
     /**
@@ -246,24 +220,10 @@ public class Parameters {
     }
 
     /**
-     *
      * @return The {@code AwayMode} of this {@code Parameters}
      */
     public Manipulable getAwayMode() {
         return awayMode;
-    }
-
-    /**
-     * Sets the current actors of the simulation to that specified. Used when
-     * loading the list of actors from a file
-     *
-     * @param actors The loaded or specified actors of the simulation
-     */
-    public void setActors(HashMap<String, Permission> actors) {
-        this.actors.clear();
-        for (Map.Entry<String, Permission> item : actors.entrySet()) {
-            this.actors.put(validateName(item.getKey()), item.getValue());
-        }
     }
 
     /**
@@ -318,7 +278,7 @@ public class Parameters {
      * @return The time
      */
     public int[] getClockTime() {
-        return clockTime;
+        return clock.getTime();
     }
 
     /**
@@ -336,24 +296,10 @@ public class Parameters {
      * @param time is the time we want to set
      */
     public void setTime(int[] time) {
-        clock.updateTime(time);
-    }
-
-    // start the clock time listener (basically there is 2 threads, one for the clock and one to retreive the time
-    // from that clock)
-    public void startUpdateClock() {
-        ActionListener updateClockListener = new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                clockTime = clock.getClockTime();
-            }
-        };
-
-        javax.swing.Timer timerClock = new javax.swing.Timer(1000, updateClockListener);
-        timerClock.start();
+        clock.setTime(time);
     }
 
     /**
-     *
      * @return The {@code Permission} levels available to the simulation
      */
     public Map<String, Permission> getPermissions() {
@@ -367,26 +313,153 @@ public class Parameters {
      * @throws NullPointerException if the specified {@code permission}s are {@code null}
      */
     public void setPermissions(Map<String, Permission> permissions) {
-        this.permissions = Objects.requireNonNull(permissions); // TODO need more validation
+        this.permissions = Objects.requireNonNull(permissions);
+    }
+
+    /**
+     * @return The start of away light mode
+     */
+    public LocalTime getAwayLightStart() {
+        return awayMode.getDefaultAwayLightStart();
     }
 
     /**
      * Sets the {@code start} of away light mode to the time specified
+     *
      * @param start the specified start of away light mode
      * @throws NullPointerException if the specified {@code start} is {@code null}
      */
     public void setAwayLightStart(LocalTime start) {
-        awayLightStart = Objects.requireNonNull(start);
+        awayMode.setAwayLightStart(start);
+    }
+
+    /**
+     * @return The end of away light mode
+     */
+    public LocalTime getAwayLightEnd() {
+        return awayMode.getAwayLightEnd();
     }
 
     /**
      * Sets the {@code end} of away light mode to the time specified
+     *
      * @param end the specified end of away light mode
      * @throws NullPointerException if the specified {@code end} is {@code null}
      */
     public void setAwayLightEnd(LocalTime end) {
-        awayLightEnd = Objects.requireNonNull(end);
+        awayMode.setAwayLightEnd(end);
+    }
+
+    /**
+     * Adds a {@code TemperatureControlZone}
+     *
+     * @param id The {@code TemperatureControlZone} identifier
+     * @return The newly added {@code TemperatureControlZone}
+     * @throws IllegalArgumentException If the specified {@code id} is not a non-empty string of word characters (i.e.
+     * [a-z, A-Z, 0-9, _]) and whitespace, or if another {@code TemperatureControlZone} by that name already exists
+     * @throws NullPointerException If the specified {@code id} is {@code} null
+     */
+    public TemperatureControlZone addZone(String id) {
+        if (zones.containsKey(validateName(id))) {
+            throw new IllegalArgumentException("A zone with that name already exists.");
+        }
+        TemperatureControlZone zone = new TemperatureControlZone();
+        zones.putIfAbsent(validateName(id), zone);
+        return zone;
+    }
+
+    /**
+     * Removes a @code TemperatureControlZone}
+     *
+     * @param id The {@code TemperatureControlZone} identifier
+     */
+    public void removeZone(String id) {
+        zones.remove(id);
+    }
+
+    /**
+     * @param room The inquired {@code room}
+     * @return The {@code TemperatureControlZone} that contains the given {@code room}
+     */
+    public TemperatureControlZone getTemperatureControlZone(String room) {
+        for (TemperatureControlZone zone : zones.values()) {
+            if (zone.getRooms().contains(room)) {
+                return zone;
+            }
+        }
+        throw new NoSuchElementException();
+    }
+
+    /**
+     * Determines whether or not the specified {@code location} has had its desired temperature explicitly set instead
+     * of relying on the one specified by the {@code TemperatureControlZone} it is in.
+     *
+     * @param location The specified location
+     * @return {@code true} if the specified {@code location} has had its temperature overridden
+     */
+    public boolean isTemperatureOverridden(String location) {
+        try {
+            return getTemperatureControlZone(location).isOverridden(location);
+        } catch (NoSuchElementException e) {
+            return false;
+        }
+    }
+
+    /**
+     * @return The default {@code Home} temperature during winter
+     */
+    public double getDefaultWinterTemperature() {
+        return defWinterTemp;
+    }
+
+    /**
+     * @return The default {@code Home} temperature during summer
+     */
+    public double getDefaultSummerTemperature() {
+        return defSummerTemp;
+    }
+
+    /**
+     * Sets the default {@code Home} temperature during winter to the specified value.
+     *
+     * @param temp The specified value
+     */
+    public void setDefaultWinterTemperature(double temp) {
+        defWinterTemp = temp;
+    }
+
+    /**
+     * Sets the default {@code Home} temperature during summer to the specified value.
+     *
+     * @param temp The specified value
+     */
+    public void setDefaultSummerTemperature(double temp) {
+        defSummerTemp = temp;
+    }
+
+    /**
+     * @return The speed of this {@code Parameters}' {@code Clock}
+     */
+    public int getTimeMultiplier() {
+        return clock.getMultiplier();
+    }
+
+    /**
+     * @return The names of the {@code TemperatureControlZone}s that belong to these {@code Parameters}
+     */
+    public Collection<String> getZones() {
+        return zones.keySet();
+    }
+
+    /**
+     * Provides the {@code TemperatureControlZone} with the specified {@code id}, or {@code null} if no such zone exists
+     * in these {@code Parameters}
+     *
+     * @param id The specified id
+     * @return The {@code TemperatureControlZone} with the specified {@code id}
+     */
+    public TemperatureControlZone getZone(String id) {
+        return zones.get(id);
     }
 
 }
-

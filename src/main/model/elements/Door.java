@@ -57,8 +57,12 @@ public class Door extends AbstractManipulable {
      * Sets the {@code open} state of this {@code Door} to that specified.
      *
      * @param open The specified open state
+     * @throws IllegalStateException If this {@code Door} is locked
      */
     public void setOpen(boolean open) {
+        if (locked) {
+            throw new IllegalStateException("Please unlock this door first.");
+        }
         this.open = open;
     }
 
@@ -66,8 +70,12 @@ public class Door extends AbstractManipulable {
      * Sets the {@code locked} state of this {@code Door} to that specified.
      *
      * @param locked The specified locked state
+     * @throws IllegalStateException If this {@code Door} is open
      */
     public void setLocked(boolean locked) {
+        if (open) {
+            throw new IllegalStateException("Please close this door first.");
+        }
         this.locked = locked;
     }
 

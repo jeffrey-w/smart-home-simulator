@@ -43,9 +43,11 @@ class Avatar extends JPanel {
     private BufferedImage scale(BufferedImage image) {
         Image temp = image.getScaledInstance(DIMENSION, DIMENSION, Image.SCALE_SMOOTH);
         BufferedImage bufferedImage = new BufferedImage(DIMENSION, DIMENSION, BufferedImage.TYPE_INT_ARGB);
+
         Graphics2D graphics2D = bufferedImage.createGraphics();
         graphics2D.drawImage(temp, 0, 0, null);
         graphics2D.dispose();
+
         return bufferedImage;
     }
 

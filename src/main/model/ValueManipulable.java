@@ -2,8 +2,6 @@ package main.model;
 
 import main.model.parameters.Parameters;
 
-import java.util.Objects;
-
 /**
  * The {@code ValueManipulable} class represents an abstract value chosen for simulation {@code Parameters}.
  *
@@ -19,10 +17,9 @@ public class ValueManipulable<T> extends AbstractManipulable {
      * Constructs a new {@code ValueManipulable} with the specified {@code value}.
      *
      * @param value The value held by this {@code ValueManipulable}
-     * @throws NullPointerException If the specified {@code value} is {@code null}
      */
     public ValueManipulable(T value) {
-        this.value = Objects.requireNonNull(value);
+        this.value = value;
     }
 
     /**

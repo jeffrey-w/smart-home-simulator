@@ -4,7 +4,6 @@ import main.model.parameters.Parameters;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * The {@code MultiValueManipulable} class represents a bundle of abstract values chosen for settable simulation {@code
@@ -13,9 +12,9 @@ import java.util.Objects;
  * @author Jeff Wilgus
  * @see Parameters
  */
-public class MultiValueManipulable extends ValueManipulable {
+public class MultiValueManipulable extends ValueManipulable<Object> {
 
-    private List<ValueManipulable<?>> valueManipulables = new LinkedList<>();
+    private final List<ValueManipulable<?>> valueManipulables = new LinkedList<>();
 
     /**
      * Constructs a new {@code ValueManipulable} with the specified {@code value}.
@@ -31,12 +30,9 @@ public class MultiValueManipulable extends ValueManipulable {
      * Adds the specified {@code value} to this {@code MultiValueManipulable}.
      *
      * @param value The specified value
-     * @return The index at which the specified {@code value} may be accessed
-     * @throws NullPointerException if the specified {@code value} is {@code null}
      */
-    public int addValue(Object value) {
-        valueManipulables.add(new ValueManipulable<>(Objects.requireNonNull(value)));
-        return valueManipulables.size() - 1;
+    public void addValue(Object value) {
+        valueManipulables.add(new ValueManipulable<>(value));
     }
 
     /**

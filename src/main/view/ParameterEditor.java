@@ -1,7 +1,7 @@
 package main.view;
 
 import main.model.parameters.Parameters;
-import main.model.parameters.permissions.*;
+import main.model.parameters.permissions.Permission;
 import main.view.viewtils.SpringUtilities;
 
 import javax.swing.*;
@@ -23,57 +23,49 @@ public class ParameterEditor extends JPanel {
     private static final int BUTTON_OFFSET = 0x10;
     private static final int BUTTON_X_PADDING = 0x40;
     private static final int BUTTON_Y_PADDING = 0x20;
-    private static final int FIELD_ROWS = 8;
+    private static final int FIELD_ROWS = 6;
     private static final int FIELD_COLUMNS = 2;
-    private static final int FIELD_Y_PADDING = 0x30;
+    private static final int FIELD_Y_PADDING = 0x40;
 
-    private static final Permission[] PERMISSIONS = new Permission[] {
-            null,
-            new ParentPermission(),
-            new ChildPermission(),
-            new GuestPermission(),
-            new StrangerPermission()
-    }; // TODO use parameters permissions instead
-    private static final SpinnerNumberModel TEMP_MODEL =
-            new SpinnerNumberModel(Parameters.DEFAULT_TEMPERATURE, Parameters.MIN_TEMPERATURE,
-                    Parameters.MAX_TEMPERATURE, 1);
-    private static final SpinnerDateModel DATE_MODEL =
-            new SpinnerDateModel(Date.from(Instant.now()), null, null, Calendar.DAY_OF_YEAR);
-
-    private static final SpinnerNumberModel TIMEX_MODEL =
-            new SpinnerNumberModel(Parameters.DEFAULT_TIMEX, Parameters.MIN_TIMEX,
-                    Parameters.MAX_TIMEX, 1);
-
-    private static final SpinnerNumberModel HOUR_MODEL =
-            new SpinnerNumberModel(Parameters.DEFAULT_HOURS, Parameters.MIN_HOURS,
-                    Parameters.MAX_HOURS, 1);
-    private static final SpinnerNumberModel MIN_MODEL =
-            new SpinnerNumberModel(Parameters.DEFAULT_MINS, Parameters.MIN_MINS,
-                    Parameters.MAX_MINS, 1);
-    private static final SpinnerNumberModel SEC_MODEL =
-            new SpinnerNumberModel(Parameters.DEFAULT_SECS, Parameters.MIN_SECS,
-                    Parameters.MAX_SECS, 1);
-
-    static JComboBox<Permission> permissionJComboBox() {
-        return new JComboBox<>(PERMISSIONS);
-    }
+    private static final SpinnerNumberModel TEMP_MODEL = new SpinnerNumberModel(
+        Parameters.DEFAULT_TEMPERATURE,
+        Parameters.MIN_TEMPERATURE,
+        Parameters.MAX_TEMPERATURE,
+        1
+    );
+    private static final SpinnerDateModel DATE_MODEL = new SpinnerDateModel(
+        Date.from(Instant.now()), null, null, Calendar.DAY_OF_YEAR
+    );
+    private static final SpinnerNumberModel TIMEX_MODEL = new SpinnerNumberModel(
+        Parameters.DEFAULT_TIMEX,
+        Parameters.MIN_TIMEX,
+        Parameters.MAX_TIMEX,
+1
+    );
 
     static JLabel labelFactory(String text) {
         return new JLabel(text + ":", SwingConstants.RIGHT);
     }
 
-    JButton loadHouse = new JButton("Load House");
-    JButton manageProfiles = new JButton("Manage Profiles");
-    JButton editPermissions = new JButton("Edit Permissions");
-    JButton persistPermissions = new JButton("Load Permissions");
-    JComboBox<Permission> permission = permissionJComboBox();
-    JComboBox<String> location = new JComboBox<>();
-    JSpinner temperature = new JSpinner(TEMP_MODEL);
-    JSpinner date = new JSpinner(DATE_MODEL);
-    JSpinner timeX = new JSpinner(TIMEX_MODEL);
-    JSpinner hour = new JSpinner(HOUR_MODEL);
-    JSpinner min = new JSpinner(MIN_MODEL);
-    JSpinner sec = new JSpinner(SEC_MODEL);
+    static SpinnerNumberModel tempModel() {
+        return new SpinnerNumberModel(
+            Parameters.DEFAULT_TEMPERATURE,
+            Parameters.MIN_TEMPERATURE,
+            Parameters.MAX_TEMPERATURE,
+    1
+        );
+    }
+
+    final JButton loadHouse = new JButton("Load House");
+    final JButton manageProfiles = new JButton("Manage Profiles");
+    final JButton editPermissions = new JButton("Edit Permissions");
+    final JButton persistPermissions = new JButton("Load Permissions");
+    final JComboBox<Permission> permissions = new JComboBox<>();
+    final JComboBox<String> location = new JComboBox<>();
+    final JSpinner temperature = new JSpinner(TEMP_MODEL);
+    final JSpinner date = new JSpinner(DATE_MODEL);
+    final JSpinner time = new JSpinner(new SpinnerDateModel());
+    final JSpinner timeX = new JSpinner(TIMEX_MODEL);
 
     /**
      * Constructs a new {@code ParameterEditor} object.
@@ -97,27 +89,24 @@ public class ParameterEditor extends JPanel {
         buttons.add(persistPermissions);
 
         // Set button panel display behavior
-        SpringUtilities
-                .makeGrid(buttons, BUTTON_ROWS, BUTTON_COLUMNS, BUTTON_OFFSET, BUTTON_OFFSET, BUTTON_X_PADDING,
-                        BUTTON_Y_PADDING);
+        SpringUtilities.makeGrid(
+            buttons, BUTTON_ROWS, BUTTON_COLUMNS, BUTTON_OFFSET, BUTTON_OFFSET,
+            BUTTON_X_PADDING, BUTTON_Y_PADDING
+        );
 
         // Add fields to field panel.
         fields.add(labelFactory("Permission"));
-        fields.add(permission);
+        fields.add(permissions);
         fields.add(labelFactory("Location"));
         fields.add(location);
         fields.add(labelFactory("Temperature"));
         fields.add(temperature);
         fields.add(labelFactory("Date"));
         fields.add(date);
+        fields.add(labelFactory("Time"));
+        fields.add(time);
         fields.add(labelFactory("Time Speed Multiplier"));
         fields.add(timeX);
-        fields.add(labelFactory("Time Hour"));
-        fields.add(hour);
-        fields.add(labelFactory("Time Min"));
-        fields.add(min);
-        fields.add(labelFactory("Time Sec"));
-        fields.add(sec);
 
         // Set field panel display behavior
         SpringUtilities.makeCompactGrid(fields, FIELD_ROWS, FIELD_COLUMNS, 1, 1, 1, FIELD_Y_PADDING);
@@ -125,6 +114,7 @@ public class ParameterEditor extends JPanel {
         // Selecting a location is disabled by default.
         location.setEnabled(false);
         date.setEditor(new JSpinner.DateEditor(date, "yyyy/MM/dd"));
+        time.setEditor(new JSpinner.DateEditor(time, "HH:mm:ss"));
     }
 
 }
